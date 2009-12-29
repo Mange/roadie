@@ -55,7 +55,8 @@ module Shemail
       
       # Find the css file
       def css_file
-        css = @css.to_s.ends_with?('.css') ? @css.to_s : "#{@css}.css"
+        css = @css.to_s
+        css = css[/\.css$/] ? css : "#{css}.css"
         path = File.join(RAILS_ROOT, 'public', 'stylesheets', css)
         File.exist?(path) ? path : raise(CSSFileNotFound)
       end

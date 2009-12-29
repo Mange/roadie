@@ -4,6 +4,20 @@ WARNING: NOT READY FOR PRODUCTION USE YET. YOU HAVE BEEN WARNED.
 
 Shemail tries to make sending HTML emails a little less painful.
 
+It was developed for use on "Purify: Awesome Bug & Issue Tracking":http://purifyapp.com
+
+h3. Background
+
+Writing inline styles for HTML emails is dull and boring but unfortunately
+a necessary evil. Rather than do it by hand we thought it would be nicer 
+to let our app do it for us.
+
+We originally tried to use "awesome_email":http://github.com/imedo/awesome_email but unfortunately it 
+either didn't work or was suspiciously slow (we're talking a minute to send
+the email). 
+
+So we decided to write our own lightweight alternative. Enjoy.
+
 h3. Install
 
 First install the dependencies:
@@ -14,3 +28,9 @@ Then install Shemail to your rails app:
   
 <pre><code>script/plugin install http://github.com/purify/shemail</code></pre>
 
+h3. Usage
+
+h3. Useful Resources Regarding HTML Emails
+
+* "Email Design Guidelines":http://www.campaignmonitor.com/design-guidelines/
+* "Guide to CSS support in email clients":http://www.campaignmonitor.com/css/
