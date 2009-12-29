@@ -32,3 +32,4 @@ Below are a couple of links you may find useful regarding HTML emails:
 
 * "Email Design Guidelines":http://www.campaignmonitor.com/design-guidelines/
 * "Guide to CSS support in email clients":http://www.campaignmonitor.com/css/
+* "Free Email Marketing Guide":http://www.mailchimp.com/articles/email_marketing_guide/
