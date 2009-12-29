@@ -1,4 +1,6 @@
-Shemail tries to make sending HTML emails a little less painful.
+h1. Shemail
+
+Shemail (Simple Html Email, or something) tries to make sending HTML emails a little less painful.
 
 It was developed for use on "Purify: Awesome Bug & Issue Tracking":http://purifyapp.com
 
