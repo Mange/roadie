@@ -1,15 +1,16 @@
 h2. Shemail
 
-Shemail tries to make sending HTML emails a little less shitty.
+WARNING: NOT READY FOR PRODUCTION USE YET. YOU HAVE BEEN WARNED.
+
+Shemail tries to make sending HTML emails a little less painful.
 
 h3. Install
 
 First install the dependencies:
 
-  sudo gem install nokogiri css_parser
+<pre><code>sudo gem install nokogiri css_parser</code></pre>
   
 Then install Shemail to your rails app:
   
-  script/plugin install http://github.com/JimNeath/Shemail
-  
-h3. Usage
+<pre><code>script/plugin install http://github.com/purify/shemail</code></pre>
+
