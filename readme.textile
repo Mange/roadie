@@ -1,5 +1,3 @@
-<span style="color:#f00">WARNING: NOT READY FOR PRODUCTION USE YET. YOU HAVE BEEN WARNED.</span>
-
 Shemail tries to make sending HTML emails a little less painful.
 
 It was developed for use on "Purify: Awesome Bug & Issue Tracking":http://purifyapp.com
@@ -93,6 +91,9 @@ h4. Example Output
   </body>
 </html></code></pre>
 
+h2. Troubleshooting / FAQ
+
+* Shemail does not touch single part emails. It will only render inline styles for html parts of emails (_eg. template_name.text.html.erb_)
 
 h2. Bugs / Todo
 
