@@ -1,20 +1,18 @@
-h2. Shemail
-
 <span style="color:#f00">WARNING: NOT READY FOR PRODUCTION USE YET. YOU HAVE BEEN WARNED.</span>
 
 Shemail tries to make sending HTML emails a little less painful.
 
 It was developed for use on "Purify: Awesome Bug & Issue Tracking":http://purifyapp.com
 
-h3. Background
+h2. Background
 
 Writing inline styles for HTML emails is dull and boring but unfortunately a necessary evil. Rather than do it by hand we thought it would be nicer to let our app do it for us.
 
-We originally tried to use "awesome_email":http://github.com/imedo/awesome_email but unfortunately it either didn't work or was suspiciously slow (we're talking a minute to send the email). 
+As well as writing your styles inline, Shemail will also fix the urls of images referenced in your css/html so that they are absolute urls.
 
 So we decided to write our own lightweight alternative. Enjoy.
 
-h3. Install
+h2. Install
 
 First install the dependencies:
 
@@ -24,7 +22,7 @@ Then install Shemail to your rails app:
   
 <pre><code>script/plugin install http://github.com/purify/shemail</code></pre>
 
-h3. Usage
+h2. Usage
 
 Simply add the <code>css</code> method to your deliver actions:
 
@@ -55,13 +53,63 @@ And our _welcome_email.text.html.erb_ looks like this:
 
 Then the resulting html that will be sent out will resemble the following:
 
-<pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
-<html><body style="background: #000"><p class="text" style="color: #f00;line-height:1.5;font-size: 14px">Hello World</p></body></html></code></pre>
+<pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body style="background: #000">
+    <p class="text" style="color: #f00;line-height:1.5;font-size: 14px">Hello World</p>
+  </body>
+</html></code></pre>
 
-h3. Useful Resources Regarding HTML Emails
+h2. Image URL Correcting
+
+If you have _default_url_options[:host]_ set in your mailer, then Shemail will do it's best to make the urls of images absolute.
+
+h4. In your mailer
+
+<pre><code>ActionMailer::Base.default_url_options[:host] = "example.com"</code></pre>
+
+h4. Example CSS
+
+<pre><code>p { background-image: url(../images/chunky-bacon.png) }</code></pre>
+
+h4. Example HTML View
+
+<pre><code><img src="/images/header.jpg">
+<p>Hello World</p></code></pre>
+
+h4. Example Output
+
+<pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  </head>
+  <body>
+    <img src="http://example.com/images/header.jpg">
+    <p style="background-image: url(http://example.com/images/chunky-bacon.png)">Hello World</p>
+  </body>
+</html></code></pre>
+
+
+h2. Bugs / Todo
+
+* Improve overall performance
+* Remove duplication of style attributes on elements
+
+<pre><code><a href="#" style="color: #000;color: #fff">test link</a></code></pre>
+
+should be:
+
+<pre><code><a href="#" style="color: #fff">test link</a></code></pre>
+
+h2. Useful Resources Regarding HTML Emails
 
 Below are a couple of links you may find useful regarding HTML emails:
 
 * "Email Design Guidelines":http://www.campaignmonitor.com/design-guidelines/
 * "Guide to CSS support in email clients":http://www.campaignmonitor.com/css/
 * "Free Email Marketing Guide":http://www.mailchimp.com/articles/email_marketing_guide/
+* "HTML email design and coding tips part II":http://www.creativeglo.co.uk/email-design/html-email-design-and-coding-tips-part-2/

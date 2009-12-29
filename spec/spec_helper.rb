@@ -1,4 +1,3 @@
-# coding: utf-8
 $: << File.dirname(__FILE__) + '/../lib'
  
 require 'rubygems'
@@ -8,7 +7,15 @@ require 'shemail'
 
 # Extract HTML Part
 def html_part(email)
-  email.parts.select{|part| part.content_type == 'text/html'}.first.body.to_s
+  email.parts.select{|part| part.content_type == 'text/html'}.first.body_port.to_s.strip
+end
+
+def css_rules(css)
+  @css_rules = css
+  
+  # Stubs
+  File.stub(:exist?).and_return(true)
+  File.stub(:open).and_return(StringIO.new(@css_rules))
 end
 
 # Debugging helper
