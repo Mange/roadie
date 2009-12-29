@@ -26,6 +26,38 @@ Then install Shemail to your rails app:
 
 h3. Usage
 
+Simply add the <code>css</code> method to your deliver actions:
+
+<pre><code>class Notifier < ActionMailer::Base
+  def welcome_email
+    css :email
+    
+    subject 'Welcome Aboard'
+    recipients 'someone@example.com'
+    from 'jimneath@googlemail.com'
+    sent_on Time.now
+  end
+end</code></pre>
+
+This will look for a css file called _email.css_ in your _public/stylesheets_ folder. The <code>css</code> method can take either a string or a symbol. You can also pass the css file name with or without the .css extension.
+
+Shemail will now write the styles from _email.css_ into html part of the welcome email (eg. welcome_email.text.html.erb). It won't touch the plain text part, neither will it do anything if you're only sending a single part email (eg. welcome_email.html.erb). You shouldn't be sending html emails without a plain text version anyway.
+
+Say that our _email.css_ file looks like the following:
+
+<pre><code>body { background: #000 }
+p { color: #f00; line-height: 1.5 }
+.text { font-size: 14px }</code></pre>
+
+And our _welcome_email.text.html.erb_ looks like this:
+
+<pre><code><p class="text">Hello World</p></code></pre>
+
+Then the resulting html that will be sent out will resemble the following:
+
+<pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html><body style="background: #000"><p class="text" style="color: #f00;line-height:1.5;font-size: 14px">Hello World</p></body></html></code></pre>
+
 h3. Useful Resources Regarding HTML Emails
 
 Below are a couple of links you may find useful regarding HTML emails:
