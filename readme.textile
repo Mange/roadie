@@ -1,6 +1,6 @@
 h2. Shemail
 
-WARNING: NOT READY FOR PRODUCTION USE YET. YOU HAVE BEEN WARNED.
+<span style="color:#f00">WARNING: NOT READY FOR PRODUCTION USE YET. YOU HAVE BEEN WARNED.</span>
 
 Shemail tries to make sending HTML emails a little less painful.
 
