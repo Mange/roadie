@@ -14,7 +14,7 @@ First install the dependencies:
   
 Then install MailStyle to your rails app:
   
-<pre><code>script/plugin install http://github.com/purify/mailstyle</code></pre>
+<pre><code>script/plugin install http://github.com/purify/mail_style</code></pre>
 
 h2. Usage
 
