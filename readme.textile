@@ -1,8 +1,8 @@
-h1. Shemail
+h1. MailStyle
 
-Shemail (Simple Html Email, or something) tries to make sending HTML emails a little less painful.
+MailStyle tries to make sending HTML emails a little less painful.
 
-For a more in depth introduction check out the "Blog Post":http://blog.purifyapp.com/2009/12/30/shemail-a-html-email-plugin-for-ruby-on-rails/
+For a more in depth introduction check out the "Blog Post":http://blog.purifyapp.com/2009/12/30/mailstyle-a-html-email-plugin-for-ruby-on-rails/
 
 It was developed for use on "Purify: Awesome Bug & Issue Tracking":http://purifyapp.com
 
@@ -12,9 +12,9 @@ First install the dependencies:
 
 <pre><code>sudo gem install nokogiri css_parser</code></pre>
   
-Then install Shemail to your rails app:
+Then install MailStyle to your rails app:
   
-<pre><code>script/plugin install http://github.com/purify/shemail</code></pre>
+<pre><code>script/plugin install http://github.com/purify/mailstyle</code></pre>
 
 h2. Usage
 
@@ -35,14 +35,14 @@ This will look for a css file called _email.css_ in your _public/stylesheets_ fo
 
 h2. Image URL Correcting
 
-If you have _default_url_options[:host]_ set in your mailer, then Shemail will do it's best to make the urls of images absolute.
+If you have _default_url_options[:host]_ set in your mailer, then MailStyle will do it's best to make the urls of images absolute.
 
 h4. In your mailer
 
 <pre><code>ActionMailer::Base.default_url_options[:host] = "example.com"</code></pre>
 h2. Troubleshooting / FAQ
 
-* Shemail does not touch single part emails. It will only render inline styles for html parts of emails (_eg. template_name.text.html.erb_)
+* MailStyle does not touch single part emails. It will only render inline styles for html parts of emails (_eg. template_name.text.html.erb_)
 
 h2. Bugs / Todo
 

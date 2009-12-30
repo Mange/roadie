@@ -130,10 +130,10 @@ describe 'Inline styles' do
         html_part(@email).should eql('<p class=3D"text">Hello World</p>=')
       end
       
-      it "should raise Shemail::CSSFileNotFound if css file does not exist" do
+      it "should raise MailStyle::CSSFileNotFound if css file does not exist" do
         lambda {
           TestMailer.deliver_test_multipart(:fake)
-        }.should raise_error(Shemail::CSSFileNotFound)
+        }.should raise_error(MailStyle::CSSFileNotFound)
       end
     end
     

@@ -1,1 +1,1 @@
-require 'shemail'
+require 'mail_style'
