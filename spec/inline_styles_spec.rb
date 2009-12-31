@@ -98,8 +98,8 @@ describe 'Inline styles' do
       before(:each) do
         css_rules <<-EOF
           body { background: #000 }
+          .text { color: #0f0; font-size: 14px }
           p { color: #f00; line-height: 1.5 }
-          .text { font-size: 14px }
         EOF
       
         # Generate email
@@ -132,7 +132,28 @@ describe 'Inline styles' do
       end
       
       it "should add both styles to paragraph" do
-        @html.should match(/<p style="color: #f00;line-height: 1.5;font-size: 14px">/)
+        @html.should match(/<p style="color: #0f0;font-size: 14px;line-height: 1.5">/)
+      end
+    end
+    
+    describe 'combining styles' do
+      it "should select the most specific style" do
+        css_rules <<-EOF
+          .text { color: #0f0; }
+          p { color: #f00; }
+        EOF
+        @email = TestMailer.deliver_test_multipart(:real)
+        @html = html_part(@email)
+        @html.should match(/<p style="color: #0f0">/)
+      end
+      it "should combine different properties for one element" do
+        css_rules <<-EOF
+          .text { font-size: 14px; }
+          p { color: #f00; }
+        EOF
+        @email = TestMailer.deliver_test_multipart(:real)
+        @html = html_part(@email)
+        @html.should match(/<p style="color: #f00;font-size: 14px">/)
       end
     end
     

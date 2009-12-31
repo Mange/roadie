@@ -30,21 +30,35 @@ module MailStyle
         html_document = create_html_document(html)
         html_document = absolutize_image_sources(html_document)
         
+        element_styles = {}
+
         # Write inline styles
         css_parser.each_selector do |selector, declaration, specificity|
           html_document.css(selector).each do |element|
-            # Styles
-            current_style = element['style'].to_s.split(';').sort
-            new_style = declaration.to_s.split(';').sort.map do |style|
-              style = update_image_urls(style)
+            declaration.to_s.split(';').each do |style|
+              attribute, value = style.split(':').map(&:strip)
+              
+              element_styles[element] ||= {}
+              element_styles[element][attribute] ||= {:specificity => 0, :value => ''}
+              
+              if element_styles[element][attribute][:specificity] <= specificity
+                element_styles[element][attribute] = {:specificity => specificity, :value => value}
+              end
             end
-            
-            # Concat styles
-            style = (current_style + new_style).compact.uniq.map(&:strip)
-            
-            # Set new styles
-            element['style'] = style.join(';')
           end
+        end
+        element_styles.each_pair do |element, attributes|
+          current_style = element['style'].to_s.split(';').sort
+          new_style = []
+          attributes.each_pair do |attribute,style|
+            new_style << "#{attribute}: #{update_image_urls(style[:value])}"
+          end
+
+          # Concat styles
+          style = (current_style + new_style).compact.uniq.map(&:strip).sort
+
+          # Set new styles
+          element['style'] = style.join(';')
         end
         
         # Strip all references to classes.
@@ -121,7 +135,7 @@ module MailStyle
       
       # Css Rules
       def css_rules
-        File.open(css_file).read
+        File.read(css_file)
       end
       
       # Find the css file

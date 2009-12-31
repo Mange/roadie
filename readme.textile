@@ -44,13 +44,6 @@ h4. In your mailer
 h2. Bugs / Todo
 
 * Improve overall performance
-* Remove duplication of style attributes on elements
-
-<pre><code><a href="#" style="color: #000;color: #fff">test link</a></code></pre>
-
-should be:
-
-<pre><code><a href="#" style="color: #fff">test link</a></code></pre>
 
 h2. License
 
