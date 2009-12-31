@@ -125,9 +125,8 @@ describe 'Inline styles' do
     
     describe 'css file' do
       it "should do nothing if no css file is set" do
-        # TODO: Improve this. Stupid 7bit encoding shit.
         @email = TestMailer.deliver_test_multipart(nil)
-        html_part(@email).should eql('<p class=3D"text">Hello World</p>=')
+        html_part(@email).should eql('<p class="text">Hello World</p>')
       end
       
       it "should raise MailStyle::CSSFileNotFound if css file does not exist" do
@@ -135,6 +134,18 @@ describe 'Inline styles' do
           TestMailer.deliver_test_multipart(:fake)
         }.should raise_error(MailStyle::CSSFileNotFound)
       end
+    end
+    
+    it 'should support inline styles without deliver' do
+      css_rules <<-EOF
+        body { background: #000 }
+        p { color: #f00; line-height: 1.5 }
+        .text { font-size: 14px }
+      EOF
+    
+      # Generate email
+      @email = TestMailer.create_test_multipart(:real)
+      html_part(@email).should match(/<body style="background: #000">/)
     end
     
     it "should have two parts" do

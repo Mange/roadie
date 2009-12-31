@@ -7,16 +7,16 @@ module MailStyle
     DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
     
     module InstanceMethods
-      def deliver_with_inline_styles!(mail = @mail)
-        write_inline_styles(mail) if @css.present?
-        deliver_without_inline_styles!(mail = @mail)
+      def create_mail_with_inline_styles
+        write_inline_styles if @css.present?
+        create_mail_without_inline_styles
       end
       
       protected
       
-      def write_inline_styles(mail)
+      def write_inline_styles
         # Parse only text/html parts
-        mail.parts.select{|p| p.content_type == 'text/html'}.each do |part|
+        @parts.select{|p| p.content_type == 'text/html'}.each do |part|
           part.body = parse_html_part(part)
         end
       end
@@ -135,7 +135,7 @@ module MailStyle
       receiver.send :include, InstanceMethods
       receiver.class_eval do
         adv_attr_accessor :css
-        alias_method_chain :deliver!, :inline_styles
+        alias_method_chain :create_mail, :inline_styles
       end
     end
   end

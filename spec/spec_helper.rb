@@ -7,7 +7,7 @@ require 'mail_style'
 
 # Extract HTML Part
 def html_part(email)
-  email.parts.select{|part| part.content_type == 'text/html'}.first.body_port.to_s.strip
+  email.parts.select{|part| part.content_type == 'text/html'}.first.body
 end
 
 def css_rules(css)
