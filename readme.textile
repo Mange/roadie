@@ -40,9 +40,6 @@ If you have _default_url_options[:host]_ set in your mailer, then MailStyle will
 h4. In your mailer
 
 <pre><code>ActionMailer::Base.default_url_options[:host] = "example.com"</code></pre>
-h2. Troubleshooting / FAQ
-
-* MailStyle does not touch single part emails. It will only render inline styles for html parts of emails (_eg. template_name.text.html.erb_)
 
 h2. Bugs / Todo
 
