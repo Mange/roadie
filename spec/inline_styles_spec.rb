@@ -19,7 +19,15 @@ class TestMailer < ActionMailer::Base
     part :content_type => 'text/plain', :body => 'Hello World'
   end
   
-  def test_singlepart(css_file = nil)
+  def test_singlepart_html(css_file = nil)
+    setup_email(css_file)
+    content_type 'text/html'
+    body '<p class="text">Hello World</p>'
+  end
+
+  def test_singlepart_plain(css_file = nil)
+    setup_email(css_file)
+    content_type 'text/plain'
     body '<p class="text">Hello World</p>'
   end
   
@@ -51,9 +59,14 @@ describe 'Inline styles' do
         .text { font-size: 14px }
       EOF
     end
+
+    it "should apply styles for text/html" do
+      @email = TestMailer.deliver_test_singlepart_html(:real)
+      @email.body.should match(/<body style="background: #000">/)
+    end
     
-    it "should do nothing" do
-      @email = TestMailer.deliver_test_singlepart
+    it "should do nothing for text/plain" do
+      @email = TestMailer.deliver_test_singlepart_plain(:real)
       @email.body.should eql('<p class="text">Hello World</p>')
     end
   end

@@ -17,13 +17,17 @@ module MailStyle
       def write_inline_styles
         # Parse only text/html parts
         @parts.select{|p| p.content_type == 'text/html'}.each do |part|
-          part.body = parse_html_part(part)
+          part.body = parse_html(part.body)
+        end
+        real_content_type, ctype_attrs = parse_content_type
+        if String === body && real_content_type == 'text/html'
+          self.body = parse_html(body)
         end
       end
-      
-      def parse_html_part(part)
+
+      def parse_html(html)
         # Parse original html
-        html_document = create_html_document(part.body)
+        html_document = create_html_document(html)
         html_document = absolutize_image_sources(html_document)
         
         # Write inline styles
