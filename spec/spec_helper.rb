@@ -2,7 +2,7 @@ $: << File.dirname(__FILE__) + '/../lib'
  
 require 'rubygems'
 require 'spec'
-require 'actionmailer'
+require 'action_mailer'
 require 'mail_style'
 
 # Extract HTML Part
