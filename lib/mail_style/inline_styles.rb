@@ -29,30 +29,35 @@ module MailStyle
         # Parse original html
         html_document = create_html_document(html)
         html_document = absolutize_image_sources(html_document)
-        
-        element_styles = {}
 
         # Write inline styles
+        element_styles = {}
+        
         css_parser.each_selector do |selector, declaration, specificity|
           html_document.css(selector).each do |element|
             declaration.to_s.split(';').each do |style|
+              # Split style in attribute and value
               attribute, value = style.split(':').map(&:strip)
               
+              # Set element style defaults
               element_styles[element] ||= {}
-              element_styles[element][attribute] ||= {:specificity => 0, :value => ''}
+              element_styles[element][attribute] ||= { :specificity => 0, :value => '' }
               
+              # Update attribute value if specificity is higher than previous values
               if element_styles[element][attribute][:specificity] <= specificity
-                element_styles[element][attribute] = {:specificity => specificity, :value => value}
+                element_styles[element][attribute] = { :specificity => specificity, :value => value }
               end
             end
           end
         end
+        
+        # Loop through element styles
         element_styles.each_pair do |element, attributes|
+          # Elements current styles
           current_style = element['style'].to_s.split(';').sort
-          new_style = []
-          attributes.each_pair do |attribute,style|
-            new_style << "#{attribute}: #{update_image_urls(style[:value])}"
-          end
+          
+          # Elements new styles
+          new_style = attributes.map{|attribute, style| "#{attribute}: #{update_image_urls(style[:value])}"}
 
           # Concat styles
           style = (current_style + new_style).compact.uniq.map(&:strip).sort
