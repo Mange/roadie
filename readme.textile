@@ -41,9 +41,16 @@ h4. In your mailer
 
 <pre><code>ActionMailer::Base.default_url_options[:host] = "example.com"</code></pre>
 
+h2. Features
+
+* Write CSS styles inline
+* Corrects image urls
+* SASS Support
+
 h2. Bugs / Todo
 
 * Improve overall performance
+* Add support for less
 * Allow users to swap between css_parser and csspool
 * Remove duplication of style attributes on elements
 
