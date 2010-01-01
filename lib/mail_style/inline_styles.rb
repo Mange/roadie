@@ -19,10 +19,10 @@ module MailStyle
         @parts.select{|p| p.content_type == 'text/html'}.each do |part|
           part.body = parse_html(part.body)
         end
+        
+        # Parse single part emails if the body is html
         real_content_type, ctype_attrs = parse_content_type
-        if String === body && real_content_type == 'text/html'
-          self.body = parse_html(body)
-        end
+        self.body = parse_html(body) if body.is_a?(String) && real_content_type == 'text/html'
       end
 
       def parse_html(html)
