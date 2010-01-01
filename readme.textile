@@ -52,13 +52,6 @@ h2. Bugs / Todo
 * Improve overall performance
 * Add support for less
 * Allow users to swap between css_parser and csspool
-* Remove duplication of style attributes on elements
-
-<pre><code><a href="#" style="color: #000;color: #fff">test link</a></code></pre>
-
-should be:
-
-<pre><code><a href="#" style="color: #fff">test link</a></code></pre>
 
 h2. Contributors
 

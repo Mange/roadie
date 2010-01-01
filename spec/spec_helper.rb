@@ -15,7 +15,7 @@ def css_rules(css)
   
   # Stubs
   File.stub(:exist?).and_return(true)
-  File.stub(:open).and_return(StringIO.new(@css_rules))
+  File.stub(:read).and_return(@css_rules)
 end
 
 # Debugging helper
