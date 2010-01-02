@@ -12,9 +12,17 @@ First install the dependencies:
 
 <pre><code>sudo gem install nokogiri css_parser</code></pre>
   
-Then install MailStyle to your rails app:
+Then install MailStyle to your rails app, either as a plugin:
   
 <pre><code>script/plugin install http://github.com/purify/mail_style</code></pre>
+
+Or you can install the gem:
+
+<pre><code>sudo gem install mail_style</code></pre>
+
+Then in your <code>environment.rb</code> file add:
+
+<pre><code>config.gem "mail_style"</code></pre>
 
 h2. Usage
 
@@ -57,6 +65,7 @@ h2. Contributors
 
 * "Jim Neath":http://jimneath.org
 * "Lars Klevans":http://tastybyte.blogspot.com/
+* "Jonas Grimfelt":http://github.com/grimen
 
 h2. License
 
