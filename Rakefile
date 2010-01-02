@@ -36,7 +36,7 @@ begin
     t.files = SUPPORT_FILES << %w(Rakefile) << Dir.glob(File.join(*%w[{lib,spec} ** *]).to_s)
     t.extra_rdoc_files = SUPPORT_FILES
 
-    t.add_dependency 'action_mailer', '>= 1.2.3'
+    t.add_dependency 'actionmailer', '>= 1.2.3'
     t.add_dependency 'nokogiri', '>= 1.0.0'
     t.add_dependency 'css_parser', '>= 1.0.0'
 
