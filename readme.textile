@@ -18,7 +18,12 @@ Then install MailStyle to your rails app, either as a plugin:
 
 Or you can install the gem:
 
-<pre><code>sudo gem install mail_style</code></pre>
+<pre><code># Install gemcutter if you haven't already
+sudo gem install gemcutter
+sudo gem tumble
+
+# Install MailStyle
+sudo gem install mail_style</code></pre>
 
 Then in your <code>environment.rb</code> file add:
 
