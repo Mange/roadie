@@ -66,8 +66,7 @@ module MailStyle
           element['style'] = style.join(';')
         end
         
-        # Strip all references to classes.
-        html_document.css('*').remove_class
+        # Return HTML
         html_document.to_html
       end
       

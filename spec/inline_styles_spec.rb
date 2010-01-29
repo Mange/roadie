@@ -127,12 +127,8 @@ describe 'Inline styles' do
         @html.should match(/<body style="background: #000">/)
       end
       
-      it "should remove classes from html" do
-        @html.should_not match(/<p.*class="text".*>/)
-      end
-      
       it "should add both styles to paragraph" do
-        @html.should match(/<p style="color: #0f0;font-size: 14px;line-height: 1.5">/)
+        @html.should match(/<p class="text" style="color: #0f0;font-size: 14px;line-height: 1.5">/)
       end
     end
     
@@ -144,8 +140,9 @@ describe 'Inline styles' do
         EOF
         @email = TestMailer.deliver_test_multipart(:real)
         @html = html_part(@email)
-        @html.should match(/<p style="color: #0f0">/)
+        @html.should match(/<p class="text" style="color: #0f0">/)
       end
+      
       it "should combine different properties for one element" do
         css_rules <<-EOF
           .text { font-size: 14px; }
@@ -153,7 +150,7 @@ describe 'Inline styles' do
         EOF
         @email = TestMailer.deliver_test_multipart(:real)
         @html = html_part(@email)
-        @html.should match(/<p style="color: #f00;font-size: 14px">/)
+        @html.should match(/<p class="text" style="color: #f00;font-size: 14px">/)
       end
     end
     
