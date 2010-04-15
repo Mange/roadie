@@ -15,7 +15,7 @@ class TestMailer < ActionMailer::Base
   def test_multipart(css_file = nil)
     setup_email(css_file)
     content_type 'multipart/alternative'
-    part :content_type => 'text/html', :body => '<p class="text">Hello World</p>'
+    part :content_type => 'text/html', :body => '<p class="text">Hello <a href="htt://example.com/">World</a></p>'
     part :content_type => 'text/plain', :body => 'Hello World'
   end
   
@@ -97,6 +97,13 @@ shared_examples_for "inline styles" do
   
   it "should add both styles to paragraph" do
     should match(/<p class="text" style="color: #0f0;font-size: 14px;line-height: 1.5">/)
+  end
+  
+  it "should not crash on :pseudo-classes" do
+    css_rules("a:link { color: #f00 }")
+    expect do
+      subject
+    end.to_not raise_error(StandardError)
   end
 end
 

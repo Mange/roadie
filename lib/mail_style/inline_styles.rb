@@ -14,6 +14,7 @@ module MailStyle
       
       protected
       
+      # Flatten nested parts
       def collect_parts(parts)
         nested = !parts.empty? ? parts.map { |p| collect_parts(p.parts) }.flatten : []
         [parts, nested].flatten
@@ -41,6 +42,7 @@ module MailStyle
         element_styles = {}
         
         css_parser.each_selector do |selector, declaration, specificity|
+          next if selector.include?(':')
           html_document.css(selector).each do |element|
             declaration.to_s.split(';').each do |style|
               # Split style in attribute and value
