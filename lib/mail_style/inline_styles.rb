@@ -118,11 +118,8 @@ module MailStyle
           # Do not inline print media styles
           next if style['media'] == 'print'
           
-          # <style type="immutable"> are kept in the document
-          if style['type'] == 'immutable'
-            style['type'] = 'text/css'
-            next
-          end
+          # <style data-immutable="true"> are kept in the document
+          next if style['data-immutable'] == 'true'
           
           @inline_rules << style.content
           style.remove

@@ -245,4 +245,17 @@ describe 'Inline styles' do
       should match(/<style media="print"/)
     end
   end
+  
+  describe "inline immutable styles" do
+    let(:email) { TestMailer.deliver_test_inline_rules('<style data-immutable="true"> .text { color: #f00; } </style>') }
+    subject     { html_part(email) }
+    
+    it "should not change element styles" do
+      should match(/<p class="text">/)
+    end
+    
+    it "should not remove the styles from the document" do
+      should match(/<style data-immutable="true"/)
+    end
+  end
 end
