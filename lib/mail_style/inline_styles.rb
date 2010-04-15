@@ -8,15 +8,22 @@ module MailStyle
     
     module InstanceMethods
       def create_mail_with_inline_styles
-        write_inline_styles if @css.present?
+        write_inline_styles
         create_mail_without_inline_styles
       end
       
       protected
       
+      def collect_parts(parts)
+        nested = !parts.empty? ? parts.map { |p| collect_parts(p.parts) }.flatten : []
+        [parts, nested].flatten
+      end
+      
       def write_inline_styles
+        parts = collect_parts(@parts)
+        
         # Parse only text/html parts
-        @parts.select{|p| p.content_type == 'text/html'}.each do |part|
+        parts.select{ |p| p.content_type == 'text/html' }.each do |part|
           part.body = parse_html(part.body)
         end
         
@@ -103,6 +110,22 @@ module MailStyle
         meta['content'] = 'text/html; charset=utf-8'
         head.add_child(meta)
         
+        # Grab all the styles that are inside <style> elements already in the document
+        @inline_rules = ""
+        document.css("style").each do |style|
+          # Do not inline print media styles
+          next if style['media'] == 'print'
+          
+          # <style type="immutable"> are kept in the document
+          if style['type'] == 'immutable'
+            style['type'] = 'text/css'
+            next
+          end
+          
+          @inline_rules << style.content
+          style.remove
+        end
+        
         # Return document
         document
       end
@@ -133,7 +156,8 @@ module MailStyle
       # Css Parser
       def css_parser
         parser = CssParser::Parser.new
-        parser.add_block!(css_rules)
+        parser.add_block!(css_rules) if @css.present?
+        parser.add_block!(@inline_rules)
         parser
       end
       

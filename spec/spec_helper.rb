@@ -5,9 +5,14 @@ require 'spec'
 require 'action_mailer'
 require 'mail_style'
 
+def flatten_parts(parts)
+  nested = !parts.empty? ? parts.map { |p| flatten_parts(p.parts) }.flatten : []
+  [parts, nested].flatten
+end
+
 # Extract HTML Part
 def html_part(email)
-  email.parts.select{|part| part.content_type == 'text/html'}.first.body
+  flatten_parts(email.parts).select{|part| part.content_type == 'text/html'}.first.body
 end
 
 def css_rules(css)
