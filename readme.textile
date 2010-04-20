@@ -46,6 +46,14 @@ end</code></pre>
 
 This will look for a css file called _email.css_ in your _public/stylesheets_ folder. The <code>css</code> method can take either a string or a symbol. You can also pass the css file name with or without the .css extension.
 
+h3. Styles in the email's HEAD
+
+By default, &lt;style&gt; elements in the email document's &lt;head&gt; are processed and removed from the &lt;head&gt;.
+
+Style elements with <code>media="print"</code> are ignored.
+
+You can set a special <code>data-immutable="true"</code> attribute on &lt;style&gt; tags you do not want to be processed and removed from the document's &lt;head&gt;.
+
 h2. Image URL Correcting
 
 If you have _default_url_options[:host]_ set in your mailer, then MailStyle will do it's best to make the urls of images absolute.
