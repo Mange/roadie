@@ -11,9 +11,9 @@ h2. Install
 First install the dependencies:
 
 <pre><code>sudo gem install nokogiri css_parser</code></pre>
-  
+
 Then install MailStyle to your rails app, either as a plugin:
-  
+
 <pre><code>script/plugin install http://github.com/purify/mail_style</code></pre>
 
 Or you can install the gem:
@@ -36,8 +36,17 @@ Simply add the <code>css</code> method to your deliver actions:
 <pre><code>class Notifier < ActionMailer::Base
   def welcome_email
     css :email
-    
+
     subject 'Welcome Aboard'
+    recipients 'someone@example.com'
+    from 'jimneath@googlemail.com'
+    sent_on Time.now
+  end
+
+  def newsletter_email
+    css [:email,:newsletter]
+
+    subject 'Newsletter'
     recipients 'someone@example.com'
     from 'jimneath@googlemail.com'
     sent_on Time.now
@@ -93,3 +102,4 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
