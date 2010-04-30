@@ -139,18 +139,21 @@ module MailStyle
         style
       end
 
-      # Absolutize URL (Absolutize? Seriously?)
+       # Absolutize URL (Absolutize? Seriously?)
       def absolutize_url(url, base_path = '')
         original_url = url
 
         unless original_url[URI::regexp(%w[http https])]
-          host = default_url_options[:host]
           protocol = default_url_options[:protocol]
           protocol = "http://" if protocol.blank?
           protocol+= "://" unless protocol.include?("://")
 
-          url = URI.join(host, base_path, original_url).to_s
-          url = protocol+url unless url.include?(protocol)
+          host = default_url_options[:host]
+
+          [host,protocol].each{|r| original_url.gsub!(r,"") }
+          host = protocol+host unless host[URI::regexp(%w[http https])]
+
+          url = URI.join host, base_path, original_url
         end
 
         url.to_s
