@@ -144,12 +144,17 @@ module MailStyle
         original_url = url
 
         unless original_url[URI::regexp(%w[http https])]
-          # Calculate new path
           host = default_url_options[:host]
-          url = URI.join("http://#{host}/", File.join(base_path, original_url)).to_s
+          protocol = default_url_options[:protocol]
+          protocol = "http://" if protocol.blank?
+          protocol+= "://" unless protocol.include?("://")
+
+          url = URI.join(host, base_path, original_url).to_s
+          url = protocol+url unless url.include?(protocol)
         end
 
-        url
+        url.to_s
+
       end
 
       # Css Parser
