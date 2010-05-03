@@ -88,6 +88,9 @@ h2. Contributors
 * "Jim Neath":http://jimneath.org
 * "Lars Klevans":http://tastybyte.blogspot.com/
 * "Jonas Grimfelt":http://github.com/grimen
+* "Ben Johnson":http://www.binarylogic.com
+* "Istvan Hoka":http://istvanhoka.com/
+* "Voraz":http://blog.voraz.com.br
 
 h2. License
 
