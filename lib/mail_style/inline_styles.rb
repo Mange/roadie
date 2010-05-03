@@ -16,13 +16,22 @@ module MailStyle
       
       def write_inline_styles
         # Parse only text/html parts
-        @parts.select{|p| p.content_type == 'text/html'}.each do |part|
+        parsable_parts(@parts).each do |part|
           part.body = parse_html(part.body)
         end
         
         # Parse single part emails if the body is html
         real_content_type, ctype_attrs = parse_content_type
         self.body = parse_html(body) if body.is_a?(String) && real_content_type == 'text/html'
+      end
+      
+      def parsable_parts(parts)
+        selected = []
+        parts.each do |p|
+          selected << p if p.content_type == 'text/html'
+          selected += parsable_parts(p.parts)
+        end
+        selected
       end
 
       def parse_html(html)
