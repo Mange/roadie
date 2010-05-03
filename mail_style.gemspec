@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{mail_style}
-  s.version = "0.1.2"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jim Neath"]
-  s.date = %q{2010-01-06}
+  s.date = %q{2010-05-03}
   s.description = %q{Making HTML emails a little less painful. Writes css inline and corrects image urls.}
   s.email = %q{jimneath@googlemail.com}
   s.extra_rdoc_files = [
@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/purify/mail_style}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.5}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Making HTML emails a little less painful. Writes css inline and corrects image urls.}
   s.test_files = [
     "spec/inline_styles_spec.rb",
