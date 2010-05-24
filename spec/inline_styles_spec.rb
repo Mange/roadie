@@ -134,7 +134,7 @@ describe 'Inline styles' do
         # CSS rules
         css_rules <<-EOF
           p#image { background: url(../images/test-image.png) }
-          p#image2 { background: url("../mages/test_image.png") }
+          p#image2 { background: url("../images/test-image.png") }
         EOF
       
         # Generate email
@@ -146,13 +146,13 @@ describe 'Inline styles' do
         @html.should match(/<p.*style="background: url\(http:\/\/example\.com\/images\/test\-image\.png\)">/)
       end
       
+      it "should not be greedy with the image url match" do
+        @html.should match(/<p id="image2" style='background: url\("http:\/\/example\.com\/images\/test\-image\.png"\)'>/)
+      end
+      
       it "should make image sources absolute" do 
         # Note: Nokogiri loses the closing slash from the <img> tag for some reason.
         @html.should match(/<img src="http:\/\/example\.com\/images\/test\.jpg\">/)
-      end
-      
-      it "should not be greedy with the image url match" do
-        @html.should match(/<p.*style="background: url\(http:\/\/example\.com\/images\/test\-image\.png\)">/)
       end
     end
     
