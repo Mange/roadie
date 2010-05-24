@@ -50,7 +50,7 @@ class TestMailer < ActionMailer::Base
   def test_image_urls(css_file = nil)
     setup_email(css_file)
     content_type 'multipart/alternative'
-    part :content_type => 'text/html', :body => '<p id="image">Hello World</p><img src="/images/test.jpg" />'
+    part :content_type => 'text/html', :body => '<p id="image">Hello World</p><p id="image2">Goodbye World</p><img src="/images/test.jpg" />'
     part :content_type => 'text/plain', :body => 'Hello World'
   end
   
@@ -133,7 +133,8 @@ describe 'Inline styles' do
       before(:each) do
         # CSS rules
         css_rules <<-EOF
-          p#image { background: url(../images/test-image.png)}
+          p#image { background: url(../images/test-image.png) }
+          p#image2 { background: url("../mages/test_image.png") }
         EOF
       
         # Generate email
@@ -148,6 +149,10 @@ describe 'Inline styles' do
       it "should make image sources absolute" do 
         # Note: Nokogiri loses the closing slash from the <img> tag for some reason.
         @html.should match(/<img src="http:\/\/example\.com\/images\/test\.jpg\">/)
+      end
+      
+      it "should not be greedy with the image url match" do
+        @html.should match(/<p.*style="background: url\(http:\/\/example\.com\/images\/test\-image\.png\)">/)
       end
     end
     
