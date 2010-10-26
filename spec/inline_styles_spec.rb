@@ -110,6 +110,8 @@ end
 
 describe 'Inline styles' do
   describe 'singlepart' do
+    before(:each) { pending }
+
     before(:each) do
       css_rules <<-EOF
         body { background: #000 }
@@ -130,6 +132,8 @@ describe 'Inline styles' do
   end
 
   describe 'multipart' do
+    before(:each) { pending }
+
     describe 'image urls' do
       before(:each) do
         # CSS rules
@@ -221,12 +225,16 @@ describe 'Inline styles' do
   end
 
   describe "multipart mixed" do
+    before(:each) { pending }
+
     let(:email) { TestMailer.deliver_test_nested_multipart_mixed(:real) }
     subject     { html_part(email) }
     it_should_behave_like("inline styles")
   end
 
   describe "inline rules" do
+    before(:each) { pending }
+
     let(:email) { TestMailer.deliver_test_inline_rules("<style> .text { color: #f00; line-height: 1.5 } </style>") }
     subject     { html_part(email) }
 
@@ -240,6 +248,8 @@ describe 'Inline styles' do
   end
 
   describe "inline rules for print media" do
+    before(:each) { pending }
+
     let(:email) { TestMailer.deliver_test_inline_rules('<style media="print"> .text { color: #f00; } </style>') }
     subject     { html_part(email) }
 
@@ -253,6 +263,8 @@ describe 'Inline styles' do
   end
 
   describe "inline immutable styles" do
+    before(:each) { pending }
+
     let(:email) { TestMailer.deliver_test_inline_rules('<style data-immutable="true"> .text { color: #f00; } </style>') }
     subject     { html_part(email) }
 
