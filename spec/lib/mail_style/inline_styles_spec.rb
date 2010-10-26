@@ -11,7 +11,7 @@ class TestMailer < ActionMailer::Base
 
   def multipart(css_file = nil)
     mail(:subject => "Multipart email") do |format|
-      format.html { render :text => '<p class="text">Hello <a href="htt://example.com/">World</a></p>' }
+      format.html { render :text => '<p class="text">Hello <a href="http://example.com/">World</a></p>' }
       format.text { render :text => 'Hello World' }
     end
   end
@@ -62,20 +62,18 @@ TestMailer.configure do |config|
 end
 
 shared_examples_for "inline styles" do
-  before(:each) do
-    css_rules <<-EOF
-      body { background: #000 }
-      .text { color: #0f0; font-size: 14px }
-      p { color: #f00; line-height: 1.5 }
-    EOF
-  end
+  use_css 'simple', <<-CSS
+    body { background: #000 }
+    p { color: #f00; line-height: 1.5 }
+    .text { font-size: 14px }
+  CSS
 
   it "should add the correct xml namespace" do
-    should match(/<html xmlns="http:\/\/www\.w3\.org\/1999\/xhtml">/)
+    should include('<html xmlns="http://www.w3.org/1999/xhtml')
   end
 
   it "should write the xhtml 1.0 doctype" do
-    should match(/<!DOCTYPE html PUBLIC "-\/\/W3C\/\/DTD XHTML 1\.0 Transitional\/\/EN" "http:\/\/www.w3.org\/TR\/xhtml1\/DTD\/xhtml1-transitional\.dtd">/mi)
+    should include('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">')
   end
 
   it "should write utf-8 content type meta tag" do
@@ -86,19 +84,12 @@ shared_examples_for "inline styles" do
     should match(/<html.*>.*<body.*>.*<\/body>.*<\/html>/m)
   end
 
-  it "should add style to body" do
+  it "should add styles from selectors in css ruleset" do
     should match(/<body style="background: #000">/)
   end
 
-  it "should add both styles to paragraph" do
-    should match(/<p class="text" style="color: #0f0;font-size: 14px;line-height: 1.5">/)
-  end
-
-  it "should not crash on :pseudo-classes" do
-    css_rules("a:link { color: #f00 }")
-    expect do
-      subject
-    end.to_not raise_error(StandardError)
+  it "should combine multiple selectors" do
+    should match(/<p class="text" style="color: #f00;font-size: 14px;line-height: 1.5">/)
   end
 end
 
@@ -111,6 +102,7 @@ describe MailStyle::InlineStyles do
     body { background: #000 }
     p { color: #f00; line-height: 1.5 }
     .text { font-size: 14px }
+    a:link { color: #f00 }
   CSS
 
   use_css 'image', <<-EOF
@@ -143,6 +135,11 @@ describe MailStyle::InlineStyles do
       email.should have(2).parts
     end
 
+    describe 'rendering inline styles' do
+      subject { html_body }
+      it_should_behave_like("inline styles")
+    end
+
     describe 'image urls' do
       let(:email) { TestMailer.image_urls }
 
@@ -154,13 +151,6 @@ describe MailStyle::InlineStyles do
       it "should make image sources absolute" do
         html_body.should include('src="http://example.com/images/test.jpg"')
       end
-    end
-
-    describe 'rendering inline styles' do
-      before(:each) { pending }
-      let(:email) { TestMailer.deliver_test_multipart(:real) }
-      subject     { html_part(email) }
-      it_should_behave_like("inline styles")
     end
 
     describe 'combining styles' do
