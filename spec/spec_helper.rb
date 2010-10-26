@@ -15,31 +15,16 @@ require 'rspec'
 require 'action_mailer'
 require 'mail_style'
 
-def flatten_parts(parts)
-  nested = !parts.empty? ? parts.map { |p| flatten_parts(p.parts) }.flatten : []
-  [parts, nested].flatten
-end
-
-# Extract HTML Part
-def html_part(email)
-  flatten_parts(email.parts).select{|part| part.content_type == 'text/html'}.first.body
-end
-
-def css_rules(css)
-  @css_rules = css
-  
-  # Stubs
-  File.stub(:exist?).and_return(true)
-  File.stub(:read).and_return(@css_rules)
-end
-
-# Debugging helper
-module Kernel
-  if ENV.keys.find {|env_var| env_var.match(/^TM_/)}
-    def rputs(*args)
-      puts( *["<pre>", args.collect {|a| CGI.escapeHTML(a.to_s)}, "</pre>"])
+module SpecHelpers
+  module StylingMacros
+    def use_css(rules)
+      before(:each) do
+        email.stub!(:css_rules => rules)
+      end
     end
-  else
-    alias_method :rputs, :puts
   end
+end
+
+RSpec.configure do |config|
+  config.extend SpecHelpers::StylingMacros
 end

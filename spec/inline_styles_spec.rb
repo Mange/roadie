@@ -103,25 +103,31 @@ shared_examples_for "inline styles" do
 end
 
 describe 'Inline styles' do
+  let(:text_body) { email.parts.select { |part| part.mime_type == 'text/plain' }.body.to_s }
+  let(:html_body) { email.parts.select { |part| part.mime_type == 'text/html' }.body.to_s }
+  let(:body) { email.body.to_s }
+
   describe 'singlepart' do
-    before(:each) { pending }
+    use_css <<-CSS
+      body { background: #000 }
+      p { color: #f00; line-height: 1.5 }
+      .text { font-size: 14px }
+    CSS
 
-    before(:each) do
-      css_rules <<-EOF
-        body { background: #000 }
-        p { color: #f00; line-height: 1.5 }
-        .text { font-size: 14px }
-      EOF
+    describe "text/html" do
+      let(:email) { TestMailer.singlepart_html }
+
+      it "should have styles applied" do
+        body.should match(/<body style="background: #000">/)
+      end
     end
 
-    it "should apply styles for text/html" do
-      @email = TestMailer.deliver_test_singlepart_html(:real)
-      @email.body.should match(/<body style="background: #000">/)
-    end
+    describe "text/plain" do
+      let(:email) { TestMailer.singlepart_plain }
 
-    it "should do nothing for text/plain" do
-      @email = TestMailer.deliver_test_singlepart_plain(:real)
-      @email.body.should eql('<p class="text">Hello World</p>')
+      it "should not be changed" do
+        body.should eql('<p class="text">Hello World</p>')
+      end
     end
   end
 
