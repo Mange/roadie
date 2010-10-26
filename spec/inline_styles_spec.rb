@@ -2,11 +2,8 @@
 require 'spec_helper'
 
 # Set ActionMailer stuff
-ActionMailer::Base.template_root = '.'
-ActionMailer::Base.delivery_method = :test
-ActionMailer::Base.perform_deliveries = true
+ActionMailer::Base.prepend_view_path '.'
 ActionMailer::Base.deliveries = []
-ActionMailer::Base.default_url_options[:host] = "example.com"
 
 # Test Mailer
 class TestMailer < ActionMailer::Base
@@ -62,6 +59,12 @@ class TestMailer < ActionMailer::Base
     from 'jimneath@googlemail.com'
     sent_on Time.now
   end
+end
+
+TestMailer.configure do |config|
+  config.default_url_options = {:host => "example.com"}
+  config.perform_deliveries = true
+  config.delivery_method = :test
 end
 
 shared_examples_for "inline styles" do
