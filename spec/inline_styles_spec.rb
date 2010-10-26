@@ -7,15 +7,19 @@ ActionMailer::Base.deliveries = []
 
 # Test Mailer
 class TestMailer < ActionMailer::Base
-  def test_multipart(css_file = nil)
-    setup_email(css_file)
-    content_type 'multipart/alternative'
-    part :content_type => 'text/html', :body => '<p class="text">Hello <a href="htt://example.com/">World</a></p>'
-    part :content_type => 'text/plain', :body => 'Hello World'
+  default :from => "john@example.com", :to => "doe@example.com"
+
+  def multipart(css_file = nil)
+    mail(:subject => "Multipart email") do |format|
+      format.html { render :text => '<p class="text">Hello <a href="htt://example.com/">World</a></p>' }
+      format.text { render :text => 'Hello World' }
+    end
   end
 
-  def test_nested_multipart_mixed(css_file = nil)
-    setup_email(css_file)
+  # Not sure how to implement this one.
+  # TODO: Either remove or implement
+  def nested_multipart_mixed(css_file = nil)
+    raise "Nested multipart mixed is not implemented"
     content_type "multipart/mixed"
     part :content_type => "multipart/alternative", :content_disposition => "inline" do |p|
       p.part :content_type => 'text/html', :body => '<p class="text">Hello World</p>'
@@ -23,41 +27,31 @@ class TestMailer < ActionMailer::Base
     end
   end
 
-  def test_inline_rules(rules)
-    setup_email(nil)
-    content_type 'multipart/alternative'
-    part :content_type => 'text/html', :body => "#{rules}<p class=\"text\">Hello World</p>"
-    part :content_type => 'text/plain', :body => 'Hello World'
+  def inline_rules(rules)
+    mail(:subject => "Inline rules email") do |format|
+      format.html { render :text => %(#{rules}<p class="text">Hello World</p>)}
+      format.text { render :text => 'Hello World' }
+    end
   end
 
-  def test_singlepart_html(css_file = nil)
-    setup_email(css_file)
-    content_type 'text/html'
-    body '<p class="text">Hello World</p>'
+  def singlepart_html(css_file = nil)
+    mail(:subject => "HTML email") do |format|
+      format.html { render :text => '<p class="text">Hello World</p>' }
+    end
   end
 
-  def test_singlepart_plain(css_file = nil)
-    setup_email(css_file)
-    content_type 'text/plain'
-    body '<p class="text">Hello World</p>'
+  def singlepart_plain(css_file = nil)
+    mail(:subject => "Text email") do |format|
+      # NOTE: Rendering html in plain text
+      format.text { render :text => '<p class="text">Hello World</p>' }
+    end
   end
 
-  def test_image_urls(css_file = nil)
-    setup_email(css_file)
-    content_type 'multipart/alternative'
-    part :content_type => 'text/html', :body => '<p id="image">Hello World</p><p id="image2">Goodbye World</p><img src="/images/test.jpg" />'
-    part :content_type => 'text/plain', :body => 'Hello World'
-  end
-
-  protected
-
-  def setup_email(css_file = nil)
-    css css_file unless css_file.nil?
-
-    subject 'Test Multipart Email'
-    recipients 'jimneath@googlemail.com'
-    from 'jimneath@googlemail.com'
-    sent_on Time.now
+  def image_urls(css_file = nil)
+    mail(:subject => "Image URLs email") do |format|
+      format.html { render :text => '<p id="image">Hello World</p><p id="image2">Goodbye World</p><img src="/images/test.jpg" />' }
+      format.text { render :text => 'Hello World' }
+    end
   end
 end
 
