@@ -48,7 +48,7 @@ class TestMailer < ActionMailer::Base
   end
 
   def image_urls(css_file = nil)
-    mail(:subject => "Image URLs email") do |format|
+    mail(:subject => "Image URLs email", :css => :image) do |format|
       format.html { render :text => '<p id="image">Hello World</p><p id="image2">Goodbye World</p><img src="/images/test.jpg" />' }
       format.text { render :text => 'Hello World' }
     end
@@ -103,8 +103,8 @@ shared_examples_for "inline styles" do
 end
 
 describe MailStyle::InlineStyles do
-  let(:text_body) { email.parts.select { |part| part.mime_type == 'text/plain' }.body.to_s }
-  let(:html_body) { email.parts.select { |part| part.mime_type == 'text/html' }.body.to_s }
+  let(:text_body) { email.parts.find { |part| part.mime_type == 'text/plain' }.body.to_s }
+  let(:html_body) { email.parts.find { |part| part.mime_type == 'text/html' }.body.to_s }
   let(:body) { email.body.to_s }
 
   use_css 'simple', <<-CSS
@@ -112,6 +112,11 @@ describe MailStyle::InlineStyles do
     p { color: #f00; line-height: 1.5 }
     .text { font-size: 14px }
   CSS
+
+  use_css 'image', <<-EOF
+    p#image { background: url(../images/test-image.png) }
+    p#image2 { background: url("../images/test-image2.png") }
+  EOF
 
   describe 'singlepart' do
     describe "text/html" do
@@ -132,42 +137,28 @@ describe MailStyle::InlineStyles do
   end
 
   describe 'multipart' do
-    before(:each) { pending }
-
     describe 'image urls' do
-      before(:each) do
-        # CSS rules
-        css_rules <<-EOF
-          p#image { background: url(../images/test-image.png) }
-          p#image2 { background: url("../images/test-image.png") }
-        EOF
-
-        # Generate email
-        @email = TestMailer.deliver_test_image_urls(:real)
-        @html = html_part(@email)
-      end
+      let(:email) { TestMailer.image_urls }
 
       it "should make the css urls absolute" do
-        @html.should match(/<p.*style="background: url\(http:\/\/example\.com\/images\/test\-image\.png\)">/)
-      end
-
-      it "should not be greedy with the image url match" do
-        @html.should match(/<p id="image2" style='background: url\("http:\/\/example\.com\/images\/test\-image\.png"\)'>/)
+        html_body.should include('background: url(http://example.com/images/test-image.png)')
+        html_body.should include('background: url("http://example.com/images/test-image2.png")')
       end
 
       it "should make image sources absolute" do
-        # Note: Nokogiri loses the closing slash from the <img> tag for some reason.
-        @html.should match(/<img src="http:\/\/example\.com\/images\/test\.jpg\">/)
+        html_body.should include('src="http://example.com/images/test.jpg"')
       end
     end
 
     describe 'rendering inline styles' do
+      before(:each) { pending }
       let(:email) { TestMailer.deliver_test_multipart(:real) }
       subject     { html_part(email) }
       it_should_behave_like("inline styles")
     end
 
     describe 'combining styles' do
+      before(:each) { pending }
       it "should select the most specific style" do
         css_rules <<-EOF
           .text { color: #0f0; }
@@ -190,6 +181,7 @@ describe MailStyle::InlineStyles do
     end
 
     describe 'css file' do
+      before(:each) { pending }
       it "should not change the styles nothing if no css file is set" do
         css_rules <<-EOF
           .text { color: #0f0; }
@@ -207,6 +199,7 @@ describe MailStyle::InlineStyles do
     end
 
     it 'should support inline styles without deliver' do
+      pending
       css_rules <<-EOF
         body { background: #000 }
         p { color: #f00; line-height: 1.5 }
@@ -219,6 +212,7 @@ describe MailStyle::InlineStyles do
     end
 
     it "should have two parts" do
+      pending
       @email = TestMailer.deliver_test_multipart
       @email.parts.length.should eql(2)
     end

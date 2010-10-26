@@ -38,15 +38,13 @@ module MailStyle
       end
 
       def transpose_styling(html)
-        # Parse original html
         html_document = create_html_document(html)
-        html_document = absolutize_image_sources(html_document)
+        update_image_urls(html_document)
 
-        # Write inline styles
         element_styles = {}
 
         css_parser.each_selector do |selector, declaration, specificity|
-          next if selector.include?(':')
+          next if selector.include?(':') # Skip psuedo-classes
           html_document.css(selector).each do |element|
             declaration.to_s.split(';').each do |style|
               # Split style in attribute and value
@@ -64,32 +62,14 @@ module MailStyle
           end
         end
 
-        # Loop through element styles
         element_styles.each_pair do |element, attributes|
-          # Elements current styles
           current_style = element['style'].to_s.split(';').sort
-
-          # Elements new styles
-          new_style = attributes.map{|attribute, style| "#{attribute}: #{update_image_urls(style[:value])}"}
-
-          # Concat styles
+          new_style = attributes.map { |attribute, style| [attribute, update_css_urls(style[:value])].join(': ') }
           style = (current_style + new_style).compact.uniq.map(&:strip).sort
-
-          # Set new styles
           element['style'] = style.join(';')
         end
 
-        # Return HTML
         html_document.to_html
-      end
-
-      def absolutize_image_sources(document)
-        document.css('img').each do |img|
-          src = img['src']
-          img['src'] = src.gsub(src, absolutize_url(src))
-        end
-
-        document
       end
 
       # Create Nokogiri html document from part contents and add/amend certain elements.
@@ -133,8 +113,7 @@ module MailStyle
         document
       end
 
-      # Update image urls
-      def update_image_urls(style)
+      def update_css_urls(style)
         if config.default_url_options and config.default_url_options[:host].present?
           # Replace urls in stylesheets
           style.gsub!(/url\((['"]?)(.*?)\1\)/i) { "url(#{$1}#{make_absolute_url($2, 'stylesheets')}#{$1})" }
@@ -142,15 +121,21 @@ module MailStyle
         style
       end
 
+      def update_image_urls(document)
+        document.css('img').each do |img|
+          img['src'] = make_absolute_url(img['src'])
+        end
+      end
+
       def make_absolute_url(url, base_path = '')
         original_url = url
 
         unless original_url[URI::regexp(%w[http https])]
-          protocol = default_url_options[:protocol]
+          protocol = config.default_url_options[:protocol]
           protocol = "http://" if protocol.blank?
           protocol+= "://" unless protocol.include?("://")
 
-          host = default_url_options[:host]
+          host = config.default_url_options[:host]
 
           [host,protocol].each{|r| original_url.gsub!(r,"") }
           host = protocol+host unless host[URI::regexp(%w[http https])]
@@ -163,7 +148,7 @@ module MailStyle
       end
 
       def css_targets
-        Array(@css_targets || self.class.default[:css] || []).map { |target| target.to_s }
+        Array(@inline_style_css_targets || self.class.default[:css] || []).map { |target| target.to_s }
       end
 
       def css_parser
