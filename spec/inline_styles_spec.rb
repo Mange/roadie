@@ -1,8 +1,6 @@
 # coding: utf-8
 require 'spec_helper'
 
-RAILS_ROOT = File.join(File.dirname(__FILE__), '../../../../')
-
 # Set ActionMailer stuff
 ActionMailer::Base.template_root = '.'
 ActionMailer::Base.delivery_method = :test
