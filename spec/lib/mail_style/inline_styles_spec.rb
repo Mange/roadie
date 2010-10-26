@@ -55,10 +55,9 @@ class TestMailer < ActionMailer::Base
   end
 end
 
-TestMailer.configure do |config|
+ActionMailer::Base.configure do |config|
+  config.perform_deliveries = false
   config.default_url_options = {:host => "example.com"}
-  config.perform_deliveries = true
-  config.delivery_method = :test
 end
 
 shared_examples_for "inline styles" do
@@ -200,5 +199,43 @@ describe MailStyle::InlineStyles do
     it "should not remove the styles from the document" do
       should match(/<style data-immutable="true"/)
     end
+  end
+end
+
+describe MailStyle::InlineStyles, "loading css files" do
+  class CssLoadingMailer < ActionMailer::Base
+    default :css => :default_value
+    def use_default
+      mail &with_empty_html_response
+    end
+
+    def override(target)
+      mail :css => target, &with_empty_html_response
+    end
+
+    protected
+      def with_empty_html_response
+        Proc.new { |format| format.html { render :text => '<p></p>' } }
+      end
+  end
+
+  it "should load the css specified in the default mailer settings" do
+    MailStyle.should_receive(:load_css).with(Rails.root, ['default_value']).and_return('')
+    CssLoadingMailer.use_default
+  end
+
+  it "should load the css specified in the specific mailer action instead of the default choice" do
+    MailStyle.should_receive(:load_css).with(Rails.root, ['specific']).and_return('')
+    CssLoadingMailer.override(:specific)
+  end
+
+  it "should load no css when specifying false in the mailer action" do
+    MailStyle.should_not_receive(:load_css)
+    CssLoadingMailer.override(false)
+  end
+
+  it "should load multiple css files when given an array" do
+    MailStyle.should_receive(:load_css).with(Rails.root, ['specific', 'other']).and_return('')
+    CssLoadingMailer.override([:specific, :other])
   end
 end

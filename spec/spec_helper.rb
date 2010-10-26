@@ -19,12 +19,21 @@ module SpecHelpers
   module StylingMacros
     def use_css(names, rules)
       before(:each) do
-        TestMailer.stub!(:css_rules).with(Array(names)).and_return(rules)
+        MailStyle.stub!(:load_css).with(anything, Array(names)).and_return(rules)
       end
     end
+  end
+end
+
+if defined?(Rails)
+  Rails.stub!(:root => Pathname.new('/path/to'))
+else
+  class Rails
+    def self.root; Pathname.new('/path/to'); end
   end
 end
 
 RSpec.configure do |config|
   config.extend SpecHelpers::StylingMacros
 end
+

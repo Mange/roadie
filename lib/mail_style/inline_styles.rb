@@ -160,7 +160,7 @@ module MailStyle
       end
 
       def css_rules
-        self.class.css_rules(css_targets)
+        @css_rules ||= MailStyle.load_css(Rails.root, css_targets)
       end
   end
 end
