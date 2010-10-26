@@ -7,7 +7,7 @@ ActionMailer::Base.deliveries = []
 
 # Test Mailer
 class TestMailer < ActionMailer::Base
-  default :from => "john@example.com", :to => "doe@example.com"
+  default :from => "john@example.com", :to => "doe@example.com", :css => :simple
 
   def multipart(css_file = nil)
     mail(:subject => "Multipart email") do |format|
@@ -34,13 +34,13 @@ class TestMailer < ActionMailer::Base
     end
   end
 
-  def singlepart_html(css_file = nil)
+  def singlepart_html
     mail(:subject => "HTML email") do |format|
       format.html { render :text => '<p class="text">Hello World</p>' }
     end
   end
 
-  def singlepart_plain(css_file = nil)
+  def singlepart_plain
     mail(:subject => "Text email") do |format|
       # NOTE: Rendering html in plain text
       format.text { render :text => '<p class="text">Hello World</p>' }
@@ -102,23 +102,23 @@ shared_examples_for "inline styles" do
   end
 end
 
-describe 'Inline styles' do
+describe MailStyle::InlineStyles do
   let(:text_body) { email.parts.select { |part| part.mime_type == 'text/plain' }.body.to_s }
   let(:html_body) { email.parts.select { |part| part.mime_type == 'text/html' }.body.to_s }
   let(:body) { email.body.to_s }
 
-  describe 'singlepart' do
-    use_css <<-CSS
-      body { background: #000 }
-      p { color: #f00; line-height: 1.5 }
-      .text { font-size: 14px }
-    CSS
+  use_css 'simple', <<-CSS
+    body { background: #000 }
+    p { color: #f00; line-height: 1.5 }
+    .text { font-size: 14px }
+  CSS
 
+  describe 'singlepart' do
     describe "text/html" do
       let(:email) { TestMailer.singlepart_html }
 
       it "should have styles applied" do
-        body.should match(/<body style="background: #000">/)
+        body.should include('color: #f00')
       end
     end
 

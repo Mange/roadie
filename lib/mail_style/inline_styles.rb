@@ -6,43 +6,38 @@ module MailStyle
   module InlineStyles
     DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
 
-    module InstanceMethods
-      def create_mail_with_inline_styles
-        write_inline_styles
-        create_mail_without_inline_styles
+    def self.included(base)
+      base.class_eval do
+        alias_method_chain :collect_responses_and_parts_order, :inline_styles
+        alias_method_chain :mail, :inline_styles
+      end
+    end
+
+    protected
+      def mail_with_inline_styles(headers = {}, &block)
+        @inline_style_css_targets = headers[:css]
+        mail_without_inline_styles(headers.except(:css), &block)
       end
 
-      protected
-
-      # Flatten nested parts
-      def collect_parts(parts)
-        nested = parts.present? ? parts.map { |p| collect_parts(p.parts) }.flatten : []
-        [parts, nested].flatten
-      end
-
-      def write_inline_styles
-        parts = collect_parts(@parts)
-
-        # Parse only text/html parts
-        parsable_parts(@parts).each do |part|
-          part.body = parse_html(part.body)
+      def collect_responses_and_parts_order_with_inline_styles(headers, &block)
+        responses, order = collect_responses_and_parts_order_without_inline_styles(headers, &block)
+        new_responses = []
+        responses.each do |response|
+          new_responses << inline_style_response(response)
         end
-
-        # Parse single part emails if the body is html
-        real_content_type, ctype_attrs = parse_content_type
-        self.body = parse_html(body) if body.is_a?(String) && real_content_type == 'text/html'
+        [new_responses, order]
       end
-      
-      def parsable_parts(parts)
-        selected = []
-        parts.each do |part|
-          selected << part if part.content_type == 'text/html'
-          selected += parsable_parts(part.parts)
+
+    private
+      def inline_style_response(response)
+        if response[:content_type] == 'text/html'
+          response.merge(:body => transpose_styling(response[:body]))
+        else
+          response
         end
-        selected
       end
 
-      def parse_html(html)
+      def transpose_styling(html)
         # Parse original html
         html_document = create_html_document(html)
         html_document = absolutize_image_sources(html_document)
@@ -140,16 +135,14 @@ module MailStyle
 
       # Update image urls
       def update_image_urls(style)
-        if default_url_options[:host].present?
+        if config.default_url_options and config.default_url_options[:host].present?
           # Replace urls in stylesheets
-          style.gsub!($1, absolutize_url($1, 'stylesheets')) if style[/url\(['"]?(.*?)['"]?\)/i]
+          style.gsub!(/url\((['"]?)(.*?)\1\)/i) { "url(#{$1}#{make_absolute_url($2, 'stylesheets')}#{$1})" }
         end
-
         style
       end
 
-       # Absolutize URL (Absolutize? Seriously?)
-      def absolutize_url(url, base_path = '')
+      def make_absolute_url(url, base_path = '')
         original_url = url
 
         unless original_url[URI::regexp(%w[http https])]
@@ -169,42 +162,20 @@ module MailStyle
 
       end
 
-      # Css Parser
+      def css_targets
+        Array(@css_targets || self.class.default[:css] || []).map { |target| target.to_s }
+      end
+
       def css_parser
-        parser = CssParser::Parser.new
-
-        parser.add_block!(css_rules) if @css.present?
-        parser.add_block!(@inline_rules)
-        parser
+        CssParser::Parser.new.tap do |parser|
+          parser.add_block!(css_rules) if css_targets.present?
+          parser.add_block!(@inline_rules)
+        end
       end
 
-      # Css Rules
       def css_rules
-        if @css.is_a?(Array)
-          @css.collect{|r| File.read(css_file(r)) }.join("\n")
-        else
-          File.read css_file(@css)
-        end
+        self.class.css_rules(css_targets)
       end
-
-      # Find the css file
-      def css_file(name=nil)
-        if name.present?
-          css = name.to_s
-          css = css[/\.css$/] ? css : "#{css}.css"
-          path = File.join(RAILS_ROOT, 'public', 'stylesheets', css)
-          File.exist?(path) ? path : raise(CSSFileNotFound)
-        end
-      end
-    end
-
-    def self.included(receiver)
-      receiver.send :include, InstanceMethods
-      receiver.class_eval do
-        adv_attr_accessor :css
-        alias_method_chain :create_mail, :inline_styles
-      end
-    end
   end
 end
 

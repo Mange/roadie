@@ -17,9 +17,9 @@ require 'mail_style'
 
 module SpecHelpers
   module StylingMacros
-    def use_css(rules)
+    def use_css(names, rules)
       before(:each) do
-        email.stub!(:css_rules => rules)
+        TestMailer.stub!(:css_rules).with(Array(names)).and_return(rules)
       end
     end
   end
