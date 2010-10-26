@@ -148,6 +148,7 @@ module MailStyle
       end
 
       def css_targets
+        return [] if @inline_style_css_targets == false
         Array(@inline_style_css_targets || self.class.default[:css] || []).map { |target| target.to_s }
       end
 
