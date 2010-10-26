@@ -137,6 +137,12 @@ describe MailStyle::InlineStyles do
   end
 
   describe 'multipart' do
+    let(:email) { TestMailer.multipart }
+
+    it "should have two parts" do
+      email.should have(2).parts
+    end
+
     describe 'image urls' do
       let(:email) { TestMailer.image_urls }
 
@@ -196,25 +202,6 @@ describe MailStyle::InlineStyles do
           TestMailer.deliver_test_multipart(:fake)
         }.should raise_error(MailStyle::CSSFileNotFound)
       end
-    end
-
-    it 'should support inline styles without deliver' do
-      pending
-      css_rules <<-EOF
-        body { background: #000 }
-        p { color: #f00; line-height: 1.5 }
-        .text { font-size: 14px }
-      EOF
-
-      # Generate email
-      @email = TestMailer.create_test_multipart(:real)
-      html_part(@email).should match(/<body style="background: #000">/)
-    end
-
-    it "should have two parts" do
-      pending
-      @email = TestMailer.deliver_test_multipart
-      @email.parts.length.should eql(2)
     end
   end
 
