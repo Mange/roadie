@@ -23,18 +23,9 @@ else
   end
 end
 
-module SpecHelpers
-  module StylingMacros
-    def use_css(names, rules)
-      before(:each) do
-        MailStyle.stub!(:load_css).with(anything, Array(names)).and_return(rules)
-      end
-    end
-  end
-end
-
-RSpec.configure do |config|
-  config.extend SpecHelpers::StylingMacros
+ActionMailer::Base.configure do |config|
+  config.perform_deliveries = false
+  config.default_url_options = {:host => "example.com"}
 end
 
 RSpec::Matchers.define :have_styling do |rules|

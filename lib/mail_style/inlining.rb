@@ -109,6 +109,7 @@ module MailStyle
 
       def make_absolute_url(url, base_path = '')
         original_url = url
+        return original_url.to_s unless url_options
 
         unless original_url[URI::regexp(%w[http https])]
           protocol = url_options[:protocol]
@@ -124,7 +125,6 @@ module MailStyle
         end
 
         url.to_s
-
       end
   end
 end
