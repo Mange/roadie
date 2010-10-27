@@ -31,7 +31,6 @@ describe MailStyle::Inliner do
     end
 
     it "should respect !important properties" do
-      pending 'TODO'
       use_css "a { text-decoration: underline !important; }
                a.hard-to-spot { text-decoration: none; }"
       rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline').at_selector('a')
@@ -43,7 +42,6 @@ describe MailStyle::Inliner do
     end
 
     it "should not overwrite already present inline styles" do
-      pending 'TODO'
       use_css "p { color: red }"
       rendering('<p style="color: green"></p>').should have_styling('color' => 'green').at_selector('p')
     end
@@ -121,9 +119,8 @@ describe MailStyle::Inliner do
     end
 
     it "should work on inlined style attributes" do
-      pending 'TODO'
-      rendering('<p style="background-image: url(/paper.png)"></p>').should  have_styling('background-image' => 'url(http://example.com/paper.jpg)').at_selector('p')
-      rendering('<p style="background-image: url(&quot;/paper.png&quot;)"></p>').should  have_styling('background-image' => 'url("http://example.com/paper.jpg")').at_selector('p')
+      rendering('<p style="background: url(/paper.png)"></p>').should have_styling('background' => 'url(http://example.com/paper.png)').at_selector('p')
+      rendering('<p style="background: url(&quot;/paper.png&quot;)"></p>').should have_styling('background' => 'url("http://example.com/paper.png")').at_selector('p')
     end
 
     it "should work on external style declarations" do
@@ -148,6 +145,11 @@ describe MailStyle::Inliner do
         document.should have_attribute('src' => '/b.jpg').at_selector('img')
         document.should have_styling('background' => 'url(/a.jpg)').at_selector('img')
       end
+    end
+
+    it "should not touch data: URIs" do
+      use_css "div { background: url(data:abcdef); }"
+      rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)').at_selector('div')
     end
   end
 
@@ -174,14 +176,30 @@ describe MailStyle::Inliner do
     end
 
     it "should not insert duplicate meta tags describing content-type" do
-      pending 'TODO'
-      rendering(<<-HTML).should have_selector('meta').limit(1)
+      rendering(<<-HTML).to_html.scan('meta').should have(1).item
       <html>
         <head>
           <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         </head>
       </html>
       HTML
+    end
+  end
+
+  describe "css url regex" do
+    it "should parse css urls" do
+      {
+        'url(/foo.jpg)' => '/foo.jpg',
+        'url("/foo.jpg")' => '/foo.jpg',
+        "url('/foo.jpg')" => '/foo.jpg',
+        'url(http://localhost/foo.jpg)' => 'http://localhost/foo.jpg',
+        'url("http://localhost/foo.jpg")' => 'http://localhost/foo.jpg',
+        "url('http://localhost/foo.jpg')" => 'http://localhost/foo.jpg',
+        'url(/andromeda_(galaxy).jpg)' => '/andromeda_(galaxy).jpg',
+      }.each do |raw, expected|
+        raw =~ MailStyle::Inliner::CSS_URL_REGEXP
+        $2.should == expected
+      end
     end
   end
 end
