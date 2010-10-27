@@ -55,7 +55,7 @@ If you have _default_url_options[:host]_ set in your mailer, then MailStyle will
 
 In @application.rb@:
 <pre><code>class Application
-  config.default_url_options = {:host => 'example.com'}
+  config.action_mailer.default_url_options = {:host => 'example.com'}
 end</code></pre>
 
 h3. Ignoring stylesheets

@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe "mail_style integration" do
+  class TestApplication
+    def config
+      OpenStruct.new(:action_mailer => OpenStruct.new(:default_url_options => {:host => "example.app.org"}))
+    end
+  end
+
   class IntegrationMailer < ActionMailer::Base
     default :css => :integration, :from => 'john@example.com'
-
-    configure do |config|
-      config.default_url_options = {:host => "example.app.org"}
-    end
     append_view_path Pathname.new(__FILE__).dirname.join('fixtures').join('views')
 
     def notification(to, reason)
@@ -16,7 +18,7 @@ describe "mail_style integration" do
   end
 
   before(:each) do
-    Rails.stub!(:root => Pathname.new(__FILE__).dirname.join('fixtures'))
+    Rails.stub!(:root => Pathname.new(__FILE__).dirname.join('fixtures'), :application => TestApplication.new)
   end
 
   it "should inline styles for an email" do

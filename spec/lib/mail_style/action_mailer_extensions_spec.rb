@@ -5,10 +5,6 @@ describe MailStyle::ActionMailerExtensions, "inlining styles" do
   class InliningMailer < ActionMailer::Base
     default :css => :simple
 
-    configure do
-      default_url_options = {:host => "example.org"}
-    end
-
     def multipart
       mail(:subject => "Multipart email") do |format|
         format.html { render :text => 'Hello HTML' }

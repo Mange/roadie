@@ -29,7 +29,7 @@ module MailStyle
     private
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          response.merge :body => MailStyle.inline_css(css_rules, response[:body], config.default_url_options)
+          response.merge :body => MailStyle.inline_css(css_rules, response[:body], Rails.application.config.action_mailer.default_url_options)
         else
           response
         end
