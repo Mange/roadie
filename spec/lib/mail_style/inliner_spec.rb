@@ -30,6 +30,14 @@ describe MailStyle::Inliner do
       rendering('<p class="safe"></p>').should have_styling('color' => 'green', 'border' => '1px solid black').at_selector('p')
     end
 
+    it "should support multiple selectors for the same rules" do
+      use_css 'p, a { color: green; }'
+      rendering('<p></p><a></a>').tap do |document|
+        document.should have_styling('color' => 'green').at_selector('p')
+        document.should have_styling('color' => 'green').at_selector('a')
+      end
+    end
+
     it "should respect !important properties" do
       use_css "a { text-decoration: underline !important; }
                a.hard-to-spot { text-decoration: none; }"

@@ -89,7 +89,7 @@ module MailStyle
       def assign_rules_to_elements(document, matched_elements)
         parsed_css.each_rule_set do |rules|
           rules.selectors.reject { |selector| selector.include?(':') }.each do |selector|
-            document.css(selector).each do |element|
+            document.css(selector.strip).each do |element|
               register_rules_for_element(matched_elements, element, selector, rules)
             end
           end
