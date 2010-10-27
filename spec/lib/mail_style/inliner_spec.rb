@@ -48,6 +48,11 @@ describe MailStyle::Inliner do
       rendering('<p style="color: green"></p>').should have_styling('color' => 'green').at_selector('p')
     end
 
+    it "should ignore selectors with :psuedo-classes" do
+      use_css 'p:hover { color: red }'
+      rendering('<p></p>').should_not have_styling('color' => 'red').at_selector('p')
+    end
+
     describe "inline <style> elements" do
       it "should be used for inlined styles" do
         rendering(<<-HTML).should have_styling('color' => 'green', 'font-size' => '1.1em').at_selector('p')
