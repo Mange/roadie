@@ -3,7 +3,7 @@ require 'nokogiri'
 require 'css_parser'
 
 module MailStyle
-  module InlineStyles
+  module ActionMailerExtensions
     def self.included(base)
       base.class_eval do
         alias_method_chain :collect_responses_and_parts_order, :inline_styles
@@ -45,5 +45,3 @@ module MailStyle
       end
   end
 end
-
-ActionMailer::Base.send :include, MailStyle::InlineStyles

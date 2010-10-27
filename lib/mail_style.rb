@@ -21,5 +21,9 @@ module MailStyle
 end
 
 require 'mail_style/inlining'
-require 'mail_style/inline_styles'
 require 'mail_style/sass_support' if defined?(Sass)
+
+require 'action_mailer'
+require 'mail_style/action_mailer_extensions'
+
+ActionMailer::Base.send :include, MailStyle::ActionMailerExtensions

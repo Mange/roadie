@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe MailStyle::InlineStyles, "inlining styles" do
+describe MailStyle::ActionMailerExtensions, "inlining styles" do
   class InliningMailer < ActionMailer::Base
     default :css => :simple
 
@@ -73,7 +73,7 @@ describe MailStyle::InlineStyles, "inlining styles" do
   end
 end
 
-describe MailStyle::InlineStyles, "loading css files" do
+describe MailStyle::ActionMailerExtensions, "loading css files" do
   class CssLoadingMailer < ActionMailer::Base
     default :css => :default_value
     def use_default
