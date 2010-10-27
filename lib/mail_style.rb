@@ -21,7 +21,6 @@ module MailStyle
 end
 
 require 'mail_style/inliner'
-require 'mail_style/sass_support' if defined?(Sass)
 
 require 'action_mailer'
 require 'mail_style/action_mailer_extensions'
