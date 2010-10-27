@@ -78,27 +78,33 @@ module MailStyle
 
       def inline_css_rules(document)
         matched_elements = {}
-
-        parsed_css.each_rule_set do |rules|
-          rules.selectors.reject { |selector| selector.include?(':') }.each do |selector|
-            document.css(selector).each do |element|
-              specificity = CssParser.calculate_specificity(selector)
-              element_rules = (matched_elements[element] ||= {})
-              rules.each_declaration do |property, value, is_important|
-                if last = element_rules[property]
-                  next if last[:important] and not is_important
-                  element_rules[property] = {:value => value, :specificity => specificity, :important => is_important} if is_important or last[:specificity] <= specificity
-                else
-                  element_rules[property] = {:value => value, :specificity => specificity, :important => is_important}
-                end
-              end
-            end
-          end
-        end
+        assign_rules_to_elements(document, matched_elements)
 
         matched_elements.each do |element, rules|
           rules_string = rules.map { |property, rule| [property, rule[:value]].join(':')  }.join('; ')
           element['style'] = [rules_string, element['style']].compact.join('; ')
+        end
+      end
+
+      def assign_rules_to_elements(document, matched_elements)
+        parsed_css.each_rule_set do |rules|
+          rules.selectors.reject { |selector| selector.include?(':') }.each do |selector|
+            document.css(selector).each do |element|
+              register_rules_for_element(matched_elements, element, selector, rules)
+            end
+          end
+        end
+      end
+
+      def register_rules_for_element(store, element, selector, rules)
+        specificity = CssParser.calculate_specificity(selector)
+        element_rules = (store[element] ||= {})
+        rules.each_declaration do |property, value, important|
+          stored = (element_rules[property] ||= {:specificity => -1})
+          more_specific = (stored[:specificity] <= specificity)
+          if (important and not stored[:important]) or (important and stored[:important] and more_specific) or (more_specific and not stored[:important])
+            stored.merge!(:value => value, :specificity => specificity, :important => important)
+          end
         end
       end
 
