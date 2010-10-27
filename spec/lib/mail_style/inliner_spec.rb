@@ -155,6 +155,14 @@ describe MailStyle::Inliner do
       end
     end
 
+    it "should support port and protocol settings" do
+      use_css "img { background: url(/a.jpg); }"
+      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https', :port => '8080'}).tap do |document|
+        document.should have_attribute('src' => 'https://example.com:8080/b.jpg').at_selector('img')
+        document.should have_styling('background' => 'url(https://example.com:8080/a.jpg)').at_selector('img')
+      end
+    end
+
     it "should not touch data: URIs" do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)').at_selector('div')
