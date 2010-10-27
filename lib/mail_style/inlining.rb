@@ -20,7 +20,7 @@ module MailStyle
         html_document.css(selector).each do |element|
           declaration.to_s.split(';').each do |style|
             # Split style in attribute and value
-            attribute, value = style.split(':').map(&:strip)
+            attribute, value = style.split(':', 2).map(&:strip)
 
             # Set element style defaults
             element_styles[element] ||= {}
