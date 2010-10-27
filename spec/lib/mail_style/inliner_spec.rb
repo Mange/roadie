@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe MailStyle::Inlining do
+describe MailStyle::Inliner do
   def use_css(css); @css = css; end
   def rendering(html, options = {})
-    Nokogiri::HTML.parse MailStyle::Inlining.new(@css, html, options.fetch(:url_options, {:host => 'example.com'})).execute
+    Nokogiri::HTML.parse MailStyle::Inliner.new(@css, html, options.fetch(:url_options, {:host => 'example.com'})).execute
   end
 
   describe "inlining styles" do

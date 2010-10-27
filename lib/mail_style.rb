@@ -2,7 +2,7 @@ module MailStyle
   class CSSFileNotFound < StandardError; end
 
   def self.inline_css(*args);
-    MailStyle::Inlining.new(*args).execute
+    MailStyle::Inliner.new(*args).execute
   end
 
   def self.load_css(root, targets)
@@ -20,7 +20,7 @@ module MailStyle
   end
 end
 
-require 'mail_style/inlining'
+require 'mail_style/inliner'
 require 'mail_style/sass_support' if defined?(Sass)
 
 require 'action_mailer'

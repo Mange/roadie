@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe MailStyle do
   describe ".inline_css" do
-    it "should create an instance of MailStyle::Inlining and executing it" do
-      MailStyle::Inlining.should_receive(:new).with('attri', 'butes').and_return(double('inlining', :execute => 'html'))
+    it "should create an instance of MailStyle::Inliner and execute it" do
+      MailStyle::Inliner.should_receive(:new).with('attri', 'butes').and_return(double('inliner', :execute => 'html'))
       MailStyle.inline_css('attri', 'butes').should == 'html'
     end
   end
