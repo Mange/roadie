@@ -1,0 +1,97 @@
+h1. MailStyle
+
+MailStyle tries to make sending HTML emails a little less painful in Rails 3.
+
+It was originally developed for use on "Purify: Awesome Bug & Issue Tracking":http://purifyapp.com
+
+An older version exists for Rails 2 apps (latest is 0.1.6).
+
+h2. How does it work?
+
+Email clients have bad support for stylesheets, and some of them blocks stylesheets from downloading. The easiest way to handle this is to work with all styles inline, but that is error prone and hard to work with.
+
+<pre><code>&lt;div style="padding: 5px; background: #eee">&lt;/div></code></pre>
+
+This gem helps making this easier by automatically inline your stylesheet rules into the document. You just give it a list of stylesheets and it will go though all of the selectors assigning the styles to the maching elements. Careful attention has been put into rules being applied in the correct order, so it should behave just like in the browser.
+
+There's one more problem, though. Referencing images both in @img@ elements and in the stylesheets have to use absolute urls, and these differ in your different environments. MailStyle will replace all relative image sources and all relative urls mentioned in the styles with their absolute counterpart if you configure your mailer.
+
+h2. Features
+
+* Write CSS styles inline
+* Corrects image urls
+* Automatically adds proper html skeleton when missing (you don't have to create a layout for emails)
+
+h3. What about Sass / Less?
+
+Sass is supported "by accident" as long as the stylesheets are generated and stored in the stylesheets directory. This is the default behavior from sass. You are recommended to add a deploy task that generates the stylesheets to make sure that they are present at all times.
+
+h2. Install
+
+Add the gem to Rails' Gemfile
+<pre><code>gem 'mail_style'</code></pre>
+
+h2. Usage
+
+Simply specify the <code>:css</code> option to mailer:
+
+<pre><code>class Notifier < ActionMailer::Base
+  default :css => :email, :from => 'jimneath@googlemail.com'
+  def welcome_email
+    mail(:subject => 'Welcome Aboard', :to => 'someone@example.com')
+  end
+
+  def newsletter_email
+    mail(:subject => 'Newsletter', :to => 'someone@example.com', :css => [:email, :newsletter])
+  end
+end</code></pre>
+(you could also use the @defaults@ method in ActionMailer)
+
+This will look for a css file called @email.css@ in your @public/stylesheets@ folder. The @css@ method can take either a string, a symbol or an array of both. You should pass the CSS filename without the ".css" extension.
+
+h3. Image URL Correcting
+
+If you have _default_url_options[:host]_ set in your mailer, then MailStyle will do it's best to make the urls of images and in stylesheets absolute.
+
+In @application.rb@:
+<pre><code>class Application
+  config.default_url_options = {:host => 'example.com'}
+end</code></pre>
+
+h3. Ignoring stylesheets
+
+By default, @style@ elements in the email document's @head@ are processed and removed from the @head@.
+
+You can set a special <code>data-immutable="true"</code> attribute on @style@ tags you do not want to be processed and removed from the document's @head@.
+
+Style elements with <code>media="print"</code> are always ignored.
+
+h2. Bugs / Todo
+
+* Improve overall performance
+* Clean up stylesheet assignment code
+* Allow users to swap between css_parser and csspool
+
+h2. Contributors
+
+* "Jim Neath":http://jimneath.org
+* "Lars Klevans":http://tastybyte.blogspot.com/
+* "Jonas Grimfelt":http://github.com/grimen
+* "Ben Johnson":http://www.binarylogic.com
+* "Istvan Hoka":http://istvanhoka.com/
+* "Voraz":http://blog.voraz.com.br
+
+h2. License
+
+(The MIT License)
+
+Copyright &copy; 2009-2010
+
+* "Jim Neath":http://jimneath.org
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
