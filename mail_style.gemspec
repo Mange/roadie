@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
   s.authors = ["Jim Neath"]
-  s.date = %q{2010-10-27}
+  s.date = %q{2010-10-28}
   s.description = %q{Making HTML emails a little less painful. Writes css inline and corrects image urls.}
   s.email = %q{jimneath@googlemail.com}
   s.extra_rdoc_files = [
@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     "lib/mail_style.rb",
     "lib/mail_style/action_mailer_extensions.rb",
     "lib/mail_style/inliner.rb",
-    "lib/mail_style/sass_support.rb",
     "readme.textile",
     "spec/fixtures/public/stylesheets/bar.css",
     "spec/fixtures/public/stylesheets/foo.css",
