@@ -14,7 +14,9 @@ module MailStyle
     protected
       def mail_with_inline_styles(headers = {}, &block)
         @inline_style_css_targets = headers[:css]
-        mail_without_inline_styles(headers.except(:css), &block)
+        mail_without_inline_styles(headers.except(:css), &block).tap do |email|
+          email[:css] = nil
+        end
       end
 
       def collect_responses_and_parts_order_with_inline_styles(headers, &block)

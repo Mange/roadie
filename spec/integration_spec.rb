@@ -19,6 +19,7 @@ describe "mail_style integration" do
 
   before(:each) do
     Rails.stub!(:root => Pathname.new(__FILE__).dirname.join('fixtures'), :application => TestApplication.new)
+    IntegrationMailer.delivery_method = :test
   end
 
   it "should inline styles for an email" do
@@ -39,5 +40,7 @@ describe "mail_style integration" do
     email.parts.find { |part| part.mime_type == 'text/plain' }.tap do |plain_part|
       plain_part.body.decoded.should_not match(/<.*>/)
     end
+
+    email.deliver
   end
 end
