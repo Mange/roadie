@@ -10,7 +10,7 @@ h2. How does it work?
 
 Email clients have bad support for stylesheets, and some of them blocks stylesheets from downloading. The easiest way to handle this is to work with all styles inline, but that is error prone and hard to work with.
 
-<pre><code>&lt;div style="padding: 5px; background: #eee">&lt;/div></code></pre>
+<pre><code><div style="padding: 5px; background: #eee"></div></code></pre>
 
 This gem helps making this easier by automatically inline your stylesheet rules into the document. You just give it a list of stylesheets and it will go though all of the selectors assigning the styles to the maching elements. Careful attention has been put into rules being applied in the correct order, so it should behave just like in the browser.
 
