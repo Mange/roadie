@@ -17,7 +17,7 @@ require 'rake/rdoctask'
 require 'rspec/core/rake_task'
 
 NAME = "mail_style"
-EXTRA_RDOC_FILES = %w[readme.textile]
+EXTRA_RDOC_FILES = %w[README.textile]
 Jeweler::Tasks.new do |t|
   t.name = NAME
   t.summary = %{Making HTML emails a little less painful}
@@ -29,7 +29,7 @@ Jeweler::Tasks.new do |t|
   t.require_path = 'lib'
   t.files = %w(Rakefile) + EXTRA_RDOC_FILES + Dir.glob(File.join(*%w[{lib,spec} ** *]).to_s)
   t.extra_rdoc_files = EXTRA_RDOC_FILES
-  
+
   # dependencies defined in Gemfile
 end
 
