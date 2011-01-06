@@ -2,7 +2,7 @@ require 'uri'
 require 'nokogiri'
 require 'css_parser'
 
-module MailStyle
+module Roadie
   module ActionMailerExtensions
     def self.included(base)
       base.class_eval do
@@ -31,7 +31,7 @@ module MailStyle
     private
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          response.merge :body => MailStyle.inline_css(css_rules, response[:body], Rails.application.config.action_mailer.default_url_options)
+          response.merge :body => Roadie.inline_css(css_rules, response[:body], Rails.application.config.action_mailer.default_url_options)
         else
           response
         end
@@ -43,7 +43,7 @@ module MailStyle
       end
 
       def css_rules
-        @css_rules ||= MailStyle.load_css(Rails.root, css_targets) if css_targets.present?
+        @css_rules ||= Roadie.load_css(Rails.root, css_targets) if css_targets.present?
       end
   end
 end

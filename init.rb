@@ -1,1 +1,0 @@
-require 'mail_style'

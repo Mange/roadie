@@ -1,7 +1,7 @@
 # coding: utf-8
 require 'spec_helper'
 
-describe MailStyle::ActionMailerExtensions, "inlining styles" do
+describe Roadie::ActionMailerExtensions, "inlining styles" do
   class InliningMailer < ActionMailer::Base
     default :css => :simple
 
@@ -37,20 +37,20 @@ describe MailStyle::ActionMailerExtensions, "inlining styles" do
   end
 
   before(:each) do
-    MailStyle.stub!(:load_css => 'loaded css')
-    MailStyle.stub!(:inline_css => 'unexpected value') # Make sure a implementation problem doesn't hurt these examples
+    Roadie.stub!(:load_css => 'loaded css')
+    Roadie.stub!(:inline_css => 'unexpected value') # Make sure a implementation problem doesn't hurt these examples
   end
 
   describe "for singlepart text/plain" do
     it "should not touch the email body" do
-      MailStyle.should_not_receive(:inline_css)
+      Roadie.should_not_receive(:inline_css)
       InliningMailer.singlepart_plain
     end
   end
 
   describe "for singlepart text/html" do
     it "should inline css to the email body" do
-      MailStyle.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
+      Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
       InliningMailer.singlepart_html.body.decoded.should == 'html'
     end
   end
@@ -61,7 +61,7 @@ describe MailStyle::ActionMailerExtensions, "inlining styles" do
     end
 
     it "should inline css to the email's html part" do
-      MailStyle.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
+      Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
       email = InliningMailer.multipart
       email.parts.find { |part| part.mime_type == 'text/html' }.body.decoded.should == 'html'
       email.parts.find { |part| part.mime_type == 'text/plain' }.body.decoded.should == 'Hello Text'
@@ -69,7 +69,7 @@ describe MailStyle::ActionMailerExtensions, "inlining styles" do
   end
 end
 
-describe MailStyle::ActionMailerExtensions, "loading css files" do
+describe Roadie::ActionMailerExtensions, "loading css files" do
   class CssLoadingMailer < ActionMailer::Base
     default :css => :default_value
     def use_default
@@ -87,26 +87,26 @@ describe MailStyle::ActionMailerExtensions, "loading css files" do
   end
 
   before(:each) do
-    MailStyle.stub!(:inline_css => 'html')
+    Roadie.stub!(:inline_css => 'html')
   end
 
   it "should load the css specified in the default mailer settings" do
-    MailStyle.should_receive(:load_css).with(Rails.root, ['default_value']).and_return('')
+    Roadie.should_receive(:load_css).with(Rails.root, ['default_value']).and_return('')
     CssLoadingMailer.use_default
   end
 
   it "should load the css specified in the specific mailer action instead of the default choice" do
-    MailStyle.should_receive(:load_css).with(Rails.root, ['specific']).and_return('')
+    Roadie.should_receive(:load_css).with(Rails.root, ['specific']).and_return('')
     CssLoadingMailer.override(:specific)
   end
 
   it "should load no css when specifying false in the mailer action" do
-    MailStyle.should_not_receive(:load_css)
+    Roadie.should_not_receive(:load_css)
     CssLoadingMailer.override(false)
   end
 
   it "should load multiple css files when given an array" do
-    MailStyle.should_receive(:load_css).with(Rails.root, ['specific', 'other']).and_return('')
+    Roadie.should_receive(:load_css).with(Rails.root, ['specific', 'other']).and_return('')
     CssLoadingMailer.override([:specific, :other])
   end
 end

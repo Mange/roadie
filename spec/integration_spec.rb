@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "mail_style integration" do
+describe "roadie integration" do
   class TestApplication
     def config
       OpenStruct.new(:action_mailer => OpenStruct.new(:default_url_options => {:host => "example.app.org"}))

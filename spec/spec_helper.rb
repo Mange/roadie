@@ -14,7 +14,7 @@ end
 
 require 'rspec'
 require 'action_mailer'
-require 'mail_style'
+require 'roadie'
 
 class TestApplication
   def config

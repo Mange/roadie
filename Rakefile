@@ -16,15 +16,15 @@ require 'jeweler'
 require 'rake/rdoctask'
 require 'rspec/core/rake_task'
 
-NAME = "mail_style"
+NAME = "roadie"
 EXTRA_RDOC_FILES = %w[README.textile]
 Jeweler::Tasks.new do |t|
   t.name = NAME
-  t.summary = %{Making HTML emails a little less painful}
-  t.email = "jimneath@googlemail.com"
-  t.homepage = "http://github.com/purify/mail_style"
-  t.description = %{Making HTML emails a little less painful. Writes css inline and corrects image urls.}
-  t.author = "Jim Neath"
+  t.summary = %{Making HTML emails comfortable for the Rails rockstars}
+  t.email = "magnus.bergmark@gmail.com"
+  t.homepage = "http://github.com/Mange/roadie"
+  t.description = %{Roadie tries to make sending HTML emails a little less painful in Rails 3 by inlining stylesheets and rewrite relative URLs for you.}
+  t.author = "Magnus Bergmark"
 
   t.require_path = 'lib'
   t.files = %w(Rakefile) + EXTRA_RDOC_FILES + Dir.glob(File.join(*%w[{lib,spec} ** *]).to_s)

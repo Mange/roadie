@@ -1,8 +1,8 @@
-module MailStyle
+module Roadie
   class CSSFileNotFound < StandardError; end
 
   def self.inline_css(*args);
-    MailStyle::Inliner.new(*args).execute
+    Roadie::Inliner.new(*args).execute
   end
 
   def self.load_css(root, targets)
@@ -20,9 +20,9 @@ module MailStyle
   end
 end
 
-require 'mail_style/inliner'
+require 'roadie/inliner'
 
 require 'action_mailer'
-require 'mail_style/action_mailer_extensions'
+require 'roadie/action_mailer_extensions'
 
-ActionMailer::Base.send :include, MailStyle::ActionMailerExtensions
+ActionMailer::Base.send :include, Roadie::ActionMailerExtensions

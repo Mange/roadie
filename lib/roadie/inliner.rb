@@ -1,4 +1,4 @@
-module MailStyle
+module Roadie
   class Inliner
     CSS_URL_REGEXP = %r{
       url\(
