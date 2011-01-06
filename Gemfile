@@ -1,3 +1,5 @@
+source :rubygems
+
 gem "nokogiri"
 gem "css_parser"
 gem "actionmailer", "~> 3.0.0"
