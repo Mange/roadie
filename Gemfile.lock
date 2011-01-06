@@ -1,3 +1,11 @@
+PATH
+  remote: .
+  specs:
+    roadie (1.0.0.pre2)
+      actionmailer (~> 3.0.0)
+      css_parser
+      nokogiri
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -25,12 +33,7 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
-    git (1.2.5)
     i18n (0.4.1)
-    jeweler (1.5.0.pre3)
-      bundler (~> 1.0.0)
-      git (>= 1.2.5)
-      rake
     mail (2.2.7)
       activesupport (>= 2.3.6)
       mime-types
@@ -43,7 +46,6 @@ GEM
       rack (>= 1.0.0)
     rack-test (0.5.6)
       rack (>= 1.0)
-    rake (0.8.7)
     rspec (2.0.0)
       rspec-core (= 2.0.0)
       rspec-expectations (= 2.0.0)
@@ -66,7 +68,6 @@ PLATFORMS
 DEPENDENCIES
   actionmailer (~> 3.0.0)
   css_parser
-  jeweler (~> 1.5.0.pre5)
   nokogiri
-  rake
+  roadie!
   rspec-rails (>= 2.0.0)

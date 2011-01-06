@@ -20,6 +20,7 @@ module Roadie
   end
 end
 
+require 'roadie/version'
 require 'roadie/inliner'
 
 require 'action_mailer'
