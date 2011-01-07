@@ -1,6 +1,4 @@
 module Roadie
-  class CSSFileNotFound < StandardError; end
-
   def self.inline_css(*args);
     Roadie::Inliner.new(*args).execute
   end
@@ -13,7 +11,7 @@ module Roadie
       if target_file.exist?
         loaded_css << target_file.read
       else
-        raise CSSFileNotFound, "Could not find #{target_file}"
+        raise CSSFileNotFound, target_file
       end
     end
     loaded_css.join("\n")
@@ -21,6 +19,7 @@ module Roadie
 end
 
 require 'roadie/version'
+require 'roadie/css_file_not_found'
 require 'roadie/inliner'
 
 require 'action_mailer'
