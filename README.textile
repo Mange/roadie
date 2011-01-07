@@ -73,6 +73,10 @@ You can set a special <code>data-immutable="true"</code> attribute on @style@ ta
 
 Style elements with <code>media="print"</code> are always ignored.
 
+h2. Documentation
+
+* "Online documentation for master":http://rubydoc.info/github/Mange/roadie/master/frames
+
 h2. Bugs / TODO
 
 * Improve overall performance
