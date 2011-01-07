@@ -9,7 +9,7 @@ describe Roadie do
   end
 
   describe ".load_css(root, targets)" do
-    let(:fixtures_root) { Pathname.new(__FILE__).dirname.join('..', 'fixtures') }
+    let(:fixtures_root) { Pathname.new(__FILE__).dirname.join('..', 'fixtures', 'public', 'stylesheets') }
 
     it "should load files matching the target names under root/public/stylesheets" do
       Roadie.load_css(fixtures_root, ['foo']).should == 'contents of foo'

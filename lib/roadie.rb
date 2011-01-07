@@ -10,13 +10,12 @@ module Roadie
   # @example
   #   Roadie.load_css(Rails.root, %w[application newsletter])
   #
-  # @param [Pathname] root The root path of your Rails app. Requires the path +public/stylesheets+ to be present in here.
+  # @param [Pathname] root The root path of your stylesheets
   # @param [Array<String, Symbol>] targets Stylesheet names - <b>without extensions</b>
   # @return [String] The combined contents of the CSS files
-  # @raise [CSSFileNotFound] When a target cannot be found under +[root]/public/stylesheets/[target].css+
+  # @raise [CSSFileNotFound] When a target cannot be found under +[root]/[target].css+
   def self.load_css(root, targets)
-    stylesheets = root.join('public', 'stylesheets')
-    css_files_from_targets(stylesheets, targets).map do |file|
+    css_files_from_targets(root, targets).map do |file|
       raise CSSFileNotFound, file unless file.exist?
       file.read
     end.join("\n")
