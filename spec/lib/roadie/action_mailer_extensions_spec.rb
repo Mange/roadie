@@ -52,8 +52,8 @@ describe Roadie::ActionMailerExtensions, "inlining styles" do
     it "should inline css to the email's html part" do
       Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
       email = InliningMailer.multipart
-      email.parts.find { |part| part.mime_type == 'text/html' }.body.decoded.should == 'html'
-      email.parts.find { |part| part.mime_type == 'text/plain' }.body.decoded.should == 'Hello Text'
+      email.html_part.body.decoded.should == 'html'
+      email.text_part.body.decoded.should == 'Hello Text'
     end
   end
 end
