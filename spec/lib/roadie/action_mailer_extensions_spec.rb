@@ -12,17 +12,6 @@ describe Roadie::ActionMailerExtensions, "inlining styles" do
       end
     end
 
-    # Not sure how to implement this one.
-    # TODO: Either remove or implement
-    def nested_multipart_mixed(css_file = nil)
-      raise "Nested multipart mixed is not implemented"
-      content_type "multipart/mixed"
-      part :content_type => "multipart/alternative", :content_disposition => "inline" do |p|
-        p.part :content_type => 'text/html', :body => 'Hello HTML'
-        p.part :content_type => 'text/plain', :body => 'Hello Text'
-      end
-    end
-
     def singlepart_html
       mail(:subject => "HTML email") do |format|
         format.html { render :text => 'Hello HTML' }
