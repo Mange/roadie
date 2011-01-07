@@ -27,7 +27,7 @@ describe Roadie::ActionMailerExtensions, "inlining styles" do
 
   before(:each) do
     Roadie.stub!(:load_css => 'loaded css')
-    Roadie.stub!(:inline_css => 'unexpected value') # Make sure a implementation problem doesn't hurt these examples
+    Roadie.stub!(:inline_css => 'unexpected value passed to inline_css')
   end
 
   describe "for singlepart text/plain" do

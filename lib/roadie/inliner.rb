@@ -1,5 +1,12 @@
 module Roadie
+  # This class is the core of Roadie as it does all the actual work. You just give it
+  # the CSS rules, the HTML and the url_options for rewriting URLs and let it go on
+  # doing all the heavy lifting and building.
   class Inliner
+    # Regexp matching all the url() declarations in CSS
+    #
+    # It matches without any quotes and with both single and double quotes
+    # inside the parenthesis. There's much room for improvement, of course.
     CSS_URL_REGEXP = %r{
       url\(
         (["']?)
@@ -8,12 +15,15 @@ module Roadie
           (?:\([^)]*\))*   # Texts containing parens pairs
           [^(]+            # Texts without parens - required
         )
-        \1
+        \1                 # Closing quote
       \)
     }x
 
-    attr_reader :css, :html, :url_options
-
+    # Initialize a new Inliner with the given CSS, HTML and url_options.
+    #
+    # @param [String] css
+    # @param [String] html
+    # @param [Hash] url_options Supported keys: +:host+, +:port+ and +:protocol+
     def initialize(css, html, url_options)
       @css = css
       @inline_css = []
@@ -21,6 +31,8 @@ module Roadie
       @url_options = url_options
     end
 
+    # Start the inlining and return the final HTML output
+    # @return [String]
     def execute
       adjust_html do |document|
         add_missing_structure(document)
@@ -32,6 +44,8 @@ module Roadie
     end
 
     private
+      attr_reader :css, :html, :url_options
+
       def inline_css
         @inline_css.join("\n")
       end

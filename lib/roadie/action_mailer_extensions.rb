@@ -3,6 +3,9 @@ require 'nokogiri'
 require 'css_parser'
 
 module Roadie
+  # This module adds the Roadie functionality to ActionMailer 3 when included in ActionMailer::Base.
+  #
+  # If you want to add Roadie to any other mail framework, take a look at how this module is implemented.
   module ActionMailerExtensions
     def self.included(base)
       base.class_eval do
@@ -13,6 +16,7 @@ module Roadie
 
     protected
       def mail_with_inline_styles(headers = {}, &block)
+        # We need to capture the :css settings and remove them so they aren't added as mail headers
         @inline_style_css_targets = headers[:css]
         mail_without_inline_styles(headers.except(:css), &block).tap do |email|
           email[:css] = nil
@@ -21,20 +25,20 @@ module Roadie
 
       def collect_responses_and_parts_order_with_inline_styles(headers, &block)
         responses, order = collect_responses_and_parts_order_without_inline_styles(headers, &block)
-        new_responses = []
-        responses.each do |response|
-          new_responses << inline_style_response(response)
-        end
-        [new_responses, order]
+        [responses.map { |response| inline_style_response(response) }, order]
       end
 
     private
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          response.merge :body => Roadie.inline_css(css_rules, response[:body], Rails.application.config.action_mailer.default_url_options)
+          response.merge :body => Roadie.inline_css(css_rules, response[:body], url_options)
         else
           response
         end
+      end
+
+      def url_options
+        Rails.application.config.action_mailer.default_url_options
       end
 
       def css_targets
