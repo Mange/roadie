@@ -95,7 +95,9 @@ module Roadie
         assign_rules_to_elements(document, matched_elements)
 
         matched_elements.each do |element, rules|
-          rules_string = rules.map { |property, rule| [property, rule[:value]].join(':')  }.join('; ')
+          sorted_rules = rules.map { |property, rule| [property, rule] }
+          sorted_rules.sort! { |rule_a, rule_b| rule_a[1][:specificity] <=> rule_b[1][:specificity] }
+          rules_string = sorted_rules.map { |rule| [rule[0], rule[1][:value]].join(':')  }.join('; ')
           element['style'] = [rules_string, element['style']].compact.join('; ')
         end
       end

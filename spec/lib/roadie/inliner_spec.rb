@@ -38,6 +38,31 @@ describe Roadie::Inliner do
       end
     end
 
+    it "should sort styles by specificity order" do
+      use_css <<-EOF
+        p.text { margin-top: 4px; }
+        p { margin: 2px; }
+      EOF
+
+      rendering('<p class="text"></p>').to_s.should match(/<p class=\"text\" style=\"margin:2px; margin-top:4px\">/)
+
+      # Now try the reverse.
+      use_css <<-EOF
+        p.text { margin: 4px; }
+        p { margin-top: 2px; }
+      EOF
+
+      rendering('<p class="text"></p>').to_s.should match(/<p class=\"text\" style=\"margin-top:2px; margin:4px\">/)
+    end
+
+    it "should preserve the order styles are defined in" do
+      use_css <<-EOF
+        p { margin: 2px; margin-top: 5px; padding-top: 10px; padding: 12px; }
+      EOF
+
+      rendering('<p class="text"></p>').to_s.should match(/<p class=\"text\" style=\"margin:2px; margin-top:5px; padding-top:10px; padding:12px\">/)
+    end
+
     it "should respect !important properties" do
       use_css "a { text-decoration: underline !important; }
                a.hard-to-spot { text-decoration: none; }"
