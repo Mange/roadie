@@ -8,7 +8,7 @@ RSpec::Matchers.define :have_styling do |rules|
     if rules.nil?
       styles.blank?
     else
-      rules.stringify_keys.should == parsed_styles(document)
+      rules.to_a.should == parsed_styles(document)
     end
   end
 
@@ -24,9 +24,9 @@ RSpec::Matchers.define :have_styling do |rules|
   def parsed_styles(document)
     return @parsed_styles if defined?(@parsed_styles)
     if (styles = element_styles(document)).present?
-      @parsed_styles = styles.split(';').inject({}) do |styles, item|
+      @parsed_styles = styles.split(';').inject([]) do |styles, item|
         attribute, value = item.split(':', 2)
-        styles.merge!(attribute.strip => value.strip)
+        styles << [attribute.strip, value.strip]
       end
     else
       @parsed_styles = nil
