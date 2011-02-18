@@ -1,4 +1,6 @@
 RSpec::Matchers.define :have_attribute do |attribute|
+  @selector = 'body > *:first'
+
   chain :at_selector do |selector|
     @selector = selector
   end
