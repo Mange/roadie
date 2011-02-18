@@ -15,6 +15,11 @@ describe "roadie integration" do
       @reason = reason
       mail(:subject => 'Notification for you', :to => to) { |format| format.html; format.text }
     end
+
+    def marketing(to)
+      headers('X-Spam' => 'No way! Trust us!')
+      mail(:subject => 'Buy cheap v1agra', :to => to)
+    end
   end
 
   before(:each) do
@@ -48,5 +53,10 @@ describe "roadie integration" do
   it "should not add headers for the roadie options" do
     email = IntegrationMailer.notification('doe@example.com', 'no berries left in chest')
     email.header.fields.map(&:name).should_not include('css')
+  end
+
+  it "should keep custom headers in place" do
+    email = IntegrationMailer.marketing('everyone@inter.net')
+    email.header['X-Spam'].should be_present
   end
 end

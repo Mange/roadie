@@ -16,10 +16,9 @@ module Roadie
 
     protected
       def mail_with_inline_styles(headers = {}, &block)
-        # We need to capture the :css settings and remove them so they aren't added as mail headers
         @inline_style_css_targets = headers[:css]
-        mail_without_inline_styles(headers.except(:css), &block).tap do |email|
-          email[:css] = nil
+        mail_without_inline_styles(headers, &block).tap do |email|
+          email.header.fields.delete_if { |field| field.name == 'css' }
         end
       end
 
