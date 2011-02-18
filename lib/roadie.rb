@@ -29,6 +29,7 @@ end
 
 require 'roadie/version'
 require 'roadie/css_file_not_found'
+require 'roadie/style_declaration'
 require 'roadie/inliner'
 
 require 'action_mailer'
