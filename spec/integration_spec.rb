@@ -41,6 +41,12 @@ describe "roadie integration" do
       plain_part.body.decoded.should_not match(/<.*>/)
     end
 
+    # If we deliver mails we can catch weird problems with headers being invalid
     email.deliver
+  end
+
+  it "should not add headers for the roadie options" do
+    email = IntegrationMailer.notification('doe@example.com', 'no berries left in chest')
+    email.header.fields.map(&:name).should_not include('css')
   end
 end
