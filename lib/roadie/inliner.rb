@@ -1,3 +1,5 @@
+require 'set'
+
 module Roadie
   # This class is the core of Roadie as it does all the actual work. You just give it
   # the CSS rules, the HTML and the url_options for rewriting URLs and let it go on
@@ -35,16 +37,18 @@ module Roadie
     # @return [String]
     def execute
       adjust_html do |document|
-        add_missing_structure(document)
-        extract_inline_style_elements(document)
-        inline_css_rules(document)
-        make_image_urls_absolute(document)
-        make_style_urls_absolute(document)
+        @document = document
+        add_missing_structure
+        extract_inline_style_elements
+        inline_css_rules
+        make_image_urls_absolute
+        make_style_urls_absolute
+        @document = nil
       end
     end
 
     private
-      attr_reader :css, :html, :url_options
+      attr_reader :css, :html, :url_options, :document
 
       def inline_css
         @inline_css.join("\n")
@@ -63,7 +67,7 @@ module Roadie
         end.to_html
       end
 
-      def add_missing_structure(document)
+      def add_missing_structure
         html_node = document.at_css('html')
         html_node['xmlns'] ||= 'http://www.w3.org/1999/xhtml'
 
@@ -82,7 +86,7 @@ module Roadie
         end
       end
 
-      def extract_inline_style_elements(document)
+      def extract_inline_style_elements
         document.css("style").each do |style|
           next if style['media'] == 'print' or style['data-immutable']
           @inline_css << style.content
@@ -90,47 +94,60 @@ module Roadie
         end
       end
 
-      def inline_css_rules(document)
-        matched_elements = {}
-        assign_rules_to_elements(document, matched_elements)
+      def inline_css_rules
+        elements_with_declarations.each do |element, declarations|
+          ordered_declarations = []
+          seen_properties = Set.new
+          declarations.sort.reverse_each do |declaration|
+            next if seen_properties.include?(declaration.property)
+            ordered_declarations.unshift(declaration)
+            seen_properties << declaration.property
+          end
 
-        matched_elements.each do |element, rules|
-          sorted_rules = rules.map { |property, rule| [property, rule] }
-          sorted_rules.sort! { |rule_a, rule_b| rule_a[1][:specificity] <=> rule_b[1][:specificity] }
-          rules_string = sorted_rules.map { |rule| [rule[0], rule[1][:value]].join(':')  }.join('; ')
-          element['style'] = [rules_string, element['style']].compact.join('; ')
+          rules_string = ordered_declarations.map { |declaration| declaration.to_s }.join(';')
+          element['style'] = [rules_string, element['style']].compact.join(';')
         end
       end
 
-      def assign_rules_to_elements(document, matched_elements)
-        parsed_css.each_rule_set do |rules|
-          rules.selectors.reject { |selector| selector.include?(':') }.each do |selector|
-            document.css(selector.strip).each do |element|
-              register_rules_for_element(matched_elements, element, selector, rules)
+      def elements_with_declarations
+        Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
+          parsed_css.each_rule_set do |rule_set|
+            each_selector_without_psuedo(rule_set) do |selector, specificity|
+              each_element_in_selector(selector) do |element|
+                style_declarations_in_rule_set(specificity, rule_set) do |declaration|
+                  element_declarations[element] << declaration
+                end
+              end
             end
           end
         end
       end
 
-      def register_rules_for_element(store, element, selector, rules)
-        specificity = CssParser.calculate_specificity(selector)
-        element_rules = (store[element] ||= {})
-        rules.each_declaration do |property, value, important|
-          stored = (element_rules[property] ||= {:specificity => -1})
-          more_specific = (stored[:specificity] <= specificity)
-          if (important and not stored[:important]) or (important and stored[:important] and more_specific) or (more_specific and not stored[:important])
-            stored.merge!(:value => value, :specificity => specificity, :important => important)
-          end
+      def each_selector_without_psuedo(rules)
+        rules.selectors.reject { |selector| selector.include?(':') }.each do |selector|
+          yield selector, CssParser.calculate_specificity(selector)
         end
       end
 
-      def make_image_urls_absolute(document)
+      def each_element_in_selector(selector)
+        document.css(selector.strip).each do |element|
+          yield element
+        end
+      end
+
+      def style_declarations_in_rule_set(specificity, rule_set)
+        rule_set.each_declaration do |property, value, important|
+          yield StyleDeclaration.new(property, value, important, specificity)
+        end
+      end
+
+      def make_image_urls_absolute
         document.css('img').each do |img|
           img['src'] = ensure_absolute_url(img['src']) if img['src']
         end
       end
 
-      def make_style_urls_absolute(document)
+      def make_style_urls_absolute
         document.css('*[style]').each do |element|
           styling = element['style']
           element['style'] = styling.gsub(CSS_URL_REGEXP) { "url(#{$1}#{ensure_absolute_url($2, '/stylesheets')}#{$1})" }

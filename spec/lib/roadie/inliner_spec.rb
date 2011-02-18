@@ -19,8 +19,8 @@ describe Roadie::Inliner do
     end
 
     it "should keep the order of the styles that was inlined" do
-      use_css 'h1 { margin: 2px; padding: 5px; }'
-      rendering('<h1></h1>').should have_styling([['margin', '2px'], ['padding', '5px']]).at_selector('h1')
+      use_css 'h1 { padding: 2px; margin: 5px; }'
+      rendering('<h1></h1>').should have_styling([['padding', '2px'], ['margin', '5px']]).at_selector('h1')
     end
 
     it "should combine multiple selectors into one" do
@@ -31,8 +31,8 @@ describe Roadie::Inliner do
 
     it "should use the ones attributes with the highest specificality when conflicts arises" do
       use_css "p { color: red; }
-              .safe { color: green; border: 1px solid black; }"
-      rendering('<p class="safe"></p>').should have_styling('color' => 'green', 'border' => '1px solid black').at_selector('p')
+              .safe { color: green; }"
+      rendering('<p class="safe"></p>').should have_styling('color' => 'green').at_selector('p')
     end
 
     it "should sort styles by specificity order" do
@@ -68,10 +68,9 @@ describe Roadie::Inliner do
       rendering('<p style="font-size: 1.1em"></p>').should have_styling([['color', 'green'], ['font-size', '1.1em']]).at_selector('p')
     end
 
-    it "should not overwrite already present inline styles" do
-      pending
+    it "should not touch already present inline styles" do
       use_css "p { color: red }"
-      rendering('<p style="color: green"></p>').should have_styling([['color', 'green']]).at_selector('p')
+      rendering('<p style="color: green"></p>').should have_styling([['color', 'red'], ['color', 'green']]).at_selector('p')
     end
 
     it "should ignore selectors with :psuedo-classes" do
@@ -81,7 +80,7 @@ describe Roadie::Inliner do
 
     describe "inline <style> elements" do
       it "should be used for inlined styles" do
-        rendering(<<-HTML).should have_styling('color' => 'green', 'font-size' => '1.1em').at_selector('p')
+        rendering(<<-HTML).should have_styling([['color', 'green'], ['font-size', '1.1em']]).at_selector('p')
           <html>
             <head>
               <style type="text/css">p { color: green; }</style>
