@@ -39,6 +39,7 @@ module Roadie
       adjust_html do |document|
         @document = document
         add_missing_structure
+        extract_link_elements
         extract_inline_style_elements
         inline_css_rules
         make_image_urls_absolute
@@ -86,6 +87,14 @@ module Roadie
         end
       end
 
+      def extract_link_elements
+        document.css("link").each do |link|
+          next if link['media'] == 'print' or link['data-immutable']
+          @inline_css << File.new(File.join(Rails.root, 'public', link['href'].split(/\?/, 2).first)).read
+          link.remove
+        end
+      end
+      
       def extract_inline_style_elements
         document.css("style").each do |style|
           next if style['media'] == 'print' or style['data-immutable']
