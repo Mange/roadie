@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'spec_helper'
 
 describe Roadie::Inliner do
@@ -208,7 +209,10 @@ describe Roadie::Inliner do
     end
 
     it "should insert meta tag describing content-type" do
-      rendering('<html><head></head><body></body></html>').should have_selector('head meta[http-equiv="Content-Type"][content="text/html; charset=utf-8"]')
+      rendering('<html><head></head><body></body></html>').tap do |document|
+        document.should have_selector('head meta[http-equiv="Content-Type"]')
+        document.css('head meta[http-equiv="Content-Type"]').first['content'].should == 'text/html; charset=UTF-8'
+      end
     end
 
     it "should not insert duplicate meta tags describing content-type" do

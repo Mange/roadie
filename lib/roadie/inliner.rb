@@ -78,10 +78,12 @@ module Roadie
           document.at_css('html').children.before(head)
         end
 
+        # This is handled automatically by Nokogiri in Ruby 1.9, IF charset of string != utf-8
+        # We want UTF-8 to be specified as well, so we still do this.
         unless document.at_css('html > head > meta[http-equiv=Content-Type]')
           meta = Nokogiri::XML::Node.new('meta', document)
           meta['http-equiv'] = 'Content-Type'
-          meta['content'] = 'text/html; charset=utf-8'
+          meta['content'] = 'text/html; charset=UTF-8'
           head.add_child(meta)
         end
       end
