@@ -167,10 +167,11 @@ module Roadie
 
       def absolute_url_base(base_path)
         return nil unless url_options
+        port = url_options[:port]
         URI::Generic.build({
           :scheme => url_options[:protocol] || 'http',
           :host => url_options[:host],
-          :port => url_options[:port],
+          :port => (port ? port.to_i : nil),
           :path => base_path
         })
       end

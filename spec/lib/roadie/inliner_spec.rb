@@ -3,7 +3,8 @@ require 'spec_helper'
 describe Roadie::Inliner do
   def use_css(css); @css = css; end
   def rendering(html, options = {})
-    Nokogiri::HTML.parse Roadie::Inliner.new(@css, html, options.fetch(:url_options, {:host => 'example.com'})).execute
+    url_options = options.fetch(:url_options, {:host => 'example.com'})
+    Nokogiri::HTML.parse Roadie::Inliner.new(@css, html, url_options).execute
   end
 
   describe "inlining styles" do
