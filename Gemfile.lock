@@ -4,7 +4,7 @@ PATH
     roadie (1.0.0)
       actionmailer (~> 3.0.0)
       css_parser
-      nokogiri
+      nokogiri (>= 1.4.4)
 
 GEM
   remote: http://rubygems.org/
