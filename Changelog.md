@@ -1,12 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.0.1..master)
+[full changelog](https://github.com/Mange/roadie/compare/v1.0.1...master)
 
 * Nothing yet
 
 ### 1.0.1
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.0.0..v1.0.1)
+[full changelog](https://github.com/Mange/roadie/compare/v1.0.0...v1.0.1)
 
 * Enhancements:
     * Full, official support for Ruby 1.9.2 (in addition to 1.8.7)
@@ -15,7 +15,7 @@
 
 ### 1.0.0
 
-[full changelog](https://github.com/Mange/roadie/compare/legacy..v1.0.0)
+[full changelog](https://github.com/Mange/roadie/compare/legacy...v1.0.0)
 
 Roadie fork!
 
