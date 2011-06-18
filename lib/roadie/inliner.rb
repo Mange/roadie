@@ -94,7 +94,7 @@ module Roadie
           link.remove
         end
       end
-      
+
       def extract_inline_style_elements
         document.css("style").each do |style|
           next if style['media'] == 'print' or style['data-immutable']
