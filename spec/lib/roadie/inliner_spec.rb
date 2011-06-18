@@ -134,6 +134,22 @@ describe Roadie::Inliner do
     end
   end
 
+  describe "inlining linked stylesheets" do
+    it "should inline styles from the linked stylesheet"
+    it "should inline styles from more than one linked stylesheet"
+    it "should remove the stylesheet links from the DOM"
+
+    context "stylesheet is for the print media" do
+      it "should not inline styles"
+      it "should not remove linked stylesheets"
+    end
+
+    context "stylesheet is marked as immutable" do
+      it "should not inline styles"
+      it "should not remove linked stylesheets"
+    end
+  end
+
   describe "making urls absolute" do
     it "should work on image sources" do
       rendering('<img src="/images/foo.jpg" />').should have_attribute('src' => 'http://example.com/images/foo.jpg')
