@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec-rails', '>= 2.0.0'
 
-  s.extra_rdoc_files = %w[README.textile]
+  s.extra_rdoc_files = %w[README.md Changelog.md]
   s.require_paths = %w[lib]
 
   s.files         = `git ls-files`.split("\n")
