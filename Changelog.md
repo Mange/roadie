@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.0.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.0...master)
+
+* Nothing yet
+
+### 1.1.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v1.0.1...v1.1.0)
 
 * Enhancements:
   * Support for inlining `<link>` elements (thanks to [aliix](https://github.com/aliix))
