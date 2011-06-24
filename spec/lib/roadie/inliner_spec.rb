@@ -135,18 +135,154 @@ describe Roadie::Inliner do
   end
 
   describe "inlining linked stylesheets" do
-    it "should inline styles from the linked stylesheet"
-    it "should inline styles from more than one linked stylesheet"
-    it "should remove the stylesheet links from the DOM"
+    before(:each) do
+      Rails.stub(:root => FixturesPath)
+    end
+
+    it "should inline styles from the linked stylesheet" do
+      rendering(<<-HTML).should have_styling('color' => 'green').at_selector('p')
+        <html>
+          <head>
+            <link rel="stylesheet" href="/stylesheets/green_paragraphs.css">
+          </head>
+          <body>
+            <p></p>
+          </body>
+        </html>
+      HTML
+    end
+
+    it "should inline styles from more than one linked stylesheet" do
+      html = <<-HTML
+        <html>
+          <head>
+            <link rel="stylesheet" href="/stylesheets/green_paragraphs.css">
+            <link rel="stylesheet" href="/stylesheets/large_purple_paragraphs.css">
+          </head>
+          <body>
+            <p></p>
+          </body>
+        </html>
+      HTML
+
+      rendering(html).should have_styling([
+        ['color', 'purple'],
+        ['font-size', '18px'],
+      ]).at_selector('p')
+    end
+
+    it "should remove the stylesheet links from the DOM" do
+      rendering(<<-HTML).should_not have_selector('link')
+        <html>
+          <head>
+            <link rel="stylesheet" href="/stylesheets/green_paragraphs.css">
+            <link rel="stylesheet" href="/stylesheets/large_purple_paragraphs.css">
+          </head>
+          <body>
+          </body>
+        </html>
+      HTML
+    end
 
     context "stylesheet is for the print media" do
-      it "should not inline styles"
-      it "should not remove linked stylesheets"
+      it "should not inline styles" do
+        rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
+          <html>
+            <head>
+              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" media="print">
+            </head>
+            <body>
+              <p></p>
+            </body>
+          </html>
+        HTML
+      end
+
+      it "should not remove linked stylesheets" do
+        rendering(<<-HTML).should have_selector('link')
+          <html>
+            <head>
+              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" media="print">
+            </head>
+            <body>
+            </body>
+          </html>
+        HTML
+      end
     end
 
     context "stylesheet is marked as immutable" do
-      it "should not inline styles"
-      it "should not remove linked stylesheets"
+      it "should not inline styles" do
+        rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
+          <html>
+            <head>
+              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" data-immutable="true">
+            </head>
+            <body>
+              <p></p>
+            </body>
+          </html>
+        HTML
+      end
+
+      it "should not remove linked stylesheets" do
+        rendering(<<-HTML).should have_selector('link')
+          <html>
+            <head>
+              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" data-immutable="true">
+            </head>
+            <body>
+            </body>
+          </html>
+        HTML
+      end
+    end
+
+    context "stylesheet link uses full URL" do
+      it "should not inline styles" do
+        rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
+          <html>
+            <head>
+              <link rel="stylesheet" href="http://www.example.com/green_paragraphs.css">
+            </head>
+            <body>
+              <p></p>
+            </body>
+          </html>
+        HTML
+      end
+
+      it "should not remove linked stylesheets" do
+        rendering(<<-HTML).should have_selector('link')
+          <html>
+            <head>
+              <link rel="stylesheet" href="http://www.example.com/green_paragraphs.css">
+            </head>
+            <body>
+            </body>
+          </html>
+        HTML
+      end
+    end
+
+    context "stylesheet cannot be found on disk" do
+      it "raises an error" do
+        html = <<-HTML
+          <html>
+            <head>
+              <link rel="stylesheet" href="/stylesheets/not_found.css">
+            </head>
+            <body>
+            </body>
+          </html>
+        HTML
+
+        expect { rendering(html) }.to raise_error do |error|
+          error.should be_a(Roadie::CSSFileNotFound)
+          error.filename.should == Rails.root.join('public', 'stylesheets', 'not_found.css')
+          error.guess.should == '/stylesheets/not_found.css'
+        end
+      end
     end
   end
 

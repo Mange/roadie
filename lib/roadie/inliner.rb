@@ -88,9 +88,13 @@ module Roadie
       end
 
       def extract_link_elements
-        document.css("link").each do |link|
-          next if link['media'] == 'print' or link['data-immutable']
-          @inline_css << File.new(File.join(Rails.root, 'public', link['href'].split(/\?/, 2).first)).read
+        all_link_elements_to_be_inlined_with_url.each do |link, url|
+          # Joining on an "absolute" path ignores everything before the absoluted path
+          # so we have to remove the starting slash
+          url_path = url.path.sub(%r{^/}, '')
+          file_path = Rails.root.join('public', url_path)
+          raise CSSFileNotFound.new(file_path, link['href']) unless file_path.file?
+          @inline_css << file_path.read
           link.remove
         end
       end
@@ -182,6 +186,19 @@ module Roadie
           :port => url_options[:port],
           :path => base_path
         })
+      end
+
+      def all_link_elements_with_url
+        document.css("link").map { |link| [link, URI.parse(link['href'])] }
+      end
+
+      def all_link_elements_to_be_inlined_with_url
+        all_link_elements_with_url.reject do |link, url|
+          absolute_path_url = (url.host or url.path.nil?)
+          blacklisted_element = (link['media'] == 'print' or link['data-immutable'])
+
+          absolute_path_url or blacklisted_element
+        end
       end
   end
 end
