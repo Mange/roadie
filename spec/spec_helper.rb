@@ -34,3 +34,5 @@ else
   end
 end
 
+FixturesPath = Pathname.new(File.dirname(__FILE__)).join('fixtures')
+

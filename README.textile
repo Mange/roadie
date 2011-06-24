@@ -69,11 +69,11 @@ If you want to to be different depending on your environment, just set it in you
 
 h3. Ignoring stylesheets
 
-By default, @style@ elements in the email document's @head@ are processed along with the stylesheets and removed from the @head@.
+By default, @style@ and @link@ elements in the email document's @head@ are processed along with the stylesheets and removed from the @head@.
 
-You can set a special <code>data-immutable="true"</code> attribute on @style@ tags you do not want to be processed and removed from the document's @head@. This is the place to put things like @:hover@ selectors that you want to have for email clients allowing them.
+You can set a special <code>data-immutable="true"</code> attribute on @style@ and @link@ tags you do not want to be processed and removed from the document's @head@. This is the place to put things like @:hover@ selectors that you want to have for email clients allowing them.
 
-Style elements with <code>media="print"</code> are always ignored.
+Style and link elements with <code>media="print"</code> are always ignored.
 
 h2. Documentation
 

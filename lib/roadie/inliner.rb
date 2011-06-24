@@ -39,6 +39,7 @@ module Roadie
       adjust_html do |document|
         @document = document
         add_missing_structure
+        extract_link_elements
         extract_inline_style_elements
         inline_css_rules
         make_image_urls_absolute
@@ -85,6 +86,18 @@ module Roadie
           meta['http-equiv'] = 'Content-Type'
           meta['content'] = 'text/html; charset=UTF-8'
           head.add_child(meta)
+        end
+      end
+
+      def extract_link_elements
+        all_link_elements_to_be_inlined_with_url.each do |link, url|
+          # Joining on an "absolute" path ignores everything before the absoluted path
+          # so we have to remove the starting slash
+          url_path = url.path.sub(%r{^/}, '')
+          file_path = Rails.root.join('public', url_path)
+          raise CSSFileNotFound.new(file_path, link['href']) unless file_path.file?
+          @inline_css << file_path.read
+          link.remove
         end
       end
 
@@ -176,6 +189,19 @@ module Roadie
           :port => (port ? port.to_i : nil),
           :path => base_path
         })
+      end
+
+      def all_link_elements_with_url
+        document.css("link").map { |link| [link, URI.parse(link['href'])] }
+      end
+
+      def all_link_elements_to_be_inlined_with_url
+        all_link_elements_with_url.reject do |link, url|
+          absolute_path_url = (url.host or url.path.nil?)
+          blacklisted_element = (link['media'] == 'print' or link['data-immutable'])
+
+          absolute_path_url or blacklisted_element
+        end
       end
   end
 end
