@@ -192,7 +192,7 @@ module Roadie
       end
 
       def all_link_elements_with_url
-        document.css("link").map { |link| [link, URI.parse(link['href'])] }
+        document.css("link[rel=stylesheet]").map { |link| [link, URI.parse(link['href'])] }
       end
 
       def all_link_elements_to_be_inlined_with_url

@@ -286,6 +286,25 @@ describe Roadie::Inliner do
         end
       end
     end
+
+    context "link element is not for a stylesheet" do
+      it "is ignored" do
+        html = <<-HTML
+          <html>
+            <head>
+              <link rel="not_stylesheet" href="/stylesheets/green_paragraphs.css">
+            </head>
+            <body>
+              <p></p>
+            </body>
+          </html>
+        HTML
+        rendering(html).tap do |document|
+          document.should_not have_styling('color' => 'green').at_selector('p')
+          document.should have_selector('link')
+        end
+      end
+    end
   end
 
   describe "making urls absolute" do
