@@ -75,6 +75,19 @@ You can set a special <code>data-immutable="true"</code> attribute on @style@ an
 
 Style and link elements with <code>media="print"</code> are always ignored.
 
+h3. Inlining @link@ tags
+
+Any @link@ element that is part of your email will be linked in. You can exclude them by setting @data-immutable@ as you would on normal @style@ elements. Linked stylesheets for print media is also ignored as you would expect.
+
+If the @link@ tag uses an absolute URL to the stylesheet, it will not be inlined. Use a relative path instead:
+
+bc. <head>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/emails/rock.css">        <!-- Will be inlined -->
+  <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">      <!-- Will NOT be inlined -->
+  <link rel="stylesheet" type="text/css" href="/stylesheets/jazz.css" media="print"> <!-- Will NOT be inlined -->
+  <link rel="stylesheet" type="text/css" href="/ambient.css" data-immutable>         <!-- Will NOT be inlined -->
+</head>
+
 h2. Documentation
 
 * "Online documentation for master":http://rubydoc.info/github/Mange/roadie/master/frames
