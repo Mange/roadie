@@ -105,16 +105,19 @@ If the `link` tag uses an absolute URL to the stylesheet, it will not be inlined
 </head>
 ```
 
-Documentation
--------------
-
-* [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
-
 Bugs / TODO
 -----------
 
 * Improve overall performance
 * Clean up stylesheet assignment code
+
+Documentation
+-------------
+
+* [Online documentation for 1.0.1](http://rubydoc.info/gems/roadie/1.0.1/frames)
+* [Online documentation for 1.0.0](http://rubydoc.info/gems/roadie/1.0.0/frames)
+* [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
+* [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
 History and contributors
 ------------------------
