@@ -27,7 +27,7 @@ describe "roadie integration" do
     IntegrationMailer.delivery_method = :test
   end
 
-  it "should inline styles for an email" do
+  it "inlines styles for an email" do
     email = IntegrationMailer.notification('doe@example.com', 'your quota limit has been reached')
 
     email.to.should == ['doe@example.com']
@@ -50,12 +50,12 @@ describe "roadie integration" do
     email.deliver
   end
 
-  it "should not add headers for the roadie options" do
+  it "does not add headers for the roadie options" do
     email = IntegrationMailer.notification('doe@example.com', 'no berries left in chest')
     email.header.fields.map(&:name).should_not include('css')
   end
 
-  it "should keep custom headers in place" do
+  it "keeps custom headers in place" do
     email = IntegrationMailer.marketing('everyone@inter.net')
     email.header['X-Spam'].should be_present
   end
