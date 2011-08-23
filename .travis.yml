@@ -1,0 +1,6 @@
+rvm:
+  - 1.8.7
+  - 1.9.2
+gemfile:
+  - gemfiles/rails-3.0.x.Gemfile
+  - gemfiles/rails-3.1.x.Gemfile

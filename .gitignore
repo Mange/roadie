@@ -6,3 +6,5 @@ pkg
 .rspec
 .idea/*
 .rvmrc
+
+gemfiles/*.lock
