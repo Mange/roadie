@@ -18,6 +18,20 @@ Roadie also rewrites all relative URLs in the email to a absolute counterpart, m
 
 ¹: Of course, rules like `:hover` will not work by definition. Only static styles can be added.
 
+Build Status
+------------
+
+![Build status](https://secure.travis-ci.org/Mange/Roadie.png)
+
+Tested with [Travis CI](http://travis-ci.org) using the following combinations:
+
+* Ruby 1.8.7 with Rails 3.0.x
+* Ruby 1.9.2 with Rails 3.0.x
+* Ruby 1.8.7 with Rails 3.1.x
+* Ruby 1.9.2 with Rails 3.1.x
+
+Let me know if you want any other combination supported officially
+
 Features
 --------
 
@@ -38,8 +52,6 @@ Sass is supported "by accident" as long as the stylesheets are generated and sto
 
 Install
 -------
-
-Roadie is officially supported in both Ruby 1.8.7 and 1.9.2.
 
 Add the gem to Rails' Gemfile
 
