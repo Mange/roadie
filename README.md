@@ -21,7 +21,7 @@ Roadie also rewrites all relative URLs in the email to a absolute counterpart, m
 Build Status
 ------------
 
-![Build status](https://secure.travis-ci.org/Mange/Roadie.png)
+![Build status](https://secure.travis-ci.org/Mange/roadie.png)
 
 Tested with [Travis CI](http://travis-ci.org) using the following combinations:
 
