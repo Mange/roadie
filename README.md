@@ -21,9 +21,9 @@ Roadie also rewrites all relative URLs in the email to a absolute counterpart, m
 Build Status
 ------------
 
-![Build status](https://secure.travis-ci.org/Mange/roadie.png)
+[![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
 
-Tested with [Travis CI](http://travis-ci.org) using the following combinations:
+Tested with [Travis CI](http://travis-ci.org) using the [following combinations](http://travis-ci.org/#!/Mange/roadie):
 
 * Ruby 1.8.7 with Rails 3.0.x
 * Ruby 1.9.2 with Rails 3.0.x
