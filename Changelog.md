@@ -1,8 +1,16 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.1.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.1...master)
 
 * Nothing yet
+
+### 1.1.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.0...v1.1.1)
+
+* Support for Rails 3.1.x (RC4 and later)
+  * Rails 3.0.x is still supported
+* Added CI via [Travis CI](http://travis-ci.org)
 
 ### 1.1.0
 
@@ -16,9 +24,9 @@
 [full changelog](https://github.com/Mange/roadie/compare/v1.0.0...v1.0.1)
 
 * Enhancements:
-    * Full, official support for Ruby 1.9.2 (in addition to 1.8.7)
+  * Full, official support for Ruby 1.9.2 (in addition to 1.8.7)
 * Dependencies:
-    * Explicilty depend on nokogiri >= 1.4.4
+  * Explicilty depend on nokogiri >= 1.4.4
 
 ### 1.0.0
 
