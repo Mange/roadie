@@ -59,4 +59,13 @@ describe "roadie integration" do
     email = IntegrationMailer.marketing('everyone@inter.net')
     email.header['X-Spam'].should be_present
   end
+
+  it "applies CSS3 styles" do
+    email = IntegrationMailer.notification('doe@example.com', 'your quota limit has been reached')
+    document = Nokogiri::HTML.parse(email.html_part.body.decoded)
+    strong_node = document.css('strong').first
+    stylings = SpecHelpers.styling_of_node(strong_node)
+    stylings.should include(['box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
+    stylings.should include(['-o-box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
+  end
 end

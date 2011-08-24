@@ -20,6 +20,16 @@ describe Roadie::Inliner do
       rendering('<p></p>').should have_styling('color' => 'green')
     end
 
+    it "inlines browser-prefixed attributes" do
+      use_css 'p { -vendor-color: green }'
+      rendering('<p></p>').should have_styling('-vendor-color' => 'green')
+    end
+
+    it "inlines CSS3 attributes" do
+      use_css 'p { border-radius: 2px; }'
+      rendering('<p></p>').should have_styling('border-radius' => '2px')
+    end
+
     it "keeps the order of the styles that are inlined" do
       use_css 'h1 { padding: 2px; margin: 5px; }'
       rendering('<h1></h1>').should have_styling([['padding', '2px'], ['margin', '5px']])

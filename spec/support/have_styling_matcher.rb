@@ -18,19 +18,8 @@ RSpec::Matchers.define :have_styling do |rules|
   failure_message_for_should_not { "expected styles at #{@selector.inspect} to not be #{rules.inspect}" }
 
   def parsed_styles(document)
-    parse_styles(element_style(document))
-  end
-
-  def element_style(document)
     node = document.css(@selector).first
-    node && node['style']
-  end
-
-  def parse_styles(styles)
-    return [] if styles.blank?
-    styles.split(';').inject([]) do |array, item|
-      array << item.split(':', 2).map(&:strip)
-    end
+    SpecHelpers.styling_of_node(node)
   end
 end
 
