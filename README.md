@@ -126,7 +126,7 @@ Bugs / TODO
 Documentation
 -------------
 
-* [Online documentation for 1.1.1](http://rubydoc.info/gems/roadie/1.1.1/frames)
+* [Online documentation for 1.1.2](http://rubydoc.info/gems/roadie/1.1.2/frames)
 * [Online documentation for 1.0.1](http://rubydoc.info/gems/roadie/1.0.1/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)

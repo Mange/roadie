@@ -1,14 +1,20 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.1.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.2...master)
 
 * Nothing yet
+
+### 1.1.2
+
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.1...v1.1.2)
+
+* Support for Rails 3.1.0 and later inside gemspec
 
 ### 1.1.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.1.0...v1.1.1)
 
-* Support for Rails 3.1.x (RC4 and later)
+* Support for Rails 3.1.x (up to and including RC4)
   * Rails 3.0.x is still supported
 * Added CI via [Travis CI](http://travis-ci.org)
 
