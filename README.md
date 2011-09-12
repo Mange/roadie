@@ -123,6 +123,14 @@ Bugs / TODO
 * Improve overall performance
 * Clean up stylesheet assignment code
 
+Getting segmentation faults or other C-like problems?
+-----------------------------------------------------
+
+Roadie uses Nokogiri to parse the HTML of your email, so any C-like problems like segfaults are likely in that end. The best way to fix this is to first upgrade libxml2 on your system and then reinstall Nokogiri.
+Instructions on how to do this on most platforms, see [Nokogiri's official install guide](http://nokogiri.org/tutorials/installing_nokogiri.html).
+
+Note that on my Mac OS X boxes, I don't have to do it as complex as they do it in the guide since I didn't install libxslt. YMMW.
+
 Documentation
 -------------
 
