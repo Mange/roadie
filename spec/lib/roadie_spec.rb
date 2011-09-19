@@ -13,6 +13,7 @@ describe Roadie do
 
     it "loads files matching the target names under root/public/stylesheets" do
       Roadie.load_css(fixtures_root, ['foo']).should == 'contents of foo'
+      Roadie.load_css(fixtures_root, ['foo.css']).should == 'contents of foo'
     end
 
     it "loads files in order and join them with a newline" do
