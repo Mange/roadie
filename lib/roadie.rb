@@ -23,7 +23,10 @@ module Roadie
 
   private
     def self.css_files_from_targets(root, targets)
-      targets.map { |target| root.join("#{target}.css") }
+      targets.map do |target| 
+        target = "#{target}.css" unless target.to_s.end_with? '.css'
+        root.join(target)
+      end
     end
 end
 
