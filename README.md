@@ -78,7 +78,7 @@ class Notifier < ActionMailer::Base
 end
 ```
 
-This will look for a css file called `email.css` in your `public/stylesheets` folder. The `css` method can take either a string, a symbol or an array of both. You should pass the CSS filename without the ".css" extension.
+This will look for a css file called `email.css` in your `public/stylesheets` folder. The `css` method can take either a string, a symbol or an array of both. The ".css" extension will be added automatically.
 
 ### Image URL rewriting ###
 
