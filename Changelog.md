@@ -1,8 +1,14 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.1.2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.3...master)
 
 * Nothing yet
+
+### 1.1.3
+
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.2...v1.1.3)
+
+* Do not add another ".css" to filenames if already present - [Aliaxandr (saks)](https://github.com/saks)
 
 ### 1.1.2
 
