@@ -5,29 +5,20 @@ module Roadie
     Roadie::Inliner.new(*args).execute
   end
 
-  # Tries to load the CSS "names" specified in the +targets+ parameter inside the +root+ path.
+  # Tries to load the CSS "names" specified in the +targets+ parameter using the Rails asset pipeline.
   #
   # @example
-  #   Roadie.load_css(Rails.root, %w[application newsletter])
+  #   Roadie.load_css(%w[application newsletter])
   #
-  # @param [Pathname] root The root path of your stylesheets
   # @param [Array<String, Symbol>] targets Stylesheet names - <b>without extensions</b>
   # @return [String] The combined contents of the CSS files
-  # @raise [CSSFileNotFound] When a target cannot be found under +[root]/[target].css+
-  def self.load_css(root, targets)
-    css_files_from_targets(root, targets).map do |file|
-      raise CSSFileNotFound, file unless file.exist?
-      file.read
+  # @raise [CSSFileNotFound] When a target cannot be found from Rails assets
+  def self.load_css(targets)
+    targets.map do |file|
+      raise CSSFileNotFound, file unless Rails.application.assets[file]
+      Rails.application.assets[file].to_s.strip
     end.join("\n")
   end
-
-  private
-    def self.css_files_from_targets(root, targets)
-      targets.map do |target| 
-        target = "#{target}.css" unless target.to_s.end_with? '.css'
-        root.join(target)
-      end
-    end
 end
 
 require 'roadie/version'

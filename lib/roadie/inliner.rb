@@ -25,12 +25,13 @@ module Roadie
     #
     # @param [String] css
     # @param [String] html
-    # @param [Hash] url_options Supported keys: +:host+, +:port+ and +:protocol+
+    # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+ and +:asset_path_prefix:+
     def initialize(css, html, url_options)
       @css = css
       @inline_css = []
       @html = html
       @url_options = url_options
+      @asset_path_prefix = (url_options && url_options[:asset_path_prefix] || "/assets/")
     end
 
     # Start the inlining and return the final HTML output
@@ -91,12 +92,11 @@ module Roadie
 
       def extract_link_elements
         all_link_elements_to_be_inlined_with_url.each do |link, url|
-          # Joining on an "absolute" path ignores everything before the absoluted path
-          # so we have to remove the starting slash
-          url_path = url.path.sub(%r{^/}, '')
-          file_path = Rails.root.join('public', url_path)
-          raise CSSFileNotFound.new(file_path, link['href']) unless file_path.file?
-          @inline_css << file_path.read
+          # Remove asset path prefix from url and pass the rest to Rails asset pipeline
+          asset_filename = url.path.gsub(@asset_path_prefix, '')
+          asset = Rails.application.assets[asset_filename]
+          raise CSSFileNotFound.new(asset_filename, link['href']) if !asset
+          @inline_css << asset.to_s
           link.remove
         end
       end

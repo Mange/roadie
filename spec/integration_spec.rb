@@ -5,6 +5,11 @@ describe "roadie integration" do
     def config
       OpenStruct.new(:action_mailer => OpenStruct.new(:default_url_options => {:host => "example.app.org"}))
     end
+    def assets
+      env = ::Sprockets::Environment.new
+      env.append_path FixturesPath
+      env
+    end
   end
 
   class IntegrationMailer < ActionMailer::Base

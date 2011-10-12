@@ -80,17 +80,17 @@ describe Roadie::ActionMailerExtensions, "loading css files" do
   end
 
   it "loads css from Rails' stylesheet root" do
-    Roadie.should_receive(:load_css).with(Rails.root.join('public', 'stylesheets'), anything).and_return('')
+    Roadie.should_receive(:load_css).with(anything).and_return('')
     CssLoadingMailer.use_default
   end
 
   it "loads the css specified in the default mailer settings" do
-    Roadie.should_receive(:load_css).with(anything, ['default_value']).and_return('')
+    Roadie.should_receive(:load_css).with(['default_value']).and_return('')
     CssLoadingMailer.use_default
   end
 
   it "loads the css specified in the specific mailer action instead of the default choice" do
-    Roadie.should_receive(:load_css).with(anything, ['specific']).and_return('')
+    Roadie.should_receive(:load_css).with(['specific']).and_return('')
     CssLoadingMailer.override(:specific)
   end
 
@@ -100,7 +100,7 @@ describe Roadie::ActionMailerExtensions, "loading css files" do
   end
 
   it "loads multiple css files when given an array" do
-    Roadie.should_receive(:load_css).with(anything, ['specific', 'other']).and_return('')
+    Roadie.should_receive(:load_css).with(['specific', 'other']).and_return('')
     CssLoadingMailer.override([:specific, :other])
   end
 end

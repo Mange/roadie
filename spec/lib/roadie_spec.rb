@@ -8,21 +8,24 @@ describe Roadie do
     end
   end
 
-  describe ".load_css(root, targets)" do
-    let(:fixtures_root) { Pathname.new(__FILE__).dirname.join('..', 'fixtures', 'public', 'stylesheets') }
-
-    it "loads files matching the target names under root/public/stylesheets" do
-      Roadie.load_css(fixtures_root, ['foo']).should == 'contents of foo'
-      Roadie.load_css(fixtures_root, ['foo.css']).should == 'contents of foo'
+  describe ".load_css(targets)" do
+    it "loads files matching the target names in Rails assets" do
+      Roadie.load_css(['foo']).should == 'contents of foo'
+      Roadie.load_css(['foo.css']).should == 'contents of foo'
     end
 
     it "loads files in order and join them with a newline" do
-      Roadie.load_css(fixtures_root, %w[foo bar]).should == "contents of foo\ncontents of bar"
-      Roadie.load_css(fixtures_root, %w[bar foo]).should == "contents of bar\ncontents of foo"
+      Roadie.load_css(%w[foo bar]).should == "contents of foo\ncontents of bar"
+      Roadie.load_css(%w[bar foo]).should == "contents of bar\ncontents of foo"
+    end
+
+    it "loads files also from asset subdirectories" do
+      Roadie.load_css(%w[foo subdirectory/findme.css]).should == "contents of foo\ncan you really find me?"
+      Roadie.load_css(%w[bar foo]).should == "contents of bar\ncontents of foo"
     end
 
     it "raises a Roadie::CSSFileNotFound error when a css file could not be found" do
-      expect { Roadie.load_css(fixtures_root, ['not_here']) }.to raise_error(Roadie::CSSFileNotFound, /not_here/)
+      expect { Roadie.load_css(['not_here']) }.to raise_error(Roadie::CSSFileNotFound, /not_here/)
     end
   end
 end
