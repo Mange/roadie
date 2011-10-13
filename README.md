@@ -5,6 +5,8 @@ Roadie
 
 Roadie tries to make sending HTML emails a little less painful in Rails 3 by inlining stylesheets and rewrite relative URLs for you.
 
+You are currently looking at the README for version 2.0 and later which requires Rails 3.1. This gem can be used with Rails 3.0 by staying with the 1.x series.
+
 If you want to have this in Rails 2, please see [MailStyle](https://www.github.com/purify/mail_style).
 
 How does it work?
@@ -25,12 +27,20 @@ Build Status
 
 Tested with [Travis CI](http://travis-ci.org) using the [following combinations](http://travis-ci.org/#!/Mange/roadie):
 
-* Ruby 1.8.7 with Rails 3.0.x
-* Ruby 1.9.2 with Rails 3.0.x
 * Ruby 1.8.7 with Rails 3.1.x
 * Ruby 1.9.2 with Rails 3.1.x
 
 Let me know if you want any other combination supported officially
+
+### Versioning ###
+
+This project follows [Semtantic Versioning](http://semver.org/) and has been since version 1.0.0.
+
+Two branches are currently in place:
+* 2.x - Rails 3.1
+* 1.x - Rails 3.0
+
+The 1.x branch will continue to be supported until it is deemed unnecessary by the author, but properly made pull requests will be accepted indefinitely.
 
 Features
 --------
@@ -48,7 +58,7 @@ Features
 
 ### What about Sass / Less? ###
 
-Sass is supported "by accident" as long as the stylesheets are generated and stored in the stylesheets directory. This is the default behavior from Sass. You are recommended to add a deploy task that generates the stylesheets to make sure that they are present at all times.
+Sass is supported "by accident" as long as the stylesheets are generated and stored in the asset directories. You are recommended to add a deploy task that generates the stylesheets to make sure that they are present at all times on the machine generating the emails.
 
 Install
 -------
@@ -78,7 +88,7 @@ class Notifier < ActionMailer::Base
 end
 ```
 
-This will look for a css file called `email.css` in your `public/stylesheets` folder. The `css` method can take either a string, a symbol or an array of both. The ".css" extension will be added automatically.
+This will look for a css file called `email.css` in your assets. The `css` method can take either a string, a symbol or an array of both. The ".css" extension will be added automatically.
 
 ### Image URL rewriting ###
 
@@ -110,9 +120,9 @@ If the `link` tag uses an absolute URL to the stylesheet, it will not be inlined
 
 ```html
 <head>
-  <link rel="stylesheet" type="text/css" href="/stylesheets/emails/rock.css">        <!-- Will be inlined -->
+  <link rel="stylesheet" type="text/css" href="/assets/emails/rock.css">             <!-- Will be inlined -->
   <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">      <!-- Will NOT be inlined -->
-  <link rel="stylesheet" type="text/css" href="/stylesheets/jazz.css" media="print"> <!-- Will NOT be inlined -->
+  <link rel="stylesheet" type="text/css" href="/assets/jazz.css" media="print">      <!-- Will NOT be inlined -->
   <link rel="stylesheet" type="text/css" href="/ambient.css" data-immutable>         <!-- Will NOT be inlined -->
 </head>
 ```
@@ -134,13 +144,19 @@ Note that on my Mac OS X boxes, I don't have to do it as complex as they do it i
 Documentation
 -------------
 
-* [Online documentation for 1.1.2](http://rubydoc.info/gems/roadie/1.1.2/frames)
-* [Online documentation for 1.0.1](http://rubydoc.info/gems/roadie/1.0.1/frames)
+* [Online documentation for 2.0.0](http://rubydoc.info/gems/roadie/2.0.0/frames)
+* [Online documentation for 1.1.3](http://rubydoc.info/gems/roadie/1.1.3/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
 History and contributors
 ------------------------
+
+Major contributors to Roadie:
+
+* [Arttu Tervo (arttu)](https://github.com/arttu) - Asset pipeline support
+
+You can [see all contributors](https://github.com/Mange/roadie/contributors) on GitHub.
 
 This gem was originally developed for Rails 2 use on [Purify](http://purifyapp.com) under the name [MailStyle](https://www.github.com/purify/mail_style). However, the author stopped maintaining it and a fork took place to make it Rails 3 compatible.
 

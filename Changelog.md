@@ -1,8 +1,17 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v1.1.3...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.0.0...master)
 
 * Nothing yet
+
+### 2.0.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v1.1.3...v2.0.0)
+
+* Enhancements:
+  * Support the Asset pipeline - [Arttu Tervo (arttu)](https://github.com/arttu)
+* Dependencies:
+  * Requires Rails 3.1 to work. You can keep on using the 1.x series in Rails 3.0
 
 ### 1.1.3
 
