@@ -37,6 +37,7 @@ Let me know if you want any other combination supported officially
 This project follows [Semtantic Versioning](http://semver.org/) and has been since version 1.0.0.
 
 Two branches are currently in place:
+
 * 2.x - Rails 3.1
 * 1.x - Rails 3.0
 
