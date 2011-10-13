@@ -63,6 +63,13 @@ module Roadie
         end
       end
 
+      def find_asset_from_url(url)
+        asset_filename = url.path.sub(/^#{Regexp.quote(@asset_path_prefix)}/, '').gsub(%r{^/|//+}, '')
+        Rails.application.assets[asset_filename].tap do |asset|
+          raise CSSFileNotFound.new(asset_filename, url) unless asset
+        end
+      end
+
       def adjust_html
         Nokogiri::HTML.parse(html).tap do |document|
           yield document
@@ -92,10 +99,7 @@ module Roadie
 
       def extract_link_elements
         all_link_elements_to_be_inlined_with_url.each do |link, url|
-          # Remove asset path prefix from url and pass the rest to Rails asset pipeline
-          asset_filename = url.path.gsub(@asset_path_prefix, '')
-          asset = Rails.application.assets[asset_filename]
-          raise CSSFileNotFound.new(asset_filename, link['href']) if !asset
+          asset = find_asset_from_url(url)
           @inline_css << asset.to_s
           link.remove
         end
