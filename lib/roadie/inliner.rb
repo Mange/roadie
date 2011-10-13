@@ -65,7 +65,7 @@ module Roadie
 
       def find_asset_from_url(url)
         asset_filename = url.path.sub(/^#{Regexp.quote(@asset_path_prefix)}/, '').gsub(%r{^/|//+}, '')
-        Rails.application.assets[asset_filename].tap do |asset|
+        Roadie.assets[asset_filename].tap do |asset|
           raise CSSFileNotFound.new(asset_filename, url) unless asset
         end
       end

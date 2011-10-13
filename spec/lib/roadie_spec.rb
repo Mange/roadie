@@ -8,6 +8,13 @@ describe Roadie do
     end
   end
 
+  describe ".assets" do
+    it "delegates to Rails.application.assets" do
+      Rails.stub(:application => double(:assets => 'assets'))
+      Roadie.assets.should == 'assets'
+    end
+  end
+
   describe ".load_css(targets)" do
     it "loads files matching the target names in Rails assets" do
       Roadie.load_css(['foo']).should == 'contents of foo'
