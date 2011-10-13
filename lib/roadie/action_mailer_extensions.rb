@@ -32,10 +32,6 @@ module Roadie
         Rails.application.config.action_mailer.default_url_options
       end
 
-      def stylesheet_root
-        Rails.root.join('public', 'stylesheets')
-      end
-
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
           response.merge :body => Roadie.inline_css(css_rules, response[:body], url_options)
@@ -50,7 +46,7 @@ module Roadie
       end
 
       def css_rules
-        @css_rules ||= Roadie.load_css(stylesheet_root, css_targets) if css_targets.present?
+        @css_rules ||= Roadie.load_css(css_targets) if css_targets.present?
       end
   end
 end

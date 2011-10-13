@@ -157,7 +157,20 @@ describe Roadie::Inliner do
       rendering(<<-HTML).should have_styling('color' => 'green').at_selector('p')
         <html>
           <head>
-            <link rel="stylesheet" href="/stylesheets/green_paragraphs.css">
+            <link rel="stylesheet" href="/assets/green_paragraphs.css">
+          </head>
+          <body>
+            <p></p>
+          </body>
+        </html>
+      HTML
+    end
+
+    it "inlines styles from the linked stylesheet in subdirectory" do
+      rendering(<<-HTML).should have_styling('color' => 'red').at_selector('p')
+        <html>
+          <head>
+            <link rel="stylesheet" href="/assets/subdirectory/red_paragraphs.css">
           </head>
           <body>
             <p></p>
@@ -170,8 +183,8 @@ describe Roadie::Inliner do
       html = <<-HTML
         <html>
           <head>
-            <link rel="stylesheet" href="/stylesheets/green_paragraphs.css">
-            <link rel="stylesheet" href="/stylesheets/large_purple_paragraphs.css">
+            <link rel="stylesheet" href="/assets/green_paragraphs.css">
+            <link rel="stylesheet" href="/assets/large_purple_paragraphs.css">
           </head>
           <body>
             <p></p>
@@ -189,8 +202,8 @@ describe Roadie::Inliner do
       rendering(<<-HTML).should_not have_selector('link')
         <html>
           <head>
-            <link rel="stylesheet" href="/stylesheets/green_paragraphs.css">
-            <link rel="stylesheet" href="/stylesheets/large_purple_paragraphs.css">
+            <link rel="stylesheet" href="/assets/green_paragraphs.css">
+            <link rel="stylesheet" href="/assets/large_purple_paragraphs.css">
           </head>
           <body>
           </body>
@@ -203,7 +216,7 @@ describe Roadie::Inliner do
         rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
           <html>
             <head>
-              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" media="print">
+              <link rel="stylesheet" href="/assets/green_paragraphs.css" media="print">
             </head>
             <body>
               <p></p>
@@ -216,7 +229,7 @@ describe Roadie::Inliner do
         rendering(<<-HTML).should have_selector('link')
           <html>
             <head>
-              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" media="print">
+              <link rel="stylesheet" href="/assets/green_paragraphs.css" media="print">
             </head>
             <body>
             </body>
@@ -230,7 +243,7 @@ describe Roadie::Inliner do
         rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
           <html>
             <head>
-              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" data-immutable="true">
+              <link rel="stylesheet" href="/assets/green_paragraphs.css" data-immutable="true">
             </head>
             <body>
               <p></p>
@@ -243,7 +256,7 @@ describe Roadie::Inliner do
         rendering(<<-HTML).should have_selector('link')
           <html>
             <head>
-              <link rel="stylesheet" href="/stylesheets/green_paragraphs.css" data-immutable="true">
+              <link rel="stylesheet" href="/assets/green_paragraphs.css" data-immutable="true">
             </head>
             <body>
             </body>
@@ -284,7 +297,7 @@ describe Roadie::Inliner do
         html = <<-HTML
           <html>
             <head>
-              <link rel="stylesheet" href="/stylesheets/not_found.css">
+              <link rel="stylesheet" href="/assets/not_found.css">
             </head>
             <body>
             </body>
@@ -293,8 +306,8 @@ describe Roadie::Inliner do
 
         expect { rendering(html) }.to raise_error do |error|
           error.should be_a(Roadie::CSSFileNotFound)
-          error.filename.should == Rails.root.join('public', 'stylesheets', 'not_found.css')
-          error.guess.should == '/stylesheets/not_found.css'
+          error.filename.should == Rails.application.assets['not_found.css']
+          error.guess.should == '/assets/not_found.css'
         end
       end
     end
@@ -304,7 +317,7 @@ describe Roadie::Inliner do
         html = <<-HTML
           <html>
             <head>
-              <link rel="not_stylesheet" href="/stylesheets/green_paragraphs.css">
+              <link rel="not_stylesheet" href="/assets/green_paragraphs.css">
             </head>
             <body>
               <p></p>
