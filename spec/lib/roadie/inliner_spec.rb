@@ -167,7 +167,7 @@ describe Roadie::Inliner do
     end
 
     it "inlines styles from the linked stylesheet in subdirectory" do
-      rendering(<<-HTML).should have_styling('color' => 'green').at_selector('p')
+      rendering(<<-HTML).should have_styling('color' => 'red').at_selector('p')
         <html>
           <head>
             <link rel="stylesheet" href="/assets/subdirectory/red_paragraphs.css">
