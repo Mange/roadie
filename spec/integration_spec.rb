@@ -1,17 +1,6 @@
 require 'spec_helper'
 
 describe "roadie integration" do
-  class TestApplication
-    def config
-      OpenStruct.new(:action_mailer => OpenStruct.new(:default_url_options => {:host => "example.app.org"}))
-    end
-    def assets
-      env = ::Sprockets::Environment.new
-      env.append_path FixturesPath
-      env
-    end
-  end
-
   class IntegrationMailer < ActionMailer::Base
     default :css => :integration, :from => 'john@example.com'
     append_view_path Pathname.new(__FILE__).dirname.join('fixtures').join('views')
@@ -28,7 +17,10 @@ describe "roadie integration" do
   end
 
   before(:each) do
-    Rails.stub!(:root => Pathname.new(__FILE__).dirname.join('fixtures'), :application => TestApplication.new)
+    config = double(:action_mailer => double(:default_url_options => {:host => "example.app.org"}))
+    Rails.application.stub(:config => config)
+
+    Rails.stub(:root => Pathname.new(__FILE__).dirname.join('fixtures'))
     IntegrationMailer.delivery_method = :test
   end
 
