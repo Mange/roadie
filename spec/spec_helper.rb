@@ -32,10 +32,9 @@ class TestApplication
 end
 
 if defined?(Rails)
-  Rails.stub!(:root => Pathname.new('/path/to'), :application => TestApplication.new)
+  Rails.stub!(:application => TestApplication.new)
 else
   class Rails
-    def self.root; Pathname.new('/path/to'); end
     def self.application; TestApplication.new; end
   end
 end

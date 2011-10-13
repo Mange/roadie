@@ -79,7 +79,7 @@ describe Roadie::ActionMailerExtensions, "loading css files" do
     Roadie.stub!(:inline_css => 'html')
   end
 
-  it "loads css from Rails' stylesheet root" do
+  it "loads css from Roadie" do
     Roadie.should_receive(:load_css).with(anything).and_return('')
     CssLoadingMailer.use_default
   end
