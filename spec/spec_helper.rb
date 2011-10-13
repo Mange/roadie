@@ -18,7 +18,8 @@ require 'action_mailer'
 require 'sprockets'
 require 'roadie'
 
-FIXTURES_PATH = Pathname.new(File.dirname(__FILE__)).join('fixtures','app','assets','stylesheets')
+FIXTURES_PATH = Pathname.new(File.dirname(__FILE__)).join('fixtures')
+
 class TestApplication
   def config
     OpenStruct.new(:action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}))
@@ -26,7 +27,7 @@ class TestApplication
 
   def assets
     env = Sprockets::Environment.new
-    env.append_path FIXTURES_PATH
+    env.append_path FIXTURES_PATH.join('app','assets','stylesheets')
     env
   end
 end

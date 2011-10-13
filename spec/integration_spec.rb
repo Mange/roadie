@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "roadie integration" do
   class IntegrationMailer < ActionMailer::Base
     default :css => :integration, :from => 'john@example.com'
-    append_view_path Pathname.new(__FILE__).dirname.join('fixtures').join('views')
+    append_view_path FIXTURES_PATH.join('views')
 
     def notification(to, reason)
       @reason = reason
@@ -20,7 +20,7 @@ describe "roadie integration" do
     config = double(:action_mailer => double(:default_url_options => {:host => "example.app.org"}))
     Rails.application.stub(:config => config)
 
-    Rails.stub(:root => Pathname.new(__FILE__).dirname.join('fixtures'))
+    Rails.stub(:root => FIXTURES_PATH)
     IntegrationMailer.delivery_method = :test
   end
 
