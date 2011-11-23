@@ -61,6 +61,17 @@ describe Roadie::Inliner do
       ])
     end
 
+    it "supports properties set multiple times" do
+      # This is necessary for instance to support different browser implementations of CSS3 gradients
+      use_css 'p {
+        background:-moz-linear-gradient;
+        background:-webkit-gradient;
+        }'
+      rendering('<p></p>').should have_styling([
+        ['background', '-moz-linear-gradient'], ['background', '-webkit-gradient']
+      ])
+    end
+
     it "supports multiple selectors for the same rules" do
       use_css 'p, a { color: green; }'
       rendering('<p></p><a></a>').tap do |document|
