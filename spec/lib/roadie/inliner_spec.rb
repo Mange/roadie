@@ -13,6 +13,14 @@ describe Roadie::Inliner do
     Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options).execute
   end
 
+  describe "initialization" do
+    it "warns about asset_path_prefix being non-functional" do
+      expect {
+        Roadie::Inliner.new(provider, [], '', :asset_path_prefix => 'foo')
+      }.to raise_error(ArgumentError, /asset_path_prefix/)
+    end
+  end
+
   describe "inlining styles" do
     before(:each) do
       # Make sure to have some css even when we don't specify any

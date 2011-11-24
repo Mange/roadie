@@ -21,7 +21,7 @@ module Roadie
       \)
     }x
 
-    # Initialize a new Inliner with the given CSS, HTML and url_options.
+    # Initialize a new Inliner with the given Provider, CSS targets, HTML, and `url_options`.
     #
     # @param [AssetProvider] assets
     # @param [Array] targets List of CSS files to load via the provider
@@ -33,8 +33,12 @@ module Roadie
       @html = html
       @inline_css = []
       @url_options = url_options
-      # TODO: Move away
-      @asset_path_prefix = (url_options && url_options[:asset_path_prefix] || "/assets/")
+
+      if url_options and url_options[:asset_path_prefix]
+        raise ArgumentError, "The asset_path_prefix URL option is not working anymore. You need to add the following configuration to your application.rb:\n" +
+                             "    config.roadie.provider = AssetPipelineProvider.new(#{url_options[:asset_path_prefix].inspect})\n" +
+                             "Note that the prefix \"/assets\" is the default one, so you do not need to configure anything in that case."
+      end
     end
 
     # Start the inlining and return the final HTML output
