@@ -95,7 +95,7 @@ module Roadie
 
       def extract_link_elements
         all_link_elements_to_be_inlined_with_url.each do |link, url|
-          asset = assets.find_asset_from_url(url.path)
+          asset = assets.content_of_file(url.path)
           @inline_css << asset.to_s
           link.remove
         end

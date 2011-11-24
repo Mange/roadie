@@ -155,7 +155,7 @@ describe Roadie::Inliner do
 
   describe "linked stylesheets" do
     def fake_file(name, contents)
-      provider.should_receive(:find_asset_from_url).with(name).and_return(contents)
+      provider.should_receive(:content_of_file).with(name).and_return(contents)
     end
 
     it "inlines styles from the linked stylesheet" do
@@ -211,7 +211,7 @@ describe Roadie::Inliner do
     end
 
     it "removes the stylesheet links from the DOM" do
-      provider.stub(:find_asset_from_url => '')
+      provider.stub(:content_of_file => '')
       rendering(<<-HTML).should_not have_selector('link')
         <html>
           <head>

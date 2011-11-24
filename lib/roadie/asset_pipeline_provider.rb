@@ -8,13 +8,6 @@ module Roadie
       @quoted_prefix = Regexp.quote(prefix)
     end
 
-    def find_asset_from_url(url)
-      asset_filename = remove_prefix(url.path)
-      assets[asset_filename].tap do |asset|
-        raise CSSFileNotFound.new(asset_filename, url) unless asset
-      end
-    end
-
     def contents_of_file(file)
       asset_file(file).to_s.strip
     end
