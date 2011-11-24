@@ -14,4 +14,11 @@ describe Roadie do
       Roadie.app.should == 'application'
     end
   end
+
+  describe ".providers" do
+    it "returns an array of all provider classes" do
+      Roadie.should have(2).providers
+      Roadie.providers.should include(Roadie::AssetPipelineProvider, Roadie::FilesystemProvider)
+    end
+  end
 end

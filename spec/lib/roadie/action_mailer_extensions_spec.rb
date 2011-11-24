@@ -32,14 +32,7 @@ module Roadie
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
-      Roadie::AssetPipelineProvider.stub(:new => provider)
-    end
-
-    it "uses the AssetPipelineProvider" do
-      # TODO: This should be conditional!
-      # TODO: Support setting prefix somewhere!
-      Roadie::AssetPipelineProvider.should_receive(:new).and_return(provider)
-      mailer.default_css
+      Roadie.providers.each { |klass| klass.stub(:new => provider) }
     end
 
     it "uses no global CSS when :css is set to nil" do
@@ -60,6 +53,26 @@ module Roadie
     it "uses the specified CSS instead of the default" do
       expect_global_css ['some', 'other/files']
       mailer.override_css([:some, 'other/files'])
+    end
+
+    context "with rails' asset pipeline enabled" do
+      before(:each) { Roadie.app.config.assets.enabled = true }
+
+      it "uses the AssetPipelineProvider" do
+        # TODO: Support setting prefix somewhere!
+        Roadie::AssetPipelineProvider.should_receive(:new).and_return(provider)
+        mailer.default_css
+      end
+    end
+
+    context "with rails' asset pipeline disabled" do
+      before(:each) { Roadie.app.config.assets.enabled = false }
+
+      it "uses the FilesystemProvider" do
+        # TODO: Support setting path somewhere!
+        Roadie::FilesystemProvider.should_receive(:new).and_return(provider)
+        mailer.default_css
+      end
     end
   end
 
@@ -96,7 +109,7 @@ module Roadie
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
-      Roadie::AssetPipelineProvider.stub(:new => provider)
+      Roadie.providers.each { |klass| klass.stub(:new => provider) }
     end
 
     describe "for singlepart text/plain" do

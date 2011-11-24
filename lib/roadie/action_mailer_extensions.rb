@@ -37,13 +37,20 @@ module Roadie
         self.class.default[:css]
       end
 
+      def provider
+        if Roadie.app.config.assets.enabled
+          AssetPipelineProvider.new
+        else
+          FilesystemProvider.new
+        end
+      end
+
       def url_options
         Rails.application.config.action_mailer.default_url_options
       end
 
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          provider = AssetPipelineProvider.new
           response.merge :body => Roadie.inline_css(provider, css_targets, response[:body], url_options)
         else
           response

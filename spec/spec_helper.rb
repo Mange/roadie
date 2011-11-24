@@ -22,7 +22,10 @@ FIXTURES_PATH = Pathname.new(File.dirname(__FILE__)).join('fixtures')
 
 class TestApplication
   def config
-    OpenStruct.new(:action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}))
+    @config ||= OpenStruct.new({
+      :action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}),
+      :assets => OpenStruct.new(:enabled => false),
+    })
   end
 
   def assets

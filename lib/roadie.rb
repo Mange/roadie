@@ -9,6 +9,11 @@ module Roadie
   def self.app
     Rails.application
   end
+
+  # Returns all available providers
+  def self.providers
+    [AssetPipelineProvider, FilesystemProvider]
+  end
 end
 
 require 'roadie/version'
