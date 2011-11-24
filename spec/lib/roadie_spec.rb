@@ -8,31 +8,10 @@ describe Roadie do
     end
   end
 
-  describe ".assets" do
-    it "delegates to Rails.application.assets" do
-      Rails.stub(:application => double(:assets => 'assets'))
-      Roadie.assets.should == 'assets'
-    end
-  end
-
-  describe ".load_css(targets)" do
-    it "loads files matching the target names in Rails assets" do
-      Roadie.load_css(['foo']).should == 'contents of foo'
-      Roadie.load_css(['foo.css']).should == 'contents of foo'
-    end
-
-    it "loads files in order and join them with a newline" do
-      Roadie.load_css(%w[foo bar]).should == "contents of foo\ncontents of bar"
-      Roadie.load_css(%w[bar foo]).should == "contents of bar\ncontents of foo"
-    end
-
-    it "loads files also from asset subdirectories" do
-      Roadie.load_css(%w[foo subdirectory/findme.css]).should == "contents of foo\ncan you really find me?"
-      Roadie.load_css(%w[bar foo]).should == "contents of bar\ncontents of foo"
-    end
-
-    it "raises a Roadie::CSSFileNotFound error when a css file could not be found" do
-      expect { Roadie.load_css(['not_here']) }.to raise_error(Roadie::CSSFileNotFound, /not_here/)
+  describe ".app" do
+    it "delegates to Rails.application" do
+      Rails.stub(:application => 'application')
+      Roadie.app.should == 'application'
     end
   end
 end

@@ -302,7 +302,7 @@ describe Roadie::Inliner do
 
         expect { rendering(html) }.to raise_error do |error|
           error.should be_a(Roadie::CSSFileNotFound)
-          error.filename.should == Roadie.assets['not_found.css']
+          error.filename.should == Roadie.app.assets['not_found.css']
           error.guess.should == '/assets/not_found.css'
         end
       end

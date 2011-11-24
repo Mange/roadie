@@ -34,7 +34,8 @@ module Roadie
 
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          response.merge :body => Roadie.inline_css(css_rules, response[:body], AssetPipelineProvider.new, url_options)
+          provider = AssetPipelineProvider.new
+          response.merge :body => Roadie.inline_css(css_rules(provider), response[:body], provider, url_options)
         else
           response
         end
@@ -45,8 +46,8 @@ module Roadie
         Array(@inline_style_css_targets || self.class.default[:css] || []).map { |target| target.to_s }
       end
 
-      def css_rules
-        @css_rules ||= Roadie.load_css(css_targets) if css_targets.present?
+      def css_rules(provider)
+        @css_rules ||= provider.load_css(css_targets) if css_targets.present?
       end
   end
 end
