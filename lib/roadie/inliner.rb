@@ -24,12 +24,12 @@ module Roadie
     # Initialize a new Inliner with the given CSS, HTML and url_options.
     #
     # @param [AssetProvider] assets
-    # @param [Array] global_css List of CSS files to load via the provider
+    # @param [Array] targets List of CSS files to load via the provider
     # @param [String] html
     # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+
-    def initialize(assets, global_css, html, url_options)
+    def initialize(assets, targets, html, url_options)
       @assets = assets
-      @css = assets.load_css(global_css)
+      @css = assets.all(targets)
       @html = html
       @inline_css = []
       @url_options = url_options
@@ -95,7 +95,7 @@ module Roadie
 
       def extract_link_elements
         all_link_elements_to_be_inlined_with_url.each do |link, url|
-          asset = assets.content_of_file(url.path)
+          asset = assets.find(url.path)
           @inline_css << asset.to_s
           link.remove
         end

@@ -8,7 +8,7 @@ module Roadie
       @quoted_prefix = Regexp.quote(prefix)
     end
 
-    def contents_of_file(file)
+    def find(file)
       asset_file(file).to_s.strip
     end
 

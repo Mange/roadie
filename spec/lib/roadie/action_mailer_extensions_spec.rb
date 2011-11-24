@@ -28,7 +28,7 @@ module Roadie
       Roadie.should_receive(:inline_css).with(provider, files, anything, anything).and_return('')
     end
 
-    let(:provider) { double("asset provider", :load_css => '') }
+    let(:provider) { double("asset provider", :all => '') }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
@@ -92,7 +92,7 @@ module Roadie
       end
     end
 
-    let(:provider) { double("asset provider", :load_css => '') }
+    let(:provider) { double("asset provider", :all => '') }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')

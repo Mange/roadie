@@ -2,10 +2,10 @@
 require 'spec_helper'
 
 describe Roadie::Inliner do
-  let(:provider) { double("asset provider", :load_css => '') }
+  let(:provider) { double("asset provider", :all => '') }
 
   def use_css(css)
-    provider.stub(:load_css).with(['global.css']).and_return(css)
+    provider.stub(:all).with(['global.css']).and_return(css)
   end
 
   def rendering(html, options = {})
@@ -155,7 +155,7 @@ describe Roadie::Inliner do
 
   describe "linked stylesheets" do
     def fake_file(name, contents)
-      provider.should_receive(:content_of_file).with(name).and_return(contents)
+      provider.should_receive(:find).with(name).and_return(contents)
     end
 
     it "inlines styles from the linked stylesheet" do
@@ -211,7 +211,7 @@ describe Roadie::Inliner do
     end
 
     it "removes the stylesheet links from the DOM" do
-      provider.stub(:content_of_file => '')
+      provider.stub(:find => '')
       rendering(<<-HTML).should_not have_selector('link')
         <html>
           <head>

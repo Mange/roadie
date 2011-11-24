@@ -1,10 +1,10 @@
 module Roadie
   class AssetProvider
-    def load_css(files)
-      files.map { |file| contents_of_file(file) }.join("\n")
+    def all(files)
+      files.map { |file| find(file) }.join("\n")
     end
 
-    def contents_of_file(name)
+    def find(name)
       raise "Not implemented"
     end
   end
