@@ -14,10 +14,12 @@ end
 require 'roadie/version'
 require 'roadie/css_file_not_found'
 require 'roadie/style_declaration'
-require 'roadie/inliner'
 
 require 'roadie/asset_provider'
 require 'roadie/asset_pipeline_provider'
+require 'roadie/filesystem_provider'
+
+require 'roadie/inliner'
 
 require 'action_mailer'
 require 'roadie/action_mailer_extensions'

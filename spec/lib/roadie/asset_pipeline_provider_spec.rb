@@ -1,9 +1,11 @@
 require 'spec_helper'
+require 'shared_examples/asset_provider_examples'
 
 module Roadie
   describe AssetPipelineProvider do
     let(:provider) { AssetPipelineProvider.new }
-    subject { provider }
+
+    it_behaves_like AssetProvider
 
     it "has a configurable prefix" do
       AssetPipelineProvider.new("/prefix").prefix.should == "/prefix"
@@ -55,16 +57,6 @@ module Roadie
         expect {
           provider.find('not_here')
         }.to raise_error(Roadie::CSSFileNotFound, /not_here/)
-      end
-    end
-
-    describe "#all(files)" do
-      it "loads files in order and join them with a newline" do
-        provider.should_receive(:find).with('one').twice.and_return('contents of one')
-        provider.should_receive(:find).with('two').twice.and_return('contents of two')
-
-        provider.all(%w[one two]).should == "contents of one\ncontents of two"
-        provider.all(%w[two one]).should == "contents of two\ncontents of one"
       end
     end
   end

@@ -30,6 +30,10 @@ class TestApplication
     env.append_path FIXTURES_PATH.join('app','assets','stylesheets')
     env
   end
+
+  def root
+    FIXTURES_PATH
+  end
 end
 
 unless defined?(Rails)
