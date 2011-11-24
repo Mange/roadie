@@ -2,10 +2,15 @@
 require 'spec_helper'
 
 describe Roadie::Inliner do
-  def use_css(css); @css = css; end
+  let(:provider) { double("asset provider", :load_css => '') }
+
+  def use_css(css)
+    provider.stub(:load_css).with(['global.css']).and_return(css)
+  end
+
   def rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
-    Nokogiri::HTML.parse Roadie::Inliner.new(@css, html, Roadie::AssetPipelineProvider.new, url_options).execute
+    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options).execute
   end
 
   describe "inlining styles" do
@@ -149,7 +154,13 @@ describe Roadie::Inliner do
   end
 
   describe "linked stylesheets" do
+    def fake_file(name, contents)
+      provider.should_receive(:find_asset_from_url).with(name).and_return(contents)
+    end
+
     it "inlines styles from the linked stylesheet" do
+      fake_file('/assets/green_paragraphs.css', 'p { color: green; }')
+
       rendering(<<-HTML).should have_styling('color' => 'green').at_selector('p')
         <html>
           <head>
@@ -163,6 +174,8 @@ describe Roadie::Inliner do
     end
 
     it "inlines styles from the linked stylesheet in subdirectory" do
+      fake_file('/assets/subdirectory/red_paragraphs.css', 'p { color: red; }')
+
       rendering(<<-HTML).should have_styling('color' => 'red').at_selector('p')
         <html>
           <head>
@@ -176,11 +189,14 @@ describe Roadie::Inliner do
     end
 
     it "inlines styles from more than one linked stylesheet" do
+      fake_file('/assets/large_purple_paragraphs.css', 'p { font-size: 18px; color: purple; }')
+      fake_file('/assets/green_paragraphs.css', 'p { color: green; }')
+
       html = <<-HTML
         <html>
           <head>
-            <link rel="stylesheet" href="/assets/green_paragraphs.css">
             <link rel="stylesheet" href="/assets/large_purple_paragraphs.css">
+            <link rel="stylesheet" href="/assets/green_paragraphs.css">
           </head>
           <body>
             <p></p>
@@ -189,12 +205,13 @@ describe Roadie::Inliner do
       HTML
 
       rendering(html).should have_styling([
-        ['color', 'purple'],
         ['font-size', '18px'],
+        ['color', 'green'],
       ]).at_selector('p')
     end
 
     it "removes the stylesheet links from the DOM" do
+      provider.stub(:find_asset_from_url => '')
       rendering(<<-HTML).should_not have_selector('link')
         <html>
           <head>

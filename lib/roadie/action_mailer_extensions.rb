@@ -16,7 +16,12 @@ module Roadie
 
     protected
       def mail_with_inline_styles(headers = {}, &block)
-        @inline_style_css_targets = headers[:css]
+        if headers.has_key?(:css)
+          @targets = headers[:css]
+        else
+          @targets = default_css_targets
+        end
+
         mail_without_inline_styles(headers, &block).tap do |email|
           email.header.fields.delete_if { |field| field.name == 'css' }
         end
@@ -28,6 +33,10 @@ module Roadie
       end
 
     private
+      def default_css_targets
+        self.class.default[:css]
+      end
+
       def url_options
         Rails.application.config.action_mailer.default_url_options
       end
@@ -35,19 +44,15 @@ module Roadie
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
           provider = AssetPipelineProvider.new
-          response.merge :body => Roadie.inline_css(css_rules(provider), response[:body], provider, url_options)
+          response.merge :body => Roadie.inline_css(provider, css_targets, response[:body], url_options)
         else
           response
         end
       end
 
       def css_targets
-        return nil if @inline_style_css_targets == false
-        Array(@inline_style_css_targets || self.class.default[:css] || []).map { |target| target.to_s }
-      end
-
-      def css_rules(provider)
-        @css_rules ||= provider.load_css(css_targets) if css_targets.present?
+        return [] unless @targets
+        Array.wrap(@targets || []).map { |target| target.to_s }
       end
   end
 end
