@@ -1,29 +1,45 @@
 module Roadie
-  # Shortcut for inlining CSS using {Inliner}
-  # @see Inliner
-  def self.inline_css(*args)
-    Roadie::Inliner.new(*args).execute
-  end
-
-  # Shortcut to Rails.application
-  def self.app
-    Rails.application
-  end
-
-  # Returns all available providers
-  def self.providers
-    [AssetPipelineProvider, FilesystemProvider]
-  end
-
-  # Returns the active provider
-  def self.current_provider
-    return Roadie.app.config.roadie.provider if Roadie.app.config.roadie.provider
-
-    if Roadie.app.config.assets.enabled
-      AssetPipelineProvider.new
-    else
-      FilesystemProvider.new
+  class << self
+    # Shortcut for inlining CSS using {Inliner}
+    # @see Inliner
+    def inline_css(*args)
+      Roadie::Inliner.new(*args).execute
     end
+
+    # Shortcut to Rails.application
+    def app
+      Rails.application
+    end
+
+    # Returns all available providers
+    def providers
+      [AssetPipelineProvider, FilesystemProvider]
+    end
+
+    # Returns the active provider
+    #
+    # If no provider has been configured a new provider will be instantiated
+    # depending on if the asset pipeline is enabled or not.
+    #
+    # If +config.assets.enabled+ is +true+, the {AssetPipelineProvider} will be used
+    # while {FilesystemProvider} will be used if it is set to +false+.
+    #
+    # @see AssetPipelineProvider
+    # @see FilesystemProvider
+    def current_provider
+      return config.roadie.provider if config.roadie.provider
+
+      if config.assets.enabled
+        AssetPipelineProvider.new
+      else
+        FilesystemProvider.new
+      end
+    end
+
+    private
+      def config
+        Roadie.app.config
+      end
   end
 end
 
@@ -36,8 +52,5 @@ require 'roadie/asset_pipeline_provider'
 require 'roadie/filesystem_provider'
 
 require 'roadie/inliner'
-
-require 'action_mailer'
-require 'roadie/action_mailer_extensions'
 
 require 'roadie/railtie' if defined?(Rails)
