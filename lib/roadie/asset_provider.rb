@@ -48,7 +48,7 @@ module Roadie
 
     private
       def prepare_prefix(prefix)
-        if prefix[0] == '/'
+        if prefix =~ /^\//
           "/?#{Regexp.quote(prefix[1, prefix.size])}"
         else
           Regexp.quote(prefix)
