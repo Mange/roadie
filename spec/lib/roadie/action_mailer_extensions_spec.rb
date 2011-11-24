@@ -39,7 +39,7 @@ describe Roadie::ActionMailerExtensions, "inlining styles" do
 
   describe "for singlepart text/html" do
     it "inlines css to the email body" do
-      Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
+      Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything, anything).and_return('html')
       InliningMailer.singlepart_html.body.decoded.should == 'html'
     end
   end
@@ -50,7 +50,7 @@ describe Roadie::ActionMailerExtensions, "inlining styles" do
     end
 
     it "inlines css to the email's html part" do
-      Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything).and_return('html')
+      Roadie.should_receive(:inline_css).with(anything, 'Hello HTML', anything, anything).and_return('html')
       email = InliningMailer.multipart
       email.html_part.body.decoded.should == 'html'
       email.text_part.body.decoded.should == 'Hello Text'

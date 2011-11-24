@@ -5,7 +5,7 @@ describe Roadie::Inliner do
   def use_css(css); @css = css; end
   def rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
-    Nokogiri::HTML.parse Roadie::Inliner.new(@css, html, url_options).execute
+    Nokogiri::HTML.parse Roadie::Inliner.new(@css, html, Roadie::AssetPipelineProvider.new, url_options).execute
   end
 
   describe "inlining styles" do

@@ -25,12 +25,15 @@ module Roadie
     #
     # @param [String] css
     # @param [String] html
-    # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+ and +:asset_path_prefix:+
-    def initialize(css, html, url_options)
+    # @param [AssetProvider] assets
+    # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+
+    def initialize(css, html, assets, url_options)
       @css = css
-      @inline_css = []
       @html = html
+      @assets = assets
+      @inline_css = []
       @url_options = url_options
+      # TODO: Move away
       @asset_path_prefix = (url_options && url_options[:asset_path_prefix] || "/assets/")
     end
 
@@ -50,7 +53,7 @@ module Roadie
     end
 
     private
-      attr_reader :css, :html, :url_options, :document
+      attr_reader :css, :html, :assets, :url_options, :document
 
       def inline_css
         @inline_css.join("\n")
@@ -60,13 +63,6 @@ module Roadie
         CssParser::Parser.new.tap do |parser|
           parser.add_block!(css) if css
           parser.add_block!(inline_css)
-        end
-      end
-
-      def find_asset_from_url(url)
-        asset_filename = url.path.sub(/^#{Regexp.quote(@asset_path_prefix)}/, '').gsub(%r{^/|//+}, '')
-        Roadie.assets[asset_filename].tap do |asset|
-          raise CSSFileNotFound.new(asset_filename, url) unless asset
         end
       end
 
@@ -99,7 +95,7 @@ module Roadie
 
       def extract_link_elements
         all_link_elements_to_be_inlined_with_url.each do |link, url|
-          asset = find_asset_from_url(url)
+          asset = assets.find_asset_from_url(url)
           @inline_css << asset.to_s
           link.remove
         end
