@@ -28,9 +28,18 @@ GEM
       activesupport (= 3.1.3)
       builder (~> 3.0.0)
       i18n (~> 0.6)
+    activerecord (3.1.3)
+      activemodel (= 3.1.3)
+      activesupport (= 3.1.3)
+      arel (~> 2.2.1)
+      tzinfo (~> 0.3.29)
+    activeresource (3.1.3)
+      activemodel (= 3.1.3)
+      activesupport (= 3.1.3)
     activesupport (3.1.3)
       multi_json (~> 1.0)
     addressable (2.2.6)
+    arel (2.2.1)
     builder (3.0.0)
     css_parser (1.2.5)
       addressable
@@ -56,6 +65,14 @@ GEM
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
+    rails (3.1.3)
+      actionmailer (= 3.1.3)
+      actionpack (= 3.1.3)
+      activerecord (= 3.1.3)
+      activeresource (= 3.1.3)
+      activesupport (= 3.1.3)
+      bundler (~> 1.0)
+      railties (= 3.1.3)
     railties (3.1.3)
       actionpack (= 3.1.3)
       activesupport (= 3.1.3)
@@ -88,10 +105,12 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
+    tzinfo (0.3.31)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  rails
   roadie!
   rspec-rails (>= 2.0.0)

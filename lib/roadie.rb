@@ -14,6 +14,17 @@ module Roadie
   def self.providers
     [AssetPipelineProvider, FilesystemProvider]
   end
+
+  # Returns the active provider
+  def self.current_provider
+    return Roadie.app.config.roadie.provider if Roadie.app.config.roadie.provider
+
+    if Roadie.app.config.assets.enabled
+      AssetPipelineProvider.new
+    else
+      FilesystemProvider.new
+    end
+  end
 end
 
 require 'roadie/version'
@@ -29,4 +40,4 @@ require 'roadie/inliner'
 require 'action_mailer'
 require 'roadie/action_mailer_extensions'
 
-ActionMailer::Base.send :include, Roadie::ActionMailerExtensions
+require 'roadie/railtie' if defined?(Rails)

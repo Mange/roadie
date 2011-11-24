@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'actionmailer', '~> 3.1.0'
   s.add_dependency 'sprockets'
 
+  s.add_development_dependency 'rails'
   s.add_development_dependency 'rspec-rails', '>= 2.0.0'
 
   s.extra_rdoc_files = %w[README.md Changelog.md]

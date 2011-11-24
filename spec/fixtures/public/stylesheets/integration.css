@@ -1,0 +1,10 @@
+body { background: url(../images/dots.png) repeat-x; }
+#message { background-color: #fff; margin: 0 auto; width: 75%; }
+
+h1 { color: #eee; }
+strong {
+  -moz-box-shadow: #62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0;
+  -webkit-box-shadow: #62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0;
+  -o-box-shadow: #62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0;
+  box-shadow: #62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0;
+}

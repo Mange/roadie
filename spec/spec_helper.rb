@@ -13,34 +13,31 @@ rescue Bundler::BundlerError => e
 end
 
 require 'rspec'
-
-require 'action_mailer'
+require 'rails'
 require 'sprockets'
 require 'roadie'
 
 FIXTURES_PATH = Pathname.new(File.dirname(__FILE__)).join('fixtures')
+Roadie::Railtie.run_initializers
 
 class TestApplication
   def config
     @config ||= OpenStruct.new({
       :action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}),
       :assets => OpenStruct.new(:enabled => false),
+      :roadie => OpenStruct.new(:provider => nil),
     })
   end
 
   def assets
     env = Sprockets::Environment.new
-    env.append_path FIXTURES_PATH.join('app','assets','stylesheets')
+    env.append_path root.join('app','assets','stylesheets')
     env
   end
 
   def root
     FIXTURES_PATH
   end
-end
-
-unless defined?(Rails)
-  class Rails; end
 end
 
 RSpec.configure do |c|

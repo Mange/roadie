@@ -71,10 +71,7 @@ module Roadie
 
   describe "filesystem integration" do
     it_behaves_like "roadie integration" do
-      before(:each) do
-        pending
-        Rails.application.config.assets.enabled = false
-      end
+      before(:each) { Rails.application.config.assets.enabled = false }
     end
   end
 
