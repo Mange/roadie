@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.0.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre1...master)
+
+* Nothing yet
+
+### 2.1.0.pre1
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.0.0...v2.1.0.pre1)
 
 * Enhancements:
   * Support normal filesystem instead of only Asset pipeline
