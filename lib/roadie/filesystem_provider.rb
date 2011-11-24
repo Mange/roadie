@@ -4,9 +4,10 @@ module Roadie
   # A provider that looks for files on the filesystem
   #
   # Usage:
-  #   config.roadie.provider = FilesystemProvider.new("path/to")
+  #   config.roadie.provider = FilesystemProvider.new("prefix", "path/to/stylesheets")
   #
   # Path specification follows certain rules thatare detailed in {#initialize}.
+  #
   # @see #initialize
   class FilesystemProvider < AssetProvider
     # @return [Pathname] Pathname representing the directory of the assets
@@ -26,9 +27,10 @@ module Roadie
     # @example Pointing to external resource
     #   FilesystemProvider.new("/home/app/stuff")
     #
+    # @param [String] prefix The prefix (see {#prefix})
     # @param [String, Pathname, nil] path The path to use
-    def initialize(path = nil)
-      super()
+    def initialize(prefix = "/stylesheets", path = nil)
+      super(prefix)
       if path
         @path = resolve_path(path)
       else
@@ -41,12 +43,13 @@ module Roadie
     #
     # @return [String] contents of the file
     def find(name)
-      file = path.join(name)
+      base = remove_prefix(name)
+      file = path.join(base)
       if file.exist?
         file.read.strip
       else
-        return find("#{name}.css") if name.to_s !~ /\.css$/
-        raise CSSFileNotFound.new(name, file.to_s)
+        return find("#{base}.css") if base.to_s !~ /\.css$/
+        raise CSSFileNotFound.new(name, base.to_s)
       end
     end
 

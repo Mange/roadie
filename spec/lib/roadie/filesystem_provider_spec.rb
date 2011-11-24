@@ -8,18 +8,26 @@ module Roadie
 
     it_behaves_like AssetProvider
 
+    it "has a configurable prefix" do
+      FilesystemProvider.new("/prefix").prefix.should == "/prefix"
+    end
+
     it "has a configurable path" do
       path = Pathname.new("/path")
-      FilesystemProvider.new(path).path.should == path
+      FilesystemProvider.new('', path).path.should == path
     end
 
     it "bases the path on the project root if passed a string with a relative path" do
-      FilesystemProvider.new("foo/bar").path.should == Roadie.app.root.join("foo", "bar")
-      FilesystemProvider.new("/foo/bar").path.should == Pathname.new("/foo/bar")
+      FilesystemProvider.new('', "foo/bar").path.should == Roadie.app.root.join("foo", "bar")
+      FilesystemProvider.new('', "/foo/bar").path.should == Pathname.new("/foo/bar")
     end
 
     it 'has a path of "<root>/public/stylesheets" by default' do
-      provider.path.should == Roadie.app.root.join('public', 'stylesheets')
+      FilesystemProvider.new.path.should == Roadie.app.root.join('public', 'stylesheets')
+    end
+
+    it 'has a prefix of "/stylesheets" by default' do
+      FilesystemProvider.new.prefix.should == "/stylesheets"
     end
 
     describe "#find(file)" do
@@ -29,7 +37,7 @@ module Roadie
         end
       end
 
-      let(:provider) { FilesystemProvider.new(Pathname.new('.')) }
+      let(:provider) { FilesystemProvider.new('/prefix', Pathname.new('.')) }
 
       def create_file(name, contents = '')
         Pathname.new(name).tap do |path|
@@ -41,6 +49,12 @@ module Roadie
       it "loads files from the filesystem" do
         create_file('foo.css', 'contents of foo.css')
         provider.find('foo.css').should == 'contents of foo.css'
+      end
+
+      it "removes the prefix" do
+        create_file('foo.css', 'contents of foo.css')
+        provider.find('/prefix/foo.css').should == 'contents of foo.css'
+        provider.find('prefix/foo.css').should == 'contents of foo.css'
       end
 
       it 'tries the filename with a ".css" extension if it does not exist' do

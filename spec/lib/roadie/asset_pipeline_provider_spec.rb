@@ -39,10 +39,12 @@ module Roadie
       it "removes the prefix from the filename" do
         expect_pipeline_access('foo')
         expect_pipeline_access('path/to/foo')
+        expect_pipeline_access('bar')
 
         provider = AssetPipelineProvider.new("/prefix")
         provider.find('/prefix/foo')
         provider.find('/prefix/path/to/foo')
+        provider.find('prefix/bar')
       end
 
       it "cleans up double slashes from the path" do
