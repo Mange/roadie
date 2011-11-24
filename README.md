@@ -36,16 +36,11 @@ Let me know if you want any other combination supported officially
 
 This project follows [Semtantic Versioning](http://semver.org/) and has been since version 1.0.0.
 
-Two branches are currently in place:
-
-* 2.x - Rails 3.1
-* 1.x - Rails 3.0
-
-The 1.x branch will continue to be supported until it is deemed unnecessary by the author, but properly made pull requests will be accepted indefinitely.
-
 Features
 --------
 
+* Supports Rails' Asset Pipeline and simple filesystem access out of the box
+* You can add support for CSS from any place inside your apps
 * Writes CSS styles inline
   * Respects `!important` styles
   * Does not overwrite styles already present in the `style` attribute of tags
@@ -59,7 +54,7 @@ Features
 
 ### What about Sass / Less? ###
 
-Sass is supported "by accident" as long as the stylesheets are generated and stored in the asset directories. You are recommended to add a deploy task that generates the stylesheets to make sure that they are present at all times on the machine generating the emails.
+Sass is supported as long as the stylesheets are generated and stored in the asset directories. You are recommended to add a deploy task that generates the stylesheets to make sure that they are present at all times on the machine generating the emails.
 
 Install
 -------
@@ -70,10 +65,21 @@ Add the gem to Rails' Gemfile
 gem 'roadie'
 ```
 
+Configuring
+-----------
+
+Roadie listens to the following options (set in `Application.rb` or in your environment's configuration files:
+
+* `config.action_mailer.default_url_options` - Used for making URLs absolute
+* `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`
+* `config.roadie.provider` - Set the provider manually, ignoring all other options. Use for advanced cases, or when you have non-default paths or other options.
+
 Usage
 -----
 
-Simply specify the `:css` option to mailer:
+Just add a `<link rel="stylesheet" />` or `<style type="text/css"></style>` element inside your email layout and it will be inlined automatically.
+
+You can also specify the `:css` option to mailer to have it inlined automatically without you having to make a layout:
 
 ```ruby
 class Notifier < ActionMailer::Base
@@ -128,6 +134,29 @@ If the `link` tag uses an absolute URL to the stylesheet, it will not be inlined
 </head>
 ```
 
+Writing your own provider
+-------------------------
+
+A provider handles searching CSS files for you. Cou can easily create your own provider for your specific app by subclassing `Roadie::AssetProvider`. See the API documentation for information about how to build them.
+
+Example Subclassing the `AssetPipelineProvider`:
+
+```ruby
+# application.rb
+config.roadie.provider = UserAssetsProvider.new
+
+# lib/user_assets_provider.rb
+class UserAssetsProvider < Roadie::AssetPipelineProvider
+  def find(name)
+    super
+  rescue CSSFileNotFound
+    user = User.find_by_name(name)
+    raise unless user
+    user.custom_css
+  end
+end
+```
+
 Bugs / TODO
 -----------
 
@@ -155,7 +184,7 @@ History and contributors
 
 Major contributors to Roadie:
 
-* [Arttu Tervo (arttu)](https://github.com/arttu) - Asset pipeline support
+* [Arttu Tervo (arttu)](https://github.com/arttu) - Original Asset pipeline support
 
 You can [see all contributors](https://github.com/Mange/roadie/contributors) on GitHub.
 
