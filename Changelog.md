@@ -2,7 +2,12 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.0.0...master)
 
-* Nothing yet
+* Enhancements:
+  * Support normal filesystem instead of only Asset pipeline
+  * Enable users to create their own way of fetching CSS
+  * Improve test coverage a bit
+  * Use a railtie to hook into Rails
+  * Use real Rails for testing integration
 
 ### 2.0.0
 
