@@ -2,7 +2,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre1...master)
 
-* Nothing yet
+* Bug: Roadie broke url_for inside mailer views
 
 ### 2.1.0.pre1
 
