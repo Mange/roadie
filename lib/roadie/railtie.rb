@@ -17,7 +17,9 @@ module Roadie
     config.roadie.provider = nil
 
     initializer "roadie.extend_action_mailer" do
-      ActionMailer::Base.send :include, Roadie::ActionMailerExtensions
+      ActiveSupport.on_load(:action_mailer) do
+        include Roadie::ActionMailerExtensions
+      end
     end
   end
 end
