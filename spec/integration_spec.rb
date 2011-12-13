@@ -17,12 +17,15 @@ module Roadie
         headers('X-Spam' => 'No way! Trust us!')
         mail(:subject => 'Buy cheap v1agra', :to => to)
       end
+
+      def url_options
+        # This allows apps to calculate any options on a per-email basis
+        super.merge(:protocol => 'https')
+      end
     end
 
     before(:each) do
-      Rails.application.config.action_mailer.default_url_options = {:host => "example.app.org"}
-
-      Rails.stub(:root => FIXTURES_PATH)
+      change_default_url_options(:host => 'example.app.org')
       mailer.delivery_method = :test
     end
 
@@ -37,7 +40,7 @@ module Roadie
         document = Nokogiri::HTML.parse(html_part.body.decoded)
         document.should have_selector('html > head + body')
         document.should have_selector('body #message h1')
-        document.should have_styling('background' => 'url(http://example.app.org/images/dots.png) repeat-x').at_selector('body')
+        document.should have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
         document.should have_selector('strong[contains("quota")]')
       end
 

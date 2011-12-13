@@ -38,7 +38,6 @@ module Roadie
       end
 
       def inline_style_response(response)
-        url_options = Rails.application.config.action_mailer.default_url_options
         if response[:content_type] == 'text/html'
           response.merge :body => Roadie.inline_css(Roadie.current_provider, css_targets, response[:body], url_options)
         else

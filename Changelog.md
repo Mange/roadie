@@ -2,7 +2,9 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0...master)
 
-* Nothing yet
+* Enhancements:
+  * Support for the `url_options` method inside mailer instances
+    * You can now dynamically alter the URL options on a per-email basis
 
 ### 2.1.0
 

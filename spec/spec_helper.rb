@@ -38,10 +38,11 @@ class TestApplication < Rails::Application
 
   def reset_test_config
     @config = OpenStruct.new({
-      :action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}),
+      :action_mailer => OpenStruct.new(:default_url_options => {}),
       :assets => OpenStruct.new(:enabled => false),
       :roadie => OpenStruct.new(:provider => nil),
     })
+    change_default_url_options(:host => "example.com")
   end
 end
 
