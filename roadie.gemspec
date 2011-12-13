@@ -22,6 +22,14 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rails'
   s.add_development_dependency 'rspec-rails', '>= 2.0.0'
 
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'guard-rspec'
+
+  # Guard for Mac
+  s.add_development_dependency 'rb-fsevent'
+  s.add_development_dependency 'growl'
+
   s.extra_rdoc_files = %w[README.md Changelog.md]
   s.require_paths = %w[lib]
 
