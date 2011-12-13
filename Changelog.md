@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.1.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.2.0...master)
+
+* Nothing yet
+
+### 2.2.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.1.0...v2.2.0)
 
 * Enhancements:
   * Support for the `url_options` method inside mailer instances
