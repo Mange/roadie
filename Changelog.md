@@ -1,8 +1,14 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.1.0...master)
 
 * Nothing yet
+
+### 2.1.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre2...v2.1.0)
+
+* Full release!
 
 ### 2.1.0.pre2
 
