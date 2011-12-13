@@ -1,4 +1,5 @@
 require 'action_mailer'
+require 'roadie'
 require 'roadie/action_mailer_extensions'
 
 module Roadie

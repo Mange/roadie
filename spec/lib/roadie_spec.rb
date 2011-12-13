@@ -23,7 +23,7 @@ describe Roadie do
   end
 
   describe ".current_provider" do
-    let(:provider) { Object.new }
+    let(:provider) { double("provider instance") }
 
     context "with a set provider in the config" do
       it "uses the set provider" do

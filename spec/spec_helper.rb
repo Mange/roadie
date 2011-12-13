@@ -15,18 +15,15 @@ end
 require 'rspec'
 require 'rails'
 require 'sprockets'
-require 'roadie'
+
+require 'roadie/railtie'
+require 'action_mailer/railtie'
 
 FIXTURES_PATH = Pathname.new(File.dirname(__FILE__)).join('fixtures')
-Roadie::Railtie.run_initializers
 
-class TestApplication
+class TestApplication < Rails::Application
   def config
-    @config ||= OpenStruct.new({
-      :action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}),
-      :assets => OpenStruct.new(:enabled => false),
-      :roadie => OpenStruct.new(:provider => nil),
-    })
+    @config
   end
 
   def assets
@@ -38,11 +35,22 @@ class TestApplication
   def root
     FIXTURES_PATH
   end
+
+  def reset_test_config
+    @config = OpenStruct.new({
+      :action_mailer => OpenStruct.new(:default_url_options => {:host => "example.com"}),
+      :assets => OpenStruct.new(:enabled => false),
+      :roadie => OpenStruct.new(:provider => nil),
+    })
+  end
 end
+
+ActionMailer::Railtie.run_initializers(:default, Rails.application)
+Roadie::Railtie.run_initializers(:default, Rails.application)
 
 RSpec.configure do |c|
   c.before(:each) do
-    Rails.stub(:application => TestApplication.new)
+    Rails.application.reset_test_config
   end
 end
 
