@@ -5,8 +5,6 @@ Roadie
 
 Roadie tries to make sending HTML emails a little less painful in Rails 3 by inlining stylesheets and rewrite relative URLs for you.
 
-You are currently looking at the README for version 2.0 and later which requires Rails 3.1. This gem can be used with Rails 3.0 by staying with the 1.x series.
-
 If you want to have this in Rails 2, please see [MailStyle](https://www.github.com/purify/mail_style).
 
 How does it work?
@@ -30,7 +28,9 @@ Tested with [Travis CI](http://travis-ci.org) using the [following combinations]
 * Ruby 1.8.7 with Rails 3.1.x
 * Ruby 1.9.2 with Rails 3.1.x
 
-Let me know if you want any other combination supported officially
+Rails 3.0 is also officially supported, but not explicitly tested right now.
+
+Let me know if you want any other combination supported officially.
 
 ### Versioning ###
 
