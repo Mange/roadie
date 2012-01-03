@@ -16,18 +16,18 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'nokogiri', '>= 1.4.4'
   s.add_dependency 'css_parser'
-  s.add_dependency 'actionmailer', '~> 3.1.0'
+  s.add_dependency 'actionmailer', '>= 3.1.0'
   s.add_dependency 'sprockets'
 
   s.add_development_dependency 'rails'
-  s.add_development_dependency 'rspec-rails', '>= 2.0.0'
+  s.add_development_dependency 'rspec-rails'
 
   s.add_development_dependency 'guard'
   s.add_development_dependency 'appraisal'
   s.add_development_dependency 'guard-rspec'
 
   # Guard for Mac
-  s.add_development_dependency 'rb-fsevent'
+  s.add_development_dependency 'rb-fsevent', '~> 0.9.0.pre'
   s.add_development_dependency 'growl'
 
   s.extra_rdoc_files = %w[README.md Changelog.md]
