@@ -8,4 +8,5 @@ pkg
 .rvmrc
 
 gemfiles/*.lock
+Gemfile.lock
 doc

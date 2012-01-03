@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails', '>= 2.0.0'
 
   s.add_development_dependency 'guard'
-  s.add_development_dependency 'guard-rspec'
+  s.add_development_dependency 'appraisal'
   s.add_development_dependency 'guard-rspec'
 
   # Guard for Mac
