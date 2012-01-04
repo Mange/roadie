@@ -46,8 +46,16 @@ class TestApplication < Rails::Application
   end
 end
 
-ActionMailer::Railtie.run_initializers(:default, Rails.application)
-Roadie::Railtie.run_initializers(:default, Rails.application)
+if Roadie::Railtie.respond_to?(:run_initializers)
+  # Rails >= 3.1
+  ActionMailer::Railtie.run_initializers(:default, Rails.application)
+  Roadie::Railtie.run_initializers(:default, Rails.application)
+else
+  # Rails 3.0
+  Rails.application.config.active_support.deprecation = :log
+  Rails.logger = Logger.new('/dev/null')
+  Rails.application.initialize!
+end
 
 RSpec.configure do |c|
   c.before(:each) do

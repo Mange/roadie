@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    roadie (2.2.0)
-      actionmailer (>= 3.1.0)
+    roadie (2.3.0.pre1)
+      actionmailer (> 3.0.0, < 3.3.0)
       css_parser
       nokogiri (>= 1.4.4)
       sprockets
