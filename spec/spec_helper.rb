@@ -55,4 +55,4 @@ RSpec.configure do |c|
   end
 end
 
-Dir['./spec/support/**/*.rb'].each { |file| require file }
+Dir['./spec/support/**/*'].each { |file| require file }
