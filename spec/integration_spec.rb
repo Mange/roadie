@@ -2,11 +2,12 @@ require 'spec_helper'
 
 module Roadie
   shared_examples "roadie integration" do
-    mailer = Class.new(ActionMailer::Base) do
-      def self.name() "IntegrationMailer" end
-
+    mailer = Class.new(AnonymousMailer) do
       default :css => :integration, :from => 'john@example.com'
       append_view_path FIXTURES_PATH.join('views')
+
+      # Needed for correct path lookup
+      self.mailer_name = "integration_mailer"
 
       def notification(to, reason)
         @reason = reason

@@ -3,13 +3,8 @@ require 'spec_helper'
 
 module Roadie
   describe ActionMailerExtensions, "CSS selection" do
-    mailer = Class.new(ActionMailer::Base) do
+    mailer = Class.new(AnonymousMailer) do
       default :css => :default
-
-      # Just to make ActionMailer::Base not puke
-      def self.name
-        "SomeMailer"
-      end
 
       def default_css
         mail(:subject => "Default CSS") do |format|
@@ -57,13 +52,8 @@ module Roadie
   end
 
   describe ActionMailerExtensions, "using HTML" do
-    mailer = Class.new(ActionMailer::Base) do
+    mailer = Class.new(AnonymousMailer) do
       default :css => :simple
-
-      # Just to make ActionMailer::Base not puke
-      def self.name
-        "SomeMailer"
-      end
 
       def multipart
         mail(:subject => "Multipart email") do |format|
