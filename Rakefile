@@ -1,6 +1,6 @@
 # encoding: utf-8
-require 'rubygems'
-require 'bundler'
+require 'bundler/setup'
+require 'appraisal'
 
 Bundler::GemHelper.install_tasks
 
@@ -21,4 +21,9 @@ RSpec::Core::RakeTask.new('spec') do |t|
 end
 
 desc "Default: Run specs"
-task :default => :spec
+task :default => [:all]
+
+desc 'Test the plugin under all supported Rails versions.'
+task :all => ["appraisal:install"] do |t|
+  exec('rake appraisal spec')
+end
