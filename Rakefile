@@ -21,9 +21,9 @@ RSpec::Core::RakeTask.new('spec') do |t|
 end
 
 desc "Default: Run specs"
-task :default => [:all]
+task :default => :spec
 
-desc 'Test the plugin under all supported Rails versions.'
-task :all => ["appraisal:install"] do |t|
-  exec('rake appraisal spec')
+namespace :spec do
+  desc 'Run specs against all supported versions of Rails'
+  task :all => ["appraisal:install", "appraisal", "spec"]
 end
