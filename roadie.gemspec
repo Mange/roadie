@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-rspec'
 
   # Guard for Mac
-  s.add_development_dependency 'rb-fsevent', '~> 0.9.0.pre'
+  s.add_development_dependency 'rb-fsevent'
   s.add_development_dependency 'growl'
 
   s.extra_rdoc_files = %w[README.md Changelog.md]
