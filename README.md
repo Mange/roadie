@@ -25,8 +25,12 @@ Build Status
 
 Tested with [Travis CI](http://travis-ci.org) using the [following combinations](http://travis-ci.org/#!/Mange/roadie):
 
-* Ruby 1.8.7 with Rails 3.1.x
-* Ruby 1.9.2 with Rails 3.1.x
+* Ruby 1.8.7 + Rails 3.1.x
+* Ruby 1.9.2 + Rails 3.1.x
+* Ruby 1.9.3 + Rails 3.1.x
+* Ruby 1.8.7 + Rails 3.2.x
+* Ruby 1.9.2 + Rails 3.2.x
+* Ruby 1.9.3 + Rails 3.2.x
 
 Rails 3.0 is also officially supported, but not explicitly tested right now.
 
