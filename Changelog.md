@@ -4,6 +4,7 @@
 
 * Enhancements:
   * Support Rails 3.2.pre1  - [Morton Jonuschat (yabawock)](https://github.com/yabawock)
+  * Sped up the Travis builds
 
 ### 2.2.0
 
