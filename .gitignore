@@ -7,5 +7,4 @@ pkg
 .idea/*
 .rvmrc
 
-gemfiles/*.lock
 doc
