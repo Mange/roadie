@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.2.0...master)
 
-* Nothing yet
+* Enhancements:
+  * Support Rails 3.2.pre1  - [Morton Jonuschat (yabawock)](https://github.com/yabawock)
 
 ### 2.2.0
 
