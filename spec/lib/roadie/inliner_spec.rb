@@ -51,7 +51,7 @@ describe Roadie::Inliner do
     it "combines multiple selectors into one" do
       use_css 'p { color: green; }
               .tip { float: right; }'
-      rendering('<p class="tip"></p>').should have_styling('color' => 'green', 'float' => 'right')
+      rendering('<p class="tip"></p>').should have_styling([['color', 'green'], ['float', 'right']])
     end
 
     it "uses the attributes with the highest specificity when conflicts arises" do
