@@ -56,10 +56,6 @@ Features
 
 ²: This might be removed in a future version, though. You really ought to create a good layout and not let Roadie guess how you want to have it structured
 
-### What about Sass / Less? ###
-
-Sass is supported as long as the stylesheets are generated and stored in the asset directories. You are recommended to add a deploy task that generates the stylesheets to make sure that they are present at all times on the machine generating the emails.
-
 Install
 -------
 
@@ -82,6 +78,8 @@ Usage
 -----
 
 Just add a `<link rel="stylesheet" />` or `<style type="text/css"></style>` element inside your email layout and it will be inlined automatically.
+
+**Note:** Do not use `stylesheet_link_tag` in your mail views. Just use a regular tag pointing to the logical asset name instead; e.g. `emails.css` instead of `emails-<SHA>.css`. This should hopefully be fixed in a later version. You are recommended to use the `:css` option to the mailer (detailed below) instead if you want to avoid problems with this.
 
 You can also specify the `:css` option to mailer to have it inlined automatically without you having to make a layout:
 
@@ -166,20 +164,33 @@ Bugs / TODO
 
 * Improve overall performance
 * Clean up stylesheet assignment code
+* Assets referenced with digest URLs should be findable
+  * Roadie should be able to have multiple asset providers in a specific order
 
-Getting segmentation faults or other C-like problems?
------------------------------------------------------
+FAQ
+---
+
+## I'm getting segmentation faults (or other C-like problems)! What should I do? ##
 
 Roadie uses Nokogiri to parse the HTML of your email, so any C-like problems like segfaults are likely in that end. The best way to fix this is to first upgrade libxml2 on your system and then reinstall Nokogiri.
 Instructions on how to do this on most platforms, see [Nokogiri's official install guide](http://nokogiri.org/tutorials/installing_nokogiri.html).
 
-Note that on my Mac OS X boxes, I don't have to do it as complex as they do it in the guide since I didn't install libxslt. YMMW.
+## My `:hover` selectors don't work. How can I fix them? ##
+
+Put any styles using `:hover` in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
+
+## My `@media` queries don't work. How can I fix them? ##
+
+Put any styles using them in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
+
+## My vendor-specific styles don't work. How can I fix them? ##
+
+Put any styles using them in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
 
 Documentation
 -------------
 
-* [Online documentation for 2.0.0](http://rubydoc.info/gems/roadie/2.0.0/frames)
-* [Online documentation for 1.1.3](http://rubydoc.info/gems/roadie/1.1.3/frames)
+* [Online documentation for 2.3.0](http://rubydoc.info/gems/roadie/2.3.0/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
