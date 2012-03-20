@@ -170,20 +170,20 @@ Bugs / TODO
 FAQ
 ---
 
-## I'm getting segmentation faults (or other C-like problems)! What should I do? ##
+### I'm getting segmentation faults (or other C-like problems)! What should I do? ###
 
 Roadie uses Nokogiri to parse the HTML of your email, so any C-like problems like segfaults are likely in that end. The best way to fix this is to first upgrade libxml2 on your system and then reinstall Nokogiri.
 Instructions on how to do this on most platforms, see [Nokogiri's official install guide](http://nokogiri.org/tutorials/installing_nokogiri.html).
 
-## My `:hover` selectors don't work. How can I fix them? ##
+### My `:hover` selectors don't work. How can I fix them? ###
 
 Put any styles using `:hover` in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
 
-## My `@media` queries don't work. How can I fix them? ##
+### My `@media` queries don't work. How can I fix them? ###
 
 Put any styles using them in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
 
-## My vendor-specific styles don't work. How can I fix them? ##
+### My vendor-specific styles don't work. How can I fix them? ###
 
 Put any styles using them in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
 
