@@ -1,3 +1,3 @@
 module Roadie
-  VERSION = '2.3.0.pre1'
+  VERSION = '2.3.0'
 end
