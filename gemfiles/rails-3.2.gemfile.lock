@@ -1,7 +1,7 @@
 PATH
   remote: /Users/mange/Projects/roadie
   specs:
-    roadie (2.3.0)
+    roadie (2.3.1)
       actionmailer (> 3.0.0, < 3.3.0)
       css_parser
       nokogiri (>= 1.4.4)
