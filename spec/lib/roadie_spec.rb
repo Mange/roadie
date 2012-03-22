@@ -24,16 +24,34 @@ describe Roadie do
 
   describe ".current_provider" do
     let(:provider) { double("provider instance") }
+    let(:config) { Roadie.app.config }
 
     context "with a set provider in the config" do
       it "uses the set provider" do
-        Roadie.app.config.roadie.provider = provider
+        config.roadie.provider = provider
+        Roadie.current_provider.should == provider
+      end
+    end
+
+    context "when Rails' asset pipeline is not present" do
+      before(:each) do
+        # Turns out it's pretty much impossible to work with Rails.application.config
+        # in a nice way; it changed quite a lot since 3.0. There's also no way of
+        # removing a configuration key after it's set, we cannot remove the assets
+        # config completely to trigger the normal error triggered in a 3.0 app (NoMethodError)
+        # We'll simulate it by mutating it in an ugly way for this test
+        config.stub(:assets).and_raise(NoMethodError)
+        config.stub(:respond_to?).with(:assets) { false }
+      end
+
+      it "uses the FilesystemProvider" do
+        Roadie::FilesystemProvider.should_receive(:new).and_return(provider)
         Roadie.current_provider.should == provider
       end
     end
 
     context "with rails' asset pipeline enabled" do
-      before(:each) { Roadie.app.config.assets.enabled = true }
+      before(:each) { config.assets.enabled = true }
 
       it "uses the AssetPipelineProvider" do
         Roadie::AssetPipelineProvider.should_receive(:new).and_return(provider)
@@ -42,7 +60,7 @@ describe Roadie do
     end
 
     context "with rails' asset pipeline disabled" do
-      before(:each) { Roadie.app.config.assets.enabled = false }
+      before(:each) { config.assets.enabled = false }
 
       it "uses the FilesystemProvider" do
         Roadie::FilesystemProvider.should_receive(:new).and_return(provider)

@@ -29,7 +29,7 @@ module Roadie
     def current_provider
       return config.roadie.provider if config.roadie.provider
 
-      if config.assets.enabled
+      if config.respond_to?(:assets) and config.assets and config.assets.enabled
         AssetPipelineProvider.new
       else
         FilesystemProvider.new

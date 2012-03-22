@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.0...master)
 
-* Nothing yet
+* Bug fixes:
+  * Does not work with Rails 3.0 unless provider set specifically (#23)
 
 ### 2.3.0
 
