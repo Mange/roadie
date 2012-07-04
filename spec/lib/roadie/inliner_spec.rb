@@ -103,6 +103,18 @@ describe Roadie::Inliner do
       rendering('<p></p>').should_not have_styling('color' => 'red')
     end
 
+    it "ignores selectors with @" do
+      use_css '@keyframes progress-bar-stripes {
+        from {
+          background-position: 40px 0;
+        }
+        to {
+          background-position: 0 0;
+        }
+      }'
+      expect { rendering('<p></p>') }.not_to raise_error
+    end
+
     describe "inline <style> element" do
       it "is used for inlined styles" do
         rendering(<<-HTML).should have_styling([['color', 'green'], ['font-size', '1.1em']])

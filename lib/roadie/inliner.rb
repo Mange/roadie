@@ -131,7 +131,7 @@ module Roadie
       def elements_with_declarations
         Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
           parsed_css.each_rule_set do |rule_set|
-            each_selector_without_psuedo(rule_set) do |selector, specificity|
+            each_selector_without_pseudo(rule_set) do |selector, specificity|
               each_element_in_selector(selector) do |element|
                 style_declarations_in_rule_set(specificity, rule_set) do |declaration|
                   element_declarations[element] << declaration
@@ -142,8 +142,8 @@ module Roadie
         end
       end
 
-      def each_selector_without_psuedo(rules)
-        rules.selectors.reject { |selector| selector.include?(':') }.each do |selector|
+      def each_selector_without_pseudo(rules)
+        rules.selectors.reject { |selector| selector.include?(':') or selector.starts_with?('@') }.each do |selector|
           yield selector, CssParser.calculate_specificity(selector)
         end
       end
