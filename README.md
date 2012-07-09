@@ -194,6 +194,11 @@ Documentation
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
+Running specs
+-------------
+
+Run specs for your current ruby against the latest compatible version of rails with `rake spec`. You can run against all supported combinations of ruby and rails by issuing `rake spec:all`.
+
 History and contributors
 ------------------------
 
