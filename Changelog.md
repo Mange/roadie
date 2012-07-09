@@ -1,8 +1,15 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.3.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.2...master)
 
 * Nothing yet
+
+### 2.3.2
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.1...v2.3.2)
+
+* Bug fixes:
+  * Don't fail on selectors which start with @ (#28) – [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
 
 ### 2.3.1
 
@@ -22,7 +29,7 @@
 [full changelog](https://github.com/Mange/roadie/compare/v2.2.0...v2.3.0.pre1)
 
 * Enhancements:
-  * Support Rails 3.2.pre1  - [Morton Jonuschat (yabawock)](https://github.com/yabawock)
+  * Support Rails 3.2.pre1 - [Morton Jonuschat (yabawock)](https://github.com/yabawock)
   * Sped up the Travis builds
   * Official support for Rails 3.0 again
     * Dependencies allow 3.0
