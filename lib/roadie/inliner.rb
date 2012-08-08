@@ -73,7 +73,7 @@ module Roadie
       def adjust_html
         Nokogiri::HTML.parse(html).tap do |document|
           yield document
-        end.to_html
+        end.dup.to_html
       end
 
       def add_missing_structure
