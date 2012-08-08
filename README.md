@@ -38,7 +38,7 @@ Let me know if you want any other combination supported officially.
 
 ### Versioning ###
 
-This project follows [Semtantic Versioning](http://semver.org/) and has been since version 1.0.0.
+This project follows [Semantic Versioning](http://semver.org/) and has been since version 1.0.0.
 
 Features
 --------
