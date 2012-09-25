@@ -30,6 +30,22 @@ module Roadie
       Roadie.stub(:current_provider => provider)
     end
 
+    it "uses the default CSS when :css is not specified" do
+      expect_global_css ['default']
+      mailer.default_css
+    end
+
+    it "uses the specified CSS instead of the default" do
+      expect_global_css ['some', 'other/files']
+      mailer.override_css([:some, 'other/files'])
+    end
+
+    it "allows procs defining the CSS files to use" do
+      expect_global_css ['from proc']
+      proc = lambda { 'from proc' }
+      mailer.override_css([proc])
+    end
+
     it "uses no global CSS when :css is set to nil" do
       expect_global_css []
       mailer.override_css(nil)
@@ -40,14 +56,9 @@ module Roadie
       mailer.override_css(false)
     end
 
-    it "uses the default CSS when :css is not specified" do
-      expect_global_css ['default']
-      mailer.default_css
-    end
-
-    it "uses the specified CSS instead of the default" do
-      expect_global_css ['some', 'other/files']
-      mailer.override_css([:some, 'other/files'])
+    it "uses no global CSS when :css is set to a proc returning nil" do
+      expect_global_css []
+      mailer.override_css(lambda { nil })
     end
   end
 

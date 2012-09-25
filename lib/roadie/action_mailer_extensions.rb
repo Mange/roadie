@@ -46,8 +46,15 @@ module Roadie
       end
 
       def css_targets
-        return [] unless @targets
-        Array.wrap(@targets || []).map { |target| target.to_s }
+        Array.wrap(@targets || []).map { |target| resolve_target(target) }.compact.map(&:to_s)
+      end
+
+      def resolve_target(target)
+        if target.respond_to? :call
+          target.call
+        else
+          target
+        end
       end
   end
 end

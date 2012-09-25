@@ -2,7 +2,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.2...master)
 
-* Nothing yet
+* Allow proc objects to the :css option
 
 ### 2.3.2
 
