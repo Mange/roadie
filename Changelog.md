@@ -2,7 +2,10 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.2...master)
 
-* Allow proc objects to the :css option
+* Enhancements:
+  * Allow proc objects to the `:css` option
+* Bug fixes:
+  * Ignore HTML comments and CDATA sections in CSS (support TinyMCE)
 
 ### 2.3.2
 

@@ -65,8 +65,8 @@ module Roadie
 
       def parsed_css
         CssParser::Parser.new.tap do |parser|
-          parser.add_block!(css) if css
-          parser.add_block!(inline_css)
+          parser.add_block! clean_css(css) if css
+          parser.add_block! clean_css(inline_css)
         end
       end
 
@@ -206,6 +206,20 @@ module Roadie
 
           absolute_path_url or blacklisted_element
         end
+      end
+
+      CLEANING_MATCHER = /
+        (^\s*             # Beginning-of-lines matches
+          (<!\[CDATA\[)|
+          (<!--+)
+        )|(               # End-of-line matches
+          (--+>)|
+          (\]\]>)
+        $)
+      /x.freeze
+
+      def clean_css(css)
+        css.gsub(CLEANING_MATCHER, '')
       end
   end
 end

@@ -115,6 +115,26 @@ describe Roadie::Inliner do
       expect { rendering('<p></p>') }.not_to raise_error
     end
 
+    it 'ignores HTML comments and CDATA sections' do
+      # TinyMCE posts invalid CSS. We support that just to be pragmatic.
+      use_css %(<![CDATA[
+        <!--
+        p { color: green }
+        -->
+      ]]>)
+      expect { rendering '<p></p>' }.not_to raise_error
+
+      use_css %(
+        <!--
+        <![CDATA[
+            <![CDATA[
+        span { color: red }
+        ]]>
+        -->
+      )
+      expect { rendering '<p></p>' }.not_to raise_error
+    end
+
     describe "inline <style> element" do
       it "is used for inlined styles" do
         rendering(<<-HTML).should have_styling([['color', 'green'], ['font-size', '1.1em']])
