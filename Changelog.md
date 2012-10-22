@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.3.2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.3...master)
+
+* No changes yet.
+
+### 2.3.3
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.2...v2.3.3)
 
 * Enhancements:
   * Allow proc objects to the `:css` option
