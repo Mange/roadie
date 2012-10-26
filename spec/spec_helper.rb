@@ -40,7 +40,7 @@ class TestApplication < Rails::Application
     @config = OpenStruct.new({
       :action_mailer => OpenStruct.new(:default_url_options => {}),
       :assets => OpenStruct.new(:enabled => false),
-      :roadie => OpenStruct.new(:provider => nil),
+      :roadie => OpenStruct.new(:provider => nil, :enabled => true),
     })
     change_default_url_options(:host => "example.com")
   end

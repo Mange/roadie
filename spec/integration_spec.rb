@@ -71,6 +71,25 @@ module Roadie
       stylings.should include(['box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
       stylings.should include(['-o-box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
     end
+
+    it "only removes the css option when disabled" do
+      Rails.application.config.roadie.enabled = false
+
+      email = mailer.notification('doe@example.com', 'your quota limit has been reached')
+
+      email.header.fields.map(&:name).should_not include('css')
+
+      email.to.should == ['doe@example.com']
+      email.from.should == ['john@example.com']
+      email.should have(2).parts
+
+      email.parts.find { |part| part.mime_type == 'text/html' }.tap do |html_part|
+        document = Nokogiri::HTML.parse(html_part.body.decoded)
+        document.should_not have_selector('html > head + body')
+        document.should_not have_styling('color' => '#eee').at_selector('h1')
+        document.should_not have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
+      end
+    end
   end
 
   describe "filesystem integration" do

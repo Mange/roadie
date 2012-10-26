@@ -29,7 +29,11 @@ module Roadie
 
       def collect_responses_and_parts_order_with_inline_styles(headers, &block)
         responses, order = collect_responses_and_parts_order_without_inline_styles(headers, &block)
-        [responses.map { |response| inline_style_response(response) }, order]
+        if Roadie.enabled?
+          [responses.map { |response| inline_style_response(response) }, order]
+        else
+          [responses, order]
+        end
       end
 
     private

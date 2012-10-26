@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Roadie do
+  let(:config) { Rails.application.config }
+
   describe ".inline_css" do
     it "creates an instance of Roadie::Inliner and execute it" do
       Roadie::Inliner.should_receive(:new).with('attri', 'butes').and_return(double('inliner', :execute => 'html'))
@@ -22,9 +24,17 @@ describe Roadie do
     end
   end
 
+  describe ".enabled?" do
+    it "returns the value of config.roadie.enabled" do
+      config.roadie.stub :enabled => true
+      Roadie.should be_enabled
+      config.roadie.stub :enabled => false
+      Roadie.should_not be_enabled
+    end
+  end
+
   describe ".current_provider" do
     let(:provider) { double("provider instance") }
-    let(:config) { Roadie.app.config }
 
     context "with a set provider in the config" do
       it "uses the set provider" do

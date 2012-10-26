@@ -70,8 +70,9 @@ Configuring
 
 Roadie listens to the following options (set in `Application.rb` or in your environment's configuration files:
 
-* `config.action_mailer.default_url_options` - Used for making URLs absolute
-* `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`
+* `config.roadie.enabled` - Set this to `false` to disable Roadie from working on your emails. Useful if you want to disable Roadie in some environments.
+* `config.action_mailer.default_url_options` - Used for making URLs absolute.
+* `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`.
 * `config.roadie.provider` - Set the provider manually, ignoring all other options. Use for advanced cases, or when you have non-default paths or other options.
 
 Usage

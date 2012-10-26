@@ -105,6 +105,12 @@ module Roadie
         Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything).and_return('html')
         mailer.singlepart_html.body.decoded.should == 'html'
       end
+
+      it "does not inline css when Roadie is disabled" do
+        Roadie.stub :enabled? => false
+        Roadie.should_not_receive(:inline_css)
+        mailer.singlepart_html.body.decoded.should == 'Hello HTML'
+      end
     end
 
     describe "for multipart" do
@@ -116,6 +122,14 @@ module Roadie
         Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything).and_return('html')
         email = mailer.multipart
         email.html_part.body.decoded.should == 'html'
+        email.text_part.body.decoded.should == 'Hello Text'
+      end
+
+      it "does not inline css when Roadie is disabled" do
+        Roadie.stub :enabled? => false
+        Roadie.should_not_receive(:inline_css)
+        email = mailer.multipart
+        email.html_part.body.decoded.should == 'Hello HTML'
         email.text_part.body.decoded.should == 'Hello Text'
       end
     end

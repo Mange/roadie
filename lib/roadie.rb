@@ -16,6 +16,15 @@ module Roadie
       [AssetPipelineProvider, FilesystemProvider]
     end
 
+    # Returns the value of +config.roadie.enabled+.
+    #
+    # Roadie will disable all processing if this config is set to +false+. If
+    # you just want to disable CSS inlining without disabling the rest of
+    # Roadie, pass +css: nil+ to the +defaults+ method inside your mailers.
+    def enabled?
+      config.roadie.enabled
+    end
+
     # Returns the active provider
     #
     # If no provider has been configured a new provider will be instantiated
