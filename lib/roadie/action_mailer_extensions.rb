@@ -54,7 +54,9 @@ module Roadie
       end
 
       def resolve_target(target)
-        if target.respond_to? :call
+        if target.respond_to? :bind
+          target.bind(self).call
+        elsif target.respond_to? :call
           target.call
         else
           target

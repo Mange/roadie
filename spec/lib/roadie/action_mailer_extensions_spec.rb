@@ -41,9 +41,23 @@ module Roadie
     end
 
     it "allows procs defining the CSS files to use" do
-      expect_global_css ['from proc']
       proc = lambda { 'from proc' }
+
+      expect_global_css ['from proc']
       mailer.override_css([proc])
+    end
+
+    it "runs procs in the context of the instance" do
+      new_mailer = Class.new(mailer) do
+        private
+        def a_private_method
+          'from private method'
+        end
+      end
+      proc = lambda { a_private_method }
+
+      expect_global_css ['from private method']
+      new_mailer.override_css([proc])
     end
 
     it "uses no global CSS when :css is set to nil" do

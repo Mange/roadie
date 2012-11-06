@@ -4,6 +4,8 @@
 
 * Enhancements:
   * Add `config.roadie.enabled` that can be set to `false` to disable Roadie completely.
+* Bug fixes:
+  * Proc objects to the `:css` option is now run in the context of the mailer instance, mirroring similar options from ActionMailer.
 
 ### 2.3.3
 
