@@ -2,6 +2,12 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.3...master)
 
+* Nothing yet
+
+### 2.3.4
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.3...v2.3.4)
+
 * Enhancements:
   * Add `config.roadie.enabled` that can be set to `false` to disable Roadie completely.
 * Bug fixes:
