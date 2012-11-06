@@ -11,7 +11,9 @@ module Roadie
     # inside the parenthesis. There's much room for improvement, of course.
     CSS_URL_REGEXP = %r{
       url\(
-        (["']?)
+        (
+          (?:["']|%22)?    # Optional opening quote
+        )
         (
           [^(]*            # Text leading up to before opening parens
           (?:\([^)]*\))*   # Texts containing parens pairs

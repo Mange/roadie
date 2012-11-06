@@ -25,6 +25,10 @@ module Roadie
       end
     end
 
+    def parse_html_in_email(mail)
+      Nokogiri::HTML.parse mail.html_part.body.decoded
+    end
+
     before(:each) do
       change_default_url_options(:host => 'example.app.org')
       mailer.delivery_method = :test
@@ -37,17 +41,16 @@ module Roadie
       email.from.should == ['john@example.com']
       email.should have(2).parts
 
-      email.parts.find { |part| part.mime_type == 'text/html' }.tap do |html_part|
-        document = Nokogiri::HTML.parse(html_part.body.decoded)
-        document.should have_selector('html > head + body')
-        document.should have_selector('body #message h1')
-        document.should have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
-        document.should have_selector('strong[contains("quota")]')
-      end
+      email.text_part.body.decoded.should_not match(/<.*>/)
 
-      email.parts.find { |part| part.mime_type == 'text/plain' }.tap do |plain_part|
-        plain_part.body.decoded.should_not match(/<.*>/)
-      end
+      html = email.html_part.body.decoded
+      html.should include '<!DOCTYPE'
+      html.should include '<head'
+
+      document = parse_html_in_email(email)
+      document.should have_selector('body #message h1')
+      document.should have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
+      document.should have_selector('strong[contains("quota")]')
 
       # If we deliver mails we can catch weird problems with headers being invalid
       email.deliver
@@ -65,7 +68,7 @@ module Roadie
 
     it "applies CSS3 styles" do
       email = mailer.notification('doe@example.com', 'your quota limit has been reached')
-      document = Nokogiri::HTML.parse(email.html_part.body.decoded)
+      document = parse_html_in_email(email)
       strong_node = document.css('strong').first
       stylings = SpecHelpers.styling_of_node(strong_node)
       stylings.should include(['box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
@@ -83,12 +86,13 @@ module Roadie
       email.from.should == ['john@example.com']
       email.should have(2).parts
 
-      email.parts.find { |part| part.mime_type == 'text/html' }.tap do |html_part|
-        document = Nokogiri::HTML.parse(html_part.body.decoded)
-        document.should_not have_selector('html > head + body')
-        document.should_not have_styling('color' => '#eee').at_selector('h1')
-        document.should_not have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
-      end
+      html = email.html_part.body.decoded
+      html.should_not include '<!DOCTYPE'
+      html.should_not include '<head'
+
+      document = parse_html_in_email(email)
+      document.should_not have_styling('color' => '#eee').at_selector('h1')
+      document.should_not have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
     end
   end
 

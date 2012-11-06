@@ -10,7 +10,7 @@ RSpec::Matchers.define :have_attribute do |attribute|
     expected == attribute(document, name)
   end
 
-  describe { "have attribute #{attribute.inspect} at selector #{@selector.inspect}" }
+  description { "have attribute #{attribute.inspect} at selector #{@selector.inspect}" }
   failure_message_for_should do |document|
     name, expected = attribute.first
     "expected #{name} attribute at #{@selector.inspect} to be #{expected.inspect} but was #{attribute(document, name).inspect}"

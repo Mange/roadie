@@ -446,7 +446,7 @@ describe Roadie::Inliner do
     end
 
     it "sets xmlns of <html> to that of XHTML" do
-      rendering('<html><body></body></html>').should have_selector('html[xmlns="http://www.w3.org/1999/xhtml"]')
+      rendering('<html><body></body></html>').should have_node('html').with_attributes("xmlns" => "http://www.w3.org/1999/xhtml")
     end
 
     it "inserts basic html structure if not present" do

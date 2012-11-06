@@ -1,7 +1,7 @@
 PATH
   remote: /Users/mange/Projects/roadie
   specs:
-    roadie (2.3.2)
+    roadie (2.3.3)
       actionmailer (> 3.0.0, < 3.3.0)
       css_parser
       nokogiri (>= 1.4.4)
@@ -37,7 +37,7 @@ GEM
     activesupport (3.2.2)
       i18n (~> 0.6)
       multi_json (~> 1.0)
-    addressable (2.2.8)
+    addressable (2.3.2)
     appraisal (0.4.1)
       bundler
       rake
@@ -52,6 +52,7 @@ GEM
     i18n (0.6.0)
     journey (1.0.3)
     json (1.6.5)
+    json (1.6.5-java)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -59,6 +60,7 @@ GEM
     mime-types (1.18)
     multi_json (1.1.0)
     nokogiri (1.5.5)
+    nokogiri (1.5.5-java)
     polyglot (0.3.3)
     rack (1.4.1)
     rack-cache (1.2)
@@ -110,6 +112,7 @@ GEM
     tzinfo (0.3.32)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
