@@ -135,6 +135,17 @@ describe Roadie::Inliner do
       expect { rendering '<p></p>' }.not_to raise_error
     end
 
+    it "does not pick up scripts generating styles" do
+      expect {
+        rendering <<-HTML
+          <script>
+            var color = "red";
+            document.write("<style type='text/css'>p { color: " + color + "; }</style>");
+          </script>
+        HTML
+      }.not_to raise_error
+    end
+
     describe "inline <style> element" do
       it "is used for inlined styles" do
         rendering(<<-HTML).should have_styling([['color', 'green'], ['font-size', '1.1em']])
@@ -189,6 +200,17 @@ describe Roadie::Inliner do
           <style type="text/css">p { color: green; }</style>
           <p>Hello World</p>
         HTML
+      end
+
+      it "is not touched when inside a SVG element" do
+        expect {
+          rendering <<-HTML
+            <p>Hello World</p>
+            <svg>
+              <style>This is not parseable by the CSS parser!</style>
+            </svg>
+          HTML
+        }.to_not raise_error
       end
     end
   end
