@@ -57,10 +57,13 @@ else
   Rails.application.initialize!
 end
 
-RSpec.configure do |c|
-  c.before(:each) do
+RSpec.configure do |config|
+  config.before(:each) do
     Rails.application.reset_test_config
   end
+
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+  config.run_all_when_everything_filtered = true
 end
 
 Dir['./spec/support/**/*.rb'].each { |file| require file }
