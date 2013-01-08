@@ -4,7 +4,7 @@ require 'spec_helper'
 module Roadie
   describe ActionMailerExtensions, "CSS selection" do
     mailer = Class.new(AnonymousMailer) do
-      default :css => :default
+      default :css => 'default'
 
       def default_css
         mail(:subject => "Default CSS") do |format|
@@ -78,7 +78,7 @@ module Roadie
 
   describe ActionMailerExtensions, "using HTML" do
     mailer = Class.new(AnonymousMailer) do
-      default :css => :simple
+      default :css => 'simple'
 
       def multipart
         mail(:subject => "Multipart email") do |format|
