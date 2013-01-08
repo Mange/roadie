@@ -4,7 +4,7 @@ require 'spec_helper'
 module Roadie
   describe ActionMailerExtensions, "CSS selection" do
     mailer = Class.new(AnonymousMailer) do
-      default :css => :default
+      default :css => 'default'
 
       def default_css
         mail(:subject => "Default CSS") do |format|
@@ -47,6 +47,8 @@ module Roadie
       mailer.override_css([proc])
     end
 
+    # This spec is depend on `Proc#bind` in 'spec/lib/roadie/action_mailer_extensions_spec'.
+    # But it is deprecated in rails4.
     it "runs procs in the context of the instance" do
       new_mailer = Class.new(mailer) do
         private
@@ -78,7 +80,7 @@ module Roadie
 
   describe ActionMailerExtensions, "using HTML" do
     mailer = Class.new(AnonymousMailer) do
-      default :css => :simple
+      default :css => 'simple'
 
       def multipart
         mail(:subject => "Multipart email") do |format|
