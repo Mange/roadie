@@ -32,28 +32,24 @@ module Roadie
         end
       end
 
-      if ActionMailer::Base.method_defined?(:collect_responses) # Rails 4
-
-        def collect_responses_with_inline_styles(headers, &block)
-          responses = collect_responses_without_inline_styles(headers, &block)
-          if Roadie.enabled?
-            responses.map { |response| inline_style_response(response) }
-          else
-            responses
-          end
+      # Rails 4
+      def collect_responses_with_inline_styles(headers, &block)
+        responses = collect_responses_without_inline_styles(headers, &block)
+        if Roadie.enabled?
+          responses.map { |response| inline_style_response(response) }
+        else
+          responses
         end
+      end
 
-      else # Rails 3
-
-        def collect_responses_and_parts_order_with_inline_styles(headers, &block)
-          responses, order = collect_responses_and_parts_order_without_inline_styles(headers, &block)
-          if Roadie.enabled?
-            [responses.map { |response| inline_style_response(response) }, order]
-          else
-            [responses, order]
-          end
+      # Rails 3
+      def collect_responses_and_parts_order_with_inline_styles(headers, &block)
+        responses, order = collect_responses_and_parts_order_without_inline_styles(headers, &block)
+        if Roadie.enabled?
+          [responses.map { |response| inline_style_response(response) }, order]
+        else
+          [responses, order]
         end
-
       end
 
     private
@@ -75,13 +71,7 @@ module Roadie
 
       def resolve_target(target)
         if target.kind_of? Proc
-          # Use Ruby 1.9 #instance_exec when possible
-          if respond_to?(:instance_exec)
-            instance_exec(&target)
-          else
-            # Use Rails' Proc#bind. Deprecated in Rails 4.
-            target.bind(self).call
-          end
+          instance_exec(&target)
         elsif target.respond_to? :call
           target.call
         else
