@@ -27,13 +27,16 @@ Tested with [Travis CI](http://travis-ci.org) using [almost all combinations of]
 
 * Ruby:
   * MRI 1.8.7
-  * MRI 1.9.2
   * MRI 1.9.3
 * Rails
   * 3.0
   * 3.1
   * 3.2
   * 4.0 master (not tested under MRI 1.8.7)
+
+There is also experimental support for the following versions of Ruby:
+
+* MRI 2.0.0
 
 Let me know if you want any other combination supported officially.
 
