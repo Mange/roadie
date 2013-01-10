@@ -74,8 +74,14 @@ module Roadie
       end
 
       def resolve_target(target)
-        if target.respond_to? :bind
-          target.bind(self).call
+        if target.kind_of? Proc
+          # Use Ruby 1.9 #instance_exec when possible
+          if respond_to?(:instance_exec)
+            instance_exec(&target)
+          else
+            # Use Rails' Proc#bind. Deprecated in Rails 4.
+            target.bind(self).call
+          end
         elsif target.respond_to? :call
           target.call
         else
