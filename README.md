@@ -3,7 +3,7 @@ Roadie
 
 > Making HTML emails comfortable for the Rails rockstars
 
-Roadie tries to make sending HTML emails a little less painful in Rails 3 by inlining stylesheets and rewrite relative URLs for you.
+Roadie tries to make sending HTML emails a little less painful in Rails 3+ by inlining stylesheets and rewrite relative URLs for you.
 
 If you want to have this in Rails 2, please see [MailStyle](https://www.github.com/purify/mail_style).
 
@@ -33,6 +33,7 @@ Tested with [Travis CI](http://travis-ci.org) using the [all combinations of](ht
   * 3.0
   * 3.1
   * 3.2
+  * 4.0 master
 
 Let me know if you want any other combination supported officially.
 
@@ -206,10 +207,11 @@ History and contributors
 Major contributors to Roadie:
 
 * [Arttu Tervo (arttu)](https://github.com/arttu) - Original Asset pipeline support
+* [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes) - Initial Rails 4 support
 
 You can [see all contributors](https://github.com/Mange/roadie/contributors) on GitHub.
 
-This gem was originally developed for Rails 2 use on [Purify](http://purifyapp.com) under the name [MailStyle](https://www.github.com/purify/mail_style). However, the author stopped maintaining it and a fork took place to make it Rails 3 compatible.
+This gem was originally developed for Rails 2 use on [Purify](http://purifyapp.com) under the name [MailStyle](https://www.github.com/purify/mail_style). However, the author stopped maintaining it and a fork took place to make it Rails 3+ compatible.
 
 The following people have contributed to the orignal gem:
 

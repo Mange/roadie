@@ -1,8 +1,8 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.3.3...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.4...master)
 
-* Nothing yet
+* Support Rails 4 master (with the help of [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes))
 
 ### 2.3.4
 
