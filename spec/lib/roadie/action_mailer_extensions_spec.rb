@@ -47,8 +47,6 @@ module Roadie
       mailer.override_css([proc])
     end
 
-    # This spec is depend on `Proc#bind` in 'spec/lib/roadie/action_mailer_extensions_spec'.
-    # But it is deprecated in rails4.
     it "runs procs in the context of the instance" do
       new_mailer = Class.new(mailer) do
         private
