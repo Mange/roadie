@@ -2,7 +2,7 @@ PATH
   remote: /Users/mange/Projects/roadie
   specs:
     roadie (2.3.4)
-      actionmailer (> 3.0.0, < 3.3.0)
+      actionmailer (> 3.0.0, < 5.0.0)
       css_parser
       nokogiri (>= 1.4.4)
       sprockets
@@ -58,7 +58,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.19)
-    multi_json (1.4.0)
+    multi_json (1.5.0)
     nokogiri (1.5.5)
     polyglot (0.3.3)
     rack (1.2.5)
@@ -83,6 +83,10 @@ GEM
     rake (10.0.2)
     rdoc (3.12)
       json (~> 1.4)
+    rspec (2.12.0)
+      rspec-core (~> 2.12.0)
+      rspec-expectations (~> 2.12.0)
+      rspec-mocks (~> 2.12.0)
     rspec-core (2.12.1)
     rspec-expectations (2.12.0)
       diff-lcs (~> 1.1.3)
@@ -113,4 +117,5 @@ DEPENDENCIES
   appraisal
   rails (~> 3.0.0)
   roadie!
+  rspec
   rspec-rails
