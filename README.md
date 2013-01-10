@@ -23,17 +23,17 @@ Build Status
 
 [![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
 
-Tested with [Travis CI](http://travis-ci.org) using the [all combinations of](http://travis-ci.org/#!/Mange/roadie):
+Tested with [Travis CI](http://travis-ci.org) using [almost all combinations of](http://travis-ci.org/#!/Mange/roadie):
 
 * Ruby:
-  * 1.8.7
-  * 1.9.2
-  * 1.9.3
+  * MRI 1.8.7
+  * MRI 1.9.2
+  * MRI 1.9.3
 * Rails
   * 3.0
   * 3.1
   * 3.2
-  * 4.0 master
+  * 4.0 master (not tested under MRI 1.8.7)
 
 Let me know if you want any other combination supported officially.
 
