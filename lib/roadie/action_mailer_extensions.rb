@@ -1,6 +1,7 @@
 require 'uri'
 require 'nokogiri'
 require 'css_parser'
+require 'active_support/core_ext/proc'
 
 module Roadie
   # This module adds the Roadie functionality to ActionMailer 3 when included in ActionMailer::Base.
@@ -9,7 +10,11 @@ module Roadie
   module ActionMailerExtensions
     def self.included(base)
       base.class_eval do
-        alias_method_chain :collect_responses_and_parts_order, :inline_styles
+        if base.method_defined?(:collect_responses)
+          alias_method_chain :collect_responses, :inline_styles
+        else
+          alias_method_chain :collect_responses_and_parts_order, :inline_styles
+        end
         alias_method_chain :mail, :inline_styles
       end
     end
@@ -27,6 +32,17 @@ module Roadie
         end
       end
 
+      # Rails 4
+      def collect_responses_with_inline_styles(headers, &block)
+        responses = collect_responses_without_inline_styles(headers, &block)
+        if Roadie.enabled?
+          responses.map { |response| inline_style_response(response) }
+        else
+          responses
+        end
+      end
+
+      # Rails 3
       def collect_responses_and_parts_order_with_inline_styles(headers, &block)
         responses, order = collect_responses_and_parts_order_without_inline_styles(headers, &block)
         if Roadie.enabled?
@@ -54,8 +70,8 @@ module Roadie
       end
 
       def resolve_target(target)
-        if target.respond_to? :bind
-          target.bind(self).call
+        if target.kind_of? Proc
+          instance_exec(&target)
         elsif target.respond_to? :call
           target.call
         else
