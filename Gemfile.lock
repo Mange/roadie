@@ -147,6 +147,7 @@ DEPENDENCIES
   guard
   guard-rspec
   rails
+  rake
   rb-fsevent (>= 0.9.0.pre5)
   roadie!
   rspec

@@ -119,6 +119,7 @@ PLATFORMS
 DEPENDENCIES
   appraisal
   rails (~> 3.1.0)
+  rake
   roadie!
   rspec
   rspec-rails
