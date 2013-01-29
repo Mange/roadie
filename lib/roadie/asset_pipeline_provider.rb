@@ -20,12 +20,10 @@ module Roadie
         !Rails.configuration.assets.compile rescue false
       end
     
-      def asset_file(name)
-        basename = remove_prefix(name)
-        
+      def asset_file(name)    
         if assets_precompiled?
           # Read the precompiled asset
-          asset_path = ActionController::Base.helpers.asset_path(basefile)
+          asset_path = ActionController::Base.helpers.asset_path(name)
           File.read(File.join(Rails.public_path, asset_path))
         else
           # This will compile and return the asset
