@@ -30,6 +30,5 @@ module Roadie
           Rails.application.assets.find_asset(name).to_s
         end
       end
-      end
   end
 end
