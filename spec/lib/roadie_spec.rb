@@ -1,7 +1,13 @@
 require 'spec_helper'
 
 describe Roadie do
-  let(:config) { Rails.application.config }
+  let(:config) { OpenStruct.new roadie: OpenStruct.new }
+
+  before do
+    app = double("Application", config: config)
+    rails = double("Rails", application: app)
+    stub_const "Rails", rails
+  end
 
   describe ".inline_css" do
     it "creates an instance of Roadie::Inliner and execute it" do
@@ -26,9 +32,9 @@ describe Roadie do
 
   describe ".enabled?" do
     it "returns the value of config.roadie.enabled" do
-      config.roadie.stub :enabled => true
+      config.roadie.enabled = true
       Roadie.should be_enabled
-      config.roadie.stub :enabled => false
+      config.roadie.enabled = false
       Roadie.should_not be_enabled
     end
   end
@@ -44,14 +50,8 @@ describe Roadie do
     end
 
     context "when Rails' asset pipeline is not present" do
-      before(:each) do
-        # Turns out it's pretty much impossible to work with Rails.application.config
-        # in a nice way; it changed quite a lot since 3.0. There's also no way of
-        # removing a configuration key after it's set, we cannot remove the assets
-        # config completely to trigger the normal error triggered in a 3.0 app (NoMethodError)
-        # We'll simulate it by mutating it in an ugly way for this test
-        config.stub(:assets).and_raise(NoMethodError)
-        config.stub(:respond_to?).with(:assets) { false }
+      before do
+        fail "Some context sets up config.assets" if config.respond_to?(:assets)
       end
 
       it "uses the FilesystemProvider" do
@@ -61,7 +61,7 @@ describe Roadie do
     end
 
     context "with rails' asset pipeline enabled" do
-      before(:each) { config.assets.enabled = true }
+      before { config.assets = OpenStruct.new(enabled: true) }
 
       it "uses the AssetPipelineProvider" do
         Roadie::AssetPipelineProvider.should_receive(:new).and_return(provider)
@@ -70,7 +70,7 @@ describe Roadie do
     end
 
     context "with rails' asset pipeline disabled" do
-      before(:each) { config.assets.enabled = false }
+      before { config.assets = OpenStruct.new(enabled: false) }
 
       it "uses the FilesystemProvider" do
         Roadie::FilesystemProvider.should_receive(:new).and_return(provider)
