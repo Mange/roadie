@@ -51,6 +51,7 @@ describe "Integrations" do
   [
     RailsApp.new("Rails 3.0.x", 'rails_30'),
     RailsApp.new("Rails 3.1.x", 'rails_31'),
+    RailsApp.new("Rails 3.2.x", 'rails_32'),
   ].each do |app|
     before { app.reset }
 
