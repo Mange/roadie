@@ -14,5 +14,6 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 module Rails30
   class Application < Rails::Application
     config.encoding = "utf-8"
+    config.action_mailer.default_url_options = {host: 'example.app.org'}
   end
 end
