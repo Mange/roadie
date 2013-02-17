@@ -30,8 +30,17 @@ describe "Integrations" do
         file << @extra_code unless @extra_code.empty?
         file << code
         file.close
-        IO.popen("cd #{@path.shellescape} && script/rails runner #{file.path.shellescape}").read
+        run_file_in_app_context file.path
       end
+    end
+
+    def run_file_in_app_context(file_path)
+      # Unset environment variables set by Bundler to get a clean slate
+      IO.popen(<<-SH).read
+        unset BUNDLE_GEMFILE;
+        unset RUBYOPT;
+        cd #{@path.shellescape} && script/rails runner #{file_path.shellescape}
+      SH
     end
   end
 
@@ -40,7 +49,8 @@ describe "Integrations" do
   end
 
   [
-    RailsApp.new("Rails 3.x", 'rails_30'),
+    RailsApp.new("Rails 3.0.x", 'rails_30'),
+    RailsApp.new("Rails 3.1.x", 'rails_31'),
   ].each do |app|
     before { app.reset }
 
