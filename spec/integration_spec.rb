@@ -1,110 +1,106 @@
 require 'spec_helper'
+require 'tempfile'
+require 'mail'
 
-module Roadie
-  shared_examples "roadie integration" do
-    mailer = Class.new(AnonymousMailer) do
-      default :css => 'integration', :from => 'john@example.com'
-      append_view_path FIXTURES_PATH.join('views')
+describe "Integrations" do
+  class RailsApp
+    def initialize(name, path)
+      @name = name
+      @path = File.expand_path("../railsapps/#{path}", __FILE__)
+      reset
+    end
 
-      # Needed for correct path lookup
-      self.mailer_name = "integration_mailer"
+    def to_s() @name end
 
-      def notification(to, reason)
-        @reason = reason
-        mail(:subject => 'Notification for you', :to => to) { |format| format.html; format.text }
+    def read_email(mail_name)
+      Mail.read_from_string run("puts Mailer.#{mail_name}.to_s")
+    end
+
+    def reset
+      @extra_code = ""
+    end
+
+    def before_mail(code)
+      @extra_code << "\n" << code << "\n"
+    end
+
+    private
+    def run(code)
+      Tempfile.open('code') do |file|
+        file << @extra_code unless @extra_code.empty?
+        file << code
+        file.close
+        run_file_in_app_context file.path
       end
-
-      def marketing(to)
-        headers('X-Spam' => 'No way! Trust us!')
-        mail(:subject => 'Buy cheap v1agra', :to => to)
-      end
-
-      def url_options
-        # This allows apps to calculate any options on a per-email basis
-        super.merge(:protocol => 'https')
-      end
     end
 
-    def parse_html_in_email(mail)
-      Nokogiri::HTML.parse mail.html_part.body.decoded
-    end
-
-    before(:each) do
-      change_default_url_options(:host => 'example.app.org')
-      mailer.delivery_method = :test
-    end
-
-    it "inlines styles for an email" do
-      email = mailer.notification('doe@example.com', 'your quota limit has been reached')
-
-      email.to.should == ['doe@example.com']
-      email.from.should == ['john@example.com']
-      email.should have(2).parts
-
-      email.text_part.body.decoded.should_not match(/<.*>/)
-
-      html = email.html_part.body.decoded
-      html.should include '<!DOCTYPE'
-      html.should include '<head'
-
-      document = parse_html_in_email(email)
-      document.should have_selector('body #message h1')
-      document.should have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
-      document.should have_selector('strong[contains("quota")]')
-
-      # If we deliver mails we can catch weird problems with headers being invalid
-      email.deliver
-    end
-
-    it "does not add headers for the roadie options" do
-      email = mailer.notification('doe@example.com', 'no berries left in chest')
-      email.header.fields.map(&:name).should_not include('css')
-    end
-
-    it "keeps custom headers in place" do
-      email = mailer.marketing('everyone@inter.net')
-      email.header['X-Spam'].should be_present
-    end
-
-    it "applies CSS3 styles" do
-      email = mailer.notification('doe@example.com', 'your quota limit has been reached')
-      document = parse_html_in_email(email)
-      strong_node = document.css('strong').first
-      stylings = SpecHelpers.styling_of_node(strong_node)
-      stylings.should include(['box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
-      stylings.should include(['-o-box-shadow', '#62b0d7 1px 1px 1px 1px inset, #aaaaaa 1px 1px 3px 0'])
-    end
-
-    it "only removes the css option when disabled" do
-      Rails.application.config.roadie.enabled = false
-
-      email = mailer.notification('doe@example.com', 'your quota limit has been reached')
-
-      email.header.fields.map(&:name).should_not include('css')
-
-      email.to.should == ['doe@example.com']
-      email.from.should == ['john@example.com']
-      email.should have(2).parts
-
-      html = email.html_part.body.decoded
-      html.should_not include '<!DOCTYPE'
-      html.should_not include '<head'
-
-      document = parse_html_in_email(email)
-      document.should_not have_styling('color' => '#eee').at_selector('h1')
-      document.should_not have_styling('background' => 'url(https://example.app.org/images/dots.png) repeat-x').at_selector('body')
+    def run_file_in_app_context(file_path)
+      # Unset environment variables set by Bundler to get a clean slate
+      IO.popen(<<-SH).read
+        unset BUNDLE_GEMFILE;
+        unset RUBYOPT;
+        cd #{@path.shellescape} && script/rails runner #{file_path.shellescape}
+      SH
     end
   end
 
-  describe "filesystem integration" do
-    it_behaves_like "roadie integration" do
-      before(:each) { Rails.application.config.assets.enabled = false }
-    end
+  def parse_html_in_email(mail)
+    Nokogiri::HTML.parse mail.html_part.body.decoded
   end
 
-  describe "asset pipeline integration" do
-    it_behaves_like "roadie integration" do
-      before(:each) { Rails.application.config.assets.enabled = true }
+  [
+    RailsApp.new("Rails 3.0.x", 'rails_30'),
+    RailsApp.new("Rails 3.1.x", 'rails_31'),
+    RailsApp.new("Rails 3.2.x", 'rails_32'),
+  ].each do |app|
+    before { app.reset }
+
+    describe "with #{app}" do
+      it "inlines styles for multipart emails" do
+        email = app.read_email(:normal_email)
+
+        email.to.should == ['example@example.org']
+        email.from.should == ['john@example.com']
+        email.should have(2).parts
+
+        email.text_part.body.decoded.should_not match(/<.*>/)
+
+        html = email.html_part.body.decoded
+        html.should include '<!DOCTYPE'
+        html.should include '<head'
+
+        document = parse_html_in_email(email)
+        document.should have_selector('body h1')
+        document.should have_styling('background' => 'url(https://example.app.org/images/rails.png)').at_selector('.image')
+
+        # If we deliver mails we can catch weird problems with headers being invalid
+        email.delivery_method :test
+        email.deliver
+      end
+
+      it "does not add headers for the roadie options and keeps custom headers in place" do
+        email = app.read_email(:extra_email)
+        email.header.fields.map(&:name).should_not include('css')
+        email.header['X-Spam'].should be_present
+      end
+
+      it "only removes the css option when disabled" do
+        app.before_mail %(
+          Rails.application.config.roadie.enabled = false
+        )
+
+        email = app.read_email(:normal_email)
+
+        email.header.fields.map(&:name).should_not include('css')
+
+        email.to.should == ['example@example.org']
+        email.from.should == ['john@example.com']
+        email.should have(2).parts
+
+        document = parse_html_in_email(email)
+        document.should have_selector('body h1')
+        document.should_not have_styling('background' => 'url(https://example.app.org/images/rails.png)').at_selector('.image')
+      end
     end
   end
 end

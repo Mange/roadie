@@ -19,8 +19,6 @@ require 'sprockets'
 require 'roadie/railtie'
 require 'action_mailer/railtie'
 
-FIXTURES_PATH = Pathname.new(File.dirname(__FILE__)).join('fixtures')
-
 class TestApplication < Rails::Application
   def config
     @config
@@ -30,10 +28,6 @@ class TestApplication < Rails::Application
     env = Sprockets::Environment.new
     env.append_path root.join('app','assets','stylesheets')
     env
-  end
-
-  def root
-    FIXTURES_PATH
   end
 
   def reset_test_config

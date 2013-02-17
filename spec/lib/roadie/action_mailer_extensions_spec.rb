@@ -25,7 +25,7 @@ module Roadie
 
     let(:provider) { double("asset provider", :all => '') }
 
-    before(:each) do
+    before do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
       Roadie.stub(:current_provider => provider)
     end
