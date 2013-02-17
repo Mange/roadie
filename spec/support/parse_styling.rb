@@ -1,7 +1,7 @@
 module SpecHelpers
   class << self
     def styling_of_node(node)
-      if node and node['style'].present?
+      if node and node['style']
         parse_styling(node['style'])
       else
         []

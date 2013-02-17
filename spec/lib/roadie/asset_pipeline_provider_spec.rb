@@ -17,7 +17,9 @@ module Roadie
 
     describe "#find(file)" do
       let(:pipeline) { double("Rails asset pipeline") }
-      before(:each) { Roadie.app.stub(:assets => pipeline) }
+      before do
+        Roadie.stub app: double(assets: pipeline)
+      end
 
       def expect_pipeline_access(name, returning = '')
         pipeline.should_receive(:[]).with(name).and_return(returning)

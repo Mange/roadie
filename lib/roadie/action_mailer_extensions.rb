@@ -1,7 +1,3 @@
-require 'uri'
-require 'nokogiri'
-require 'css_parser'
-
 module Roadie
   # This module adds the Roadie functionality to ActionMailer 3 when included in ActionMailer::Base.
   #

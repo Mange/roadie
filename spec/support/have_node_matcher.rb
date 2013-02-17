@@ -3,9 +3,9 @@ RSpec::Matchers.define :have_node do |selector|
   match do |document|
     node = document.at_css(selector)
     if @attributes
-      node.present? and match_attributes(node.attributes)
+      node && match_attributes(node.attributes)
     else
-      node.present?
+      node
     end
   end
 

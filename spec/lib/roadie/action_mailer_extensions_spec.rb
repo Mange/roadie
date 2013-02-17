@@ -1,6 +1,48 @@
 # coding: utf-8
 require 'spec_helper'
 
+# Run all the railties that actually hook up Roadie with ActionMailer.
+# TODO: This needs to be simplified badly.
+require 'rails'
+require 'roadie/railtie'
+require 'action_mailer/railtie'
+
+class TestApplication < Rails::Application; end
+if Roadie::Railtie.respond_to?(:run_initializers)
+  # Rails >= 3.1
+  ActionMailer::Railtie.run_initializers(:default, Rails.application)
+  Roadie::Railtie.run_initializers(:default, Rails.application)
+else
+  # Rails 3.0
+  Rails.application.config.active_support.deprecation = :log
+  Rails.logger = Logger.new('/dev/null')
+  Rails.application.initialize!
+end
+
+# Subclass of ActionMailer::Base that does not crash when the class
+# is anonymous. Subclassed in the specs whenever a new mailer is
+# needed
+class AnonymousMailer < ActionMailer::Base
+  class << self
+    # Pretty much like super, but returns "anonymous" when no
+    # name is set
+    def mailer_name
+      if @mailer_name or name
+        super
+      else
+        "anonymous"
+      end
+    end
+
+    # Was an alias. (e.g. pointed to the old, non-overridden method)
+    def controller_path
+      mailer_name
+    end
+  end
+end
+
+# Finally, the specifications:
+
 module Roadie
   describe ActionMailerExtensions, "CSS selection" do
     mailer = Class.new(AnonymousMailer) do

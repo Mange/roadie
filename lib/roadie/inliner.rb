@@ -1,4 +1,7 @@
 require 'set'
+require 'nokogiri'
+require 'uri'
+require 'css_parser'
 
 module Roadie
   # This class is the core of Roadie as it does all the actual work. You just give it
@@ -82,7 +85,7 @@ module Roadie
         html_node = document.at_css('html')
         html_node['xmlns'] ||= 'http://www.w3.org/1999/xhtml'
 
-        if document.at_css('html > head').present?
+        if document.at_css('html > head')
           head = document.at_css('html > head')
         else
           head = Nokogiri::XML::Node.new('head', document)
@@ -145,7 +148,7 @@ module Roadie
       end
 
       def each_selector_without_pseudo(rules)
-        rules.selectors.reject { |selector| selector.include?(':') or selector.starts_with?('@') }.each do |selector|
+        rules.selectors.reject { |selector| selector.include?(':') or selector[0] == '@' }.each do |selector|
           yield selector, CssParser.calculate_specificity(selector)
         end
       end
