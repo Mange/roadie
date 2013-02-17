@@ -6,6 +6,12 @@ module Roadie
   describe FilesystemProvider do
     let(:provider) { FilesystemProvider.new }
 
+    before do
+      # TODO: Make this simpler by introducing another way to find "application root"
+      application = double "Application", root: Pathname.new(__FILE__).dirname
+      Roadie.stub app: application
+    end
+
     it_behaves_like AssetProvider
 
     it "has a configurable prefix" do

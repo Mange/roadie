@@ -66,6 +66,7 @@ module Roadie
           if pathname.absolute?
             @path = pathname
           else
+            # TODO: Deprecate this behavior
             @path = Roadie.app.root.join(path)
           end
         end
