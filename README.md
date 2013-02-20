@@ -230,7 +230,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2011
+Copyright (c) 2009-2013
 
 * [Jim Neath](http://jimneath.org)
 * Magnus Bergmark <magnus.bergmark@gmail.com>
