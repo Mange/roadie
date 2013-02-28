@@ -82,10 +82,10 @@ describe Roadie::Inliner do
       end
     end
 
-    it "respects !important properties" do
+    it "keeps !important properties" do
       use_css "a { text-decoration: underline !important; }
                a.hard-to-spot { text-decoration: none; }"
-      rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline')
+      rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline !important')
     end
 
     it "combines with already present inline styles" do

@@ -16,6 +16,10 @@ module Roadie
         StyleDeclaration.new('color', 'green', false, 1).to_s.should == 'color:green'
         StyleDeclaration.new('font-size', '1.1em', false, 1).to_s.should == 'font-size:1.1em'
       end
+
+      it "contains the !important flag when set" do
+        StyleDeclaration.new('color', 'green', true, 1).to_s.should == 'color:green !important'
+      end
     end
 
     describe "comparing" do
