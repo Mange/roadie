@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
   s.description = %q{Roadie tries to make sending HTML emails a little less painful in Rails 3 by inlining stylesheets and rewrite relative URLs for you.}
 
   s.add_dependency 'nokogiri', '>= 1.4.4'
-  s.add_dependency 'css_parser'
+  s.add_dependency 'css_parser', '1.2.6'
   s.add_dependency 'actionmailer', '> 3.0.0', '< 5.0.0'
   s.add_dependency 'sprockets'
 
