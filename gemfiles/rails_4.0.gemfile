@@ -2,6 +2,6 @@
 
 source :rubygems
 
-gem "rails", :git=>"git://github.com/rails/rails.git"
+gem "rails", ">= 4.0.0.beta1", "< 5.0.0"
 
 gemspec :path=>"../"
