@@ -5,6 +5,8 @@
 * Enhancements:
   * Support Rails 4 master (with the help of [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes))
   * Keep `!important` when outputting styles to help combat web mail styles being `!important`
+  * Support `:nth-child`, `:last-child`, etc.
+    * To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
 * Other:
   * Be more specific on which versions are required; require newer `css_parser`
 
@@ -78,7 +80,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre1...v2.1.0.pre2)
 
-* Bug: Roadie broke url_for inside mailer views
+* Bug: Roadie broke `url_for` inside mailer views
 
 ### 2.1.0.pre1
 

@@ -98,9 +98,29 @@ describe Roadie::Inliner do
       rendering('<p style="color: green"></p>').should have_styling([['color', 'red'], ['color', 'green']])
     end
 
-    it "ignores selectors with :psuedo-classes" do
-      use_css 'p:hover { color: red }'
-      rendering('<p></p>').should_not have_styling('color' => 'red')
+    it "does not apply link and dynamic pseudo selectors" do
+      use_css "
+        p:active { color: red }
+        p:focus { color: red }
+        p:hover { color: red }
+        p:link { color: red }
+        p:target { color: red }
+        p:visited { color: red }
+
+        p.active { width: 100%; }
+      "
+      rendering('<p class="active"></p>').should have_styling('width' => '100%')
+    end
+
+    it "works with nth-child" do
+      use_css "
+        p { color: red; }
+        p:nth-child(2n) { color: green; }
+      "
+      rendering("
+        <p class='one'></p>
+        <p class='two'></p>
+      ").should have_styling('color' => 'green').at_selector('.two')
     end
 
     it "ignores selectors with @" do

@@ -133,7 +133,7 @@ module Roadie
       def elements_with_declarations
         Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
           parsed_css.each_rule_set do |rule_set|
-            each_selector_without_pseudo(rule_set) do |selector, specificity|
+            each_good_selector(rule_set) do |selector, specificity|
               each_element_in_selector(selector) do |element|
                 style_declarations_in_rule_set(specificity, rule_set) do |declaration|
                   element_declarations[element] << declaration
@@ -144,8 +144,13 @@ module Roadie
         end
       end
 
-      def each_selector_without_pseudo(rules)
-        rules.selectors.reject { |selector| selector.include?(':') or selector.starts_with?('@') }.each do |selector|
+      BAD_PSEUDO_FUNCTIONS = %w[:active :focus :hover :link :target :visited].freeze
+      def bad_selector?(selector)
+        selector.starts_with?('@') || BAD_PSEUDO_FUNCTIONS.any? { |bad| selector.include?(bad) }
+      end
+
+      def each_good_selector(rules)
+        rules.selectors.reject { |selector| bad_selector?(selector) }.each do |selector|
           yield selector, CssParser.calculate_specificity(selector)
         end
       end
@@ -154,6 +159,15 @@ module Roadie
         document.css(selector.strip).each do |element|
           yield element
         end
+      # There's no way to get a list of supported psuedo rules, so we're left
+      # with having to rescue errors.
+      # Pseudo selectors that are known to be bad are skipped automatically but
+      # this will catch the rest.
+      rescue Nokogiri::XML::XPath::SyntaxError => error
+        warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
+      rescue => error
+        raise unless error.message.include?('XPath')
+        warn "Roadie cannot use #{selector.inspect} when inlining stylesheets: #{error}"
       end
 
       def style_declarations_in_rule_set(specificity, rule_set)
