@@ -2,8 +2,11 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.4...master)
 
-* Support Rails 4 master (with the help of [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes))
-* Keep `!important` when outputting styles to help combat web mail styles being `!important`
+* Enhancements:
+  * Support Rails 4 master (with the help of [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes))
+  * Keep `!important` when outputting styles to help combat web mail styles being `!important`
+* Other:
+  * Be more specific on which versions are required; require newer `css_parser`
 
 ### 2.3.4
 
