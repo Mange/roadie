@@ -6,6 +6,7 @@ rvm:
   - 1.8.7
   - 1.9.3
   - 2.0.0
+  - jruby
 
 gemfile:
   - gemfiles/rails_3.0.gemfile
@@ -17,3 +18,5 @@ matrix:
   exclude:
     - rvm: 1.8.7
       gemfile: gemfiles/rails_4.0.gemfile
+  allow_failures:
+    - rvm: jruby

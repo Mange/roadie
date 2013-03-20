@@ -10,6 +10,7 @@
 * Other:
   * Be more specific on which versions are required; require newer `css_parser`
   * Officially support MRI 2.0.0
+  * Add experimental support for JRuby
 
 ### 2.3.4
 
