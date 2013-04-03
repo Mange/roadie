@@ -133,9 +133,9 @@ module Roadie
       def elements_with_declarations
         Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
           parsed_css.each_rule_set do |rule_set|
-            each_good_selector(rule_set) do |selector, specificity|
+            each_good_selector(rule_set) do |selector|
               each_element_in_selector(selector) do |element|
-                style_declarations_in_rule_set(specificity, rule_set) do |declaration|
+                style_declarations_in_rule_set(selector.specificity, rule_set) do |declaration|
                   element_declarations[element] << declaration
                 end
               end
@@ -144,18 +144,15 @@ module Roadie
         end
       end
 
-      def bad_selector?(selector)
-        !Selector.new(selector).inlinable?
-      end
-
       def each_good_selector(rules)
-        rules.selectors.reject { |selector| bad_selector?(selector) }.each do |selector|
-          yield selector, CssParser.calculate_specificity(selector)
+        rules.selectors.each do |selector_string|
+          selector = Selector.new(selector_string)
+          yield selector if selector.inlinable?
         end
       end
 
       def each_element_in_selector(selector)
-        document.css(selector.strip).each do |element|
+        document.css(selector.to_s).each do |element|
           yield element
         end
       # There's no way to get a list of supported pseudo rules, so we're left

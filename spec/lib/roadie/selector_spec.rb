@@ -33,5 +33,14 @@ module Roadie
     it "cannot be inlined when selector is an at-rule" do
       Selector.new('@keyframes progress-bar-stripes').should_not be_inlinable
     end
+
+    it "has a calculated specificity" do
+      selector = "html p.active.nice #main.deep-selector"
+      Selector.new(selector).specificity.should == CssParser.calculate_specificity(selector)
+    end
+
+    it "strips the given selector" do
+      Selector.new(" foo  \n").to_s.should == Selector.new("foo").to_s
+    end
   end
 end
