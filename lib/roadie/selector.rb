@@ -5,7 +5,7 @@ module Roadie
     end
 
     def specificity
-      @specificity ||= CssParser.calculate_specificity @selector
+      @specificity ||= CssParser.calculate_specificity selector
     end
 
     def inlinable?
@@ -13,25 +13,36 @@ module Roadie
     end
 
     def to_s
-      @selector
+      selector
     end
 
     def to_str() to_s end
-    def inspect() @selector.inspect end
+    def inspect() selector.inspect end
+
+    def ==(other)
+      if other.is_a?(self.class)
+        other.selector == selector
+      else
+        super
+      end
+    end
+
+    protected
+      attr_reader :selector
 
     private
       BAD_PSEUDO_FUNCTIONS = %w[:active :focus :hover :link :target :visited].freeze
 
       def pseudo_element?
-        @selector.include? '::'
+        selector.include? '::'
       end
 
       def at_rule?
-        @selector[0] == '@'
+        selector[0] == '@'
       end
 
       def pseudo_function?
-        BAD_PSEUDO_FUNCTIONS.any? { |bad| @selector.include?(bad) }
+        BAD_PSEUDO_FUNCTIONS.any? { |bad| selector.include?(bad) }
       end
   end
 end

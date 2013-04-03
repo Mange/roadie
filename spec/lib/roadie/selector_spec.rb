@@ -39,6 +39,11 @@ module Roadie
       Selector.new(selector).specificity.should == CssParser.calculate_specificity(selector)
     end
 
+    it "is equal to other selectors when they match the same things" do
+      Selector.new("foo").should == Selector.new("foo ")
+      Selector.new("foo").should_not == "foo"
+    end
+
     it "strips the given selector" do
       Selector.new(" foo  \n").to_s.should == Selector.new("foo").to_s
     end
