@@ -146,7 +146,7 @@ module Roadie
 
       BAD_PSEUDO_FUNCTIONS = %w[:active :focus :hover :link :target :visited].freeze
       def bad_selector?(selector)
-        selector.starts_with?('@') || BAD_PSEUDO_FUNCTIONS.any? { |bad| selector.include?(bad) }
+        selector.starts_with?('@') || selector.include?('::') || BAD_PSEUDO_FUNCTIONS.any? { |bad| selector.include?(bad) }
       end
 
       def each_good_selector(rules)
@@ -159,11 +159,11 @@ module Roadie
         document.css(selector.strip).each do |element|
           yield element
         end
-      # There's no way to get a list of supported psuedo rules, so we're left
+      # There's no way to get a list of supported pseudo rules, so we're left
       # with having to rescue errors.
       # Pseudo selectors that are known to be bad are skipped automatically but
       # this will catch the rest.
-      rescue Nokogiri::XML::XPath::SyntaxError => error
+      rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
         warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
       rescue => error
         raise unless error.message.include?('XPath')

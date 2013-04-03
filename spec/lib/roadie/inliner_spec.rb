@@ -112,6 +112,14 @@ describe Roadie::Inliner do
       rendering('<p class="active"></p>').should have_styling('width' => '100%')
     end
 
+    it "does not crash on any pseudo element selectors" do
+      use_css "
+        p.some-element { width: 100%; }
+        p::some-element { color: red; }
+      "
+      rendering('<p class="some-element"></p>').should have_styling('width' => '100%')
+    end
+
     it "works with nth-child" do
       use_css "
         p { color: red; }

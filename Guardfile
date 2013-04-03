@@ -1,4 +1,4 @@
-guard 'rspec', :rvm => ['1.9.3', 'jruby-head', 'ruby-1.8.7-p358'] do
+guard 'rspec' do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
 
