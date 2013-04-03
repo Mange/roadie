@@ -38,7 +38,7 @@ module Roadie
       end
 
       def at_rule?
-        selector[0] == '@'
+        selector[0, 1] == '@'
       end
 
       def pseudo_function?
