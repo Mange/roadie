@@ -162,8 +162,8 @@ module Roadie
       rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
         warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
       rescue => error
+        warn "Roadie got error when looking for #{selector.inspect}: #{error}"
         raise unless error.message.include?('XPath')
-        warn "Roadie cannot use #{selector.inspect} when inlining stylesheets: #{error}"
       end
 
       def style_declarations_in_rule_set(specificity, rule_set)
