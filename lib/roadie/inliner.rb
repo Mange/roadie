@@ -144,9 +144,8 @@ module Roadie
         end
       end
 
-      BAD_PSEUDO_FUNCTIONS = %w[:active :focus :hover :link :target :visited].freeze
       def bad_selector?(selector)
-        selector.starts_with?('@') || selector.include?('::') || BAD_PSEUDO_FUNCTIONS.any? { |bad| selector.include?(bad) }
+        !Selector.new(selector).inlinable?
       end
 
       def each_good_selector(rules)

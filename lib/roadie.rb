@@ -54,6 +54,7 @@ end
 
 require 'roadie/version'
 require 'roadie/css_file_not_found'
+require 'roadie/selector'
 require 'roadie/style_declaration'
 
 require 'roadie/asset_provider'
