@@ -78,4 +78,15 @@ describe Roadie do
       end
     end
   end
+
+  describe ".custom_converter" do
+    let(:custom_converter) { double("custom converter instance") }
+    
+    it "returns the value of config.roadie.custom_converter" do  
+      config.roadie.custom_converter = custom_converter
+      Roadie.custom_converter.should == custom_converter
+      config.roadie.custom_converter = nil
+          Roadie.custom_converter.should == nil
+    end
+  end
 end

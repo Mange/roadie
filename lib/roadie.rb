@@ -45,6 +45,12 @@ module Roadie
       end
     end
 
+    # Returns the value of +config.roadie.custom_converter+.
+    #
+    def custom_converter
+      config.roadie.custom_converter
+    end
+
     private
       def config
         Roadie.app.config

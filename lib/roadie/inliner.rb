@@ -29,12 +29,14 @@ module Roadie
     # @param [Array] targets List of CSS files to load via the provider
     # @param [String] html
     # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+
-    def initialize(assets, targets, html, url_options)
+    # @param [lambda] custom_converter A lambda block with one parameter
+    def initialize(assets, targets, html, url_options, custom_converter=nil)
       @assets = assets
       @css = assets.all(targets)
       @html = html
       @inline_css = []
       @url_options = url_options
+      @custom_converter = custom_converter
 
       if url_options and url_options[:asset_path_prefix]
         raise ArgumentError, "The asset_path_prefix URL option is not working anymore. You need to add the following configuration to your application.rb:\n" +
@@ -54,12 +56,13 @@ module Roadie
         inline_css_rules
         make_image_urls_absolute
         make_style_urls_absolute
+        custom_converter.call(document) if custom_converter.respond_to?(:call)
         @document = nil
       end
     end
 
     private
-      attr_reader :css, :html, :assets, :url_options, :document
+      attr_reader :css, :html, :assets, :url_options, :document, :custom_converter
 
       def inline_css
         @inline_css.join("\n")

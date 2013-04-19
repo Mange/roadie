@@ -10,7 +10,8 @@ describe Roadie::Inliner do
 
   def rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options).execute
+    custom_converter = options[:custom_converter]
+    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, custom_converter).execute
   end
 
   describe "initialization" do
@@ -486,6 +487,20 @@ describe Roadie::Inliner do
     it "does not touch data: URIs" do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
+    end
+  end
+
+  describe "custom converter" do
+    it "is invoked" do
+      custom_converter = double("converter")
+      custom_converter.should_receive(:call).with(anything)
+      rendering('<div></div>', :custom_converter => custom_converter)
+    end
+
+    it "modifies the document" do
+      html = '<div id="foo"></div>'
+      custom_converter = lambda {|d| d.css("#foo").first["class"] = "bar"}
+      rendering(html, :custom_converter => custom_converter).css("#foo").first["class"].should == "bar"
     end
   end
 
