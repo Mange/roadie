@@ -45,10 +45,10 @@ module Roadie
       end
     end
 
-    # Returns the value of +config.roadie.custom_converter+.
+    # Returns the value of +config.roadie.after_inlining+
     #
-    def custom_converter
-      config.roadie.custom_converter
+    def after_inlining_handler
+      config.roadie.after_inlining
     end
 
     private

@@ -58,7 +58,7 @@ module Roadie
 
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          response.merge :body => Roadie.inline_css(Roadie.current_provider, css_targets, response[:body], url_options, Roadie.custom_converter)
+          response.merge :body => Roadie.inline_css(Roadie.current_provider, css_targets, response[:body], url_options, Roadie.after_inlining_handler)
         else
           response
         end

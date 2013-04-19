@@ -79,14 +79,14 @@ describe Roadie do
     end
   end
 
-  describe ".custom_converter" do
-    let(:custom_converter) { double("custom converter instance") }
+  describe ".after_inlining_handler" do
+    let(:after_inlining_handler) { double("after inlining handler") }
     
-    it "returns the value of config.roadie.custom_converter" do  
-      config.roadie.custom_converter = custom_converter
-      Roadie.custom_converter.should == custom_converter
-      config.roadie.custom_converter = nil
-          Roadie.custom_converter.should == nil
+    it "returns the value of config.roadie.after_inlining_handler" do  
+      config.roadie.after_inlining = after_inlining_handler
+      Roadie.after_inlining_handler.should == after_inlining_handler
+      config.roadie.after_inlining = nil
+      Roadie.after_inlining_handler.should == nil
     end
   end
 end

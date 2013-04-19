@@ -20,16 +20,16 @@ module Roadie
     end
 
     def expect_global_css(files)
-      Roadie.should_receive(:inline_css).with(provider, files, anything, anything, custom_converter).and_return('')
+      Roadie.should_receive(:inline_css).with(provider, files, anything, anything, after_inlining_handler).and_return('')
     end
 
     let(:provider) { double("asset provider", :all => '') }
-    let(:custom_converter) { double("custom converter") }
+    let(:after_inlining_handler) { double("after inlining handler") }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
       Roadie.stub(:current_provider => provider)
-      Roadie.stub(:custom_converter => custom_converter)
+      Roadie.stub(:after_inlining_handler => after_inlining_handler)
     end
 
     it "uses the default CSS when :css is not specified" do
@@ -103,12 +103,12 @@ module Roadie
     end
 
     let(:provider) { double("asset provider", :all => '') }
-    let(:custom_converter) { double("custom converter") }
+    let(:after_inlining_handler) { double("after inlining handler") }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
       Roadie.stub(:current_provider => provider)
-      Roadie.stub(:custom_converter => custom_converter)
+      Roadie.stub(:after_inlining_handler => after_inlining_handler)
     end
 
     describe "for singlepart text/plain" do
@@ -120,7 +120,7 @@ module Roadie
 
     describe "for singlepart text/html" do
       it "inlines css to the email body" do
-        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, custom_converter).and_return('html')
+        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, after_inlining_handler).and_return('html')
         mailer.singlepart_html.body.decoded.should == 'html'
       end
 
@@ -137,7 +137,7 @@ module Roadie
       end
 
       it "inlines css to the email's html part" do
-        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, custom_converter).and_return('html')
+        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, after_inlining_handler).and_return('html')
         email = mailer.multipart
         email.html_part.body.decoded.should == 'html'
         email.text_part.body.decoded.should == 'Hello Text'
