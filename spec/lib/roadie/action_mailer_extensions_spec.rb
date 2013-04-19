@@ -24,7 +24,7 @@ module Roadie
     end
 
     let(:provider) { double("asset provider", :all => '') }
-    let(:custom_converter) { double("custom converter", :all => '') }
+    let(:custom_converter) { double("custom converter") }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
@@ -103,7 +103,7 @@ module Roadie
     end
 
     let(:provider) { double("asset provider", :all => '') }
-    let(:custom_converter) { double("custom converter", :all => '') }
+    let(:custom_converter) { double("custom converter") }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')

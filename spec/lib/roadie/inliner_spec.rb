@@ -531,6 +531,20 @@ describe Roadie::Inliner do
     end
   end
 
+  describe "custom converter" do
+    it "is invoked" do
+      custom_converter = double("converter")
+      custom_converter.should_receive(:call).with(anything)
+      rendering('<div></div>', :custom_converter => custom_converter)
+    end
+
+    it "modifies the document" do
+      html = '<div id="foo"></div>'
+      custom_converter = lambda {|d| d.css("#foo").first["class"] = "bar"}
+      rendering(html, :custom_converter => custom_converter).css("#foo").first["class"].should == "bar"
+    end
+  end
+
   describe "inserting tags" do
     it "inserts a doctype if not present" do
       rendering('<html><body></body></html>').to_xml.should include('<!DOCTYPE ')
