@@ -10,7 +10,8 @@ describe Roadie::Inliner do
 
   def rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options).execute
+    custom_converter = options[:custom_converter]
+    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, custom_converter).execute
   end
 
   describe "initialization" do
@@ -486,6 +487,47 @@ describe Roadie::Inliner do
     it "does not touch data: URIs" do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
+    end
+
+  end
+
+  describe "custom converter" do
+    it "is invoked" do
+      custom_converter = double("converter")
+      custom_converter.should_receive(:call).with(anything)
+      rendering('<div></div>', :custom_converter => custom_converter)
+    end
+
+    it "modifies the document" do
+      custom_converter = lambda {|d| d.css("#foo").each {|n| n["class"] = "bar"}}
+      html = '<div id="foo"></div>'
+      rendering(html, :custom_converter => custom_converter).css("#foo").first["class"].should == "bar"
+    end
+  end
+
+  describe "inserting tags" do
+    it "inserts a doctype if not present" do
+      rendering('<html><body></body></html>').to_xml.should include('<!DOCTYPE ')
+      rendering('<!DOCTYPE html><html><body></body></html>').to_xml.should_not match(/(DOCTYPE.*?){2}/)
+    end
+
+    it "sets xmlns of <html> to that of XHTML" do
+      rendering('<html><body></body></html>').should have_node('html').with_attributes("xmlns" => "http://www.w3.org/1999/xhtml")
+    end
+
+    it "inserts basic html structure if not present" do
+      rendering('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
+    end
+
+    it "inserts <head> if not present" do
+      rendering('<html><body></body></html>').should have_selector('html > head + body')
+    end
+
+    it "inserts meta tag describing content-type" do
+      rendering('<html><head></head><body></body></html>').tap do |document|
+        document.should have_selector('head meta[http-equiv="Content-Type"]')
+        document.css('head meta[http-equiv="Content-Type"]').first['content'].should == 'text/html; charset=UTF-8'
+                end
     end
   end
 

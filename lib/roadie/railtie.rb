@@ -13,6 +13,13 @@ module Roadie
   #     config.roadie.provider = nil
   #       You can use this to set a provider yourself. See {Roadie::AssetProvider}.
   #
+  #     config.roadie.custom_converter = lambda do |doc| 
+  #       doc.css('#products p.desc a[href^="/"]').each do |link|
+  #         link['href'] = "http://www.foo.com" + link['href']
+  #       end
+  #     end
+  #       You can use this to set a custom document converter. When available, 
+  #       the document converter is invoked with a Nokogiri document object.
   #
   # @see Roadie
   # @see AssetProvider
@@ -20,6 +27,7 @@ module Roadie
     config.roadie = ActiveSupport::OrderedOptions.new
     config.roadie.enabled = true
     config.roadie.provider = nil
+    config.roadie.custom_converter = nil
 
     initializer "roadie.extend_action_mailer" do
       ActiveSupport.on_load(:action_mailer) do
