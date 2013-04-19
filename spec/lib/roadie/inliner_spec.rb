@@ -488,7 +488,6 @@ describe Roadie::Inliner do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
     end
-
   end
 
   describe "custom converter" do
