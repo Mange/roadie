@@ -196,7 +196,7 @@ class ProductLinkInliner
 end
 ```
 
-## Custom inliner scopes
+### Custom inliner scopes
 
 - **All HTML emails**
 
