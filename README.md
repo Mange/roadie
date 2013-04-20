@@ -181,6 +181,7 @@ end
 Example for using object as custom inliner:
 
 ```ruby
+# application.rb
 config.roadie.after_inlining = ProductLinkInliner.new 
 
 # lib/product_link_inliner.rb
@@ -194,6 +195,37 @@ class ProductLinkInliner
   end  
 end
 ```
+
+## Custom inliner scopes
+
+- **All HTML emails**
+
+```ruby
+# application.rb. Custom inliner for all emails.
+config.roadie.after_inlining = ProductLinkInliner.new 
+```
+- **All HTML emails sent by a mailer**
+
+```ruby
+class UserMailer < ActionMailer::Base
+  # Custom inliner for all mailer methods.
+  default :after_inlining => ProductLinkInliner.new
+
+  # ..
+end
+```
+
+- **All HTML emails sent by a specific mailer method**
+
+```ruby
+class UserMailer < ActionMailer::Base
+  def registration
+    # Custom inliner for registration emails
+    mail(:after_inlining => ProductLinkInliner.new)
+  end
+end
+```
+
 
 Bugs / TODO
 -----------

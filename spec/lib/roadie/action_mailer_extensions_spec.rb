@@ -20,16 +20,14 @@ module Roadie
     end
 
     def expect_global_css(files)
-      Roadie.should_receive(:inline_css).with(provider, files, anything, anything, after_inlining_handler).and_return('')
+      Roadie.should_receive(:inline_css).with(provider, files, anything, anything, anything).and_return('')
     end
 
     let(:provider) { double("asset provider", :all => '') }
-    let(:after_inlining_handler) { double("after inlining handler") }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
       Roadie.stub(:current_provider => provider)
-      Roadie.stub(:after_inlining_handler => after_inlining_handler)
     end
 
     it "uses the default CSS when :css is not specified" do
@@ -78,6 +76,82 @@ module Roadie
     end
   end
 
+  describe ActionMailerExtensions, "after_initialize handler" do
+    let(:global_after_inlining_handler) { double("global after inlining handler") }
+    let(:per_mailer_after_inlining_handler) { double("per mailer after inlining handler") }
+    let(:per_mail_after_inlining_handler) { double("per mail after inlining handler") }
+    let(:provider) { double("asset provider", :all => '') }
+
+    before(:each) do
+      Roadie.stub(:current_provider => provider)
+      Roadie.stub(:after_inlining_handler => global_after_inlining_handler)
+    end
+
+    def expect_inlining_handler(handler)
+      Roadie.should_receive(:inline_css).with(provider, anything, anything, anything, handler)
+    end
+
+    describe "global" do
+      let(:mailer) do
+        Class.new(AnonymousMailer) do
+          def nil_handler
+            mail(:subject => "Nil handler") do |format|
+              format.html { render :text => '' }
+            end
+          end
+
+          def global_handler
+            mail(:subject => "Global handler") do |format|
+              format.html { render :text => '' }
+            end
+          end
+        end
+      end
+
+      it "is set to the provided global handler when mailer/per mail handler are not specified" do
+        expect_inlining_handler(global_after_inlining_handler)
+        mailer.global_handler
+      end
+
+      it "is not used when not set" do
+        Roadie.stub(:after_inlining_handler => nil)
+        expect_inlining_handler(nil)
+        mailer.nil_handler
+      end
+    end
+
+    describe "overridden" do
+      let(:mailer) do
+        handler = per_mailer_after_inlining_handler
+        Class.new(AnonymousMailer) do
+          default :after_inlining => handler
+
+          def per_mailer_handler
+            mail(:subject => "Mailer handler") do |format|
+              format.html { render :text => '' }
+            end
+          end
+
+          def per_mail_handler(handler)
+            mail(:subject => "Per Mail handler", :after_inlining => handler) do |format|
+              format.html { render :text => '' }
+            end
+          end
+        end
+      end
+
+      it "is set to the provided mailer handler" do
+        expect_inlining_handler(per_mailer_after_inlining_handler)
+        mailer.per_mailer_handler
+      end
+
+      it "is set to the provided per mail handler" do
+        expect_inlining_handler(per_mail_after_inlining_handler)
+        mailer.per_mail_handler(per_mail_after_inlining_handler)
+      end
+    end
+  end
+
   describe ActionMailerExtensions, "using HTML" do
     mailer = Class.new(AnonymousMailer) do
       default :css => 'simple'
@@ -103,12 +177,10 @@ module Roadie
     end
 
     let(:provider) { double("asset provider", :all => '') }
-    let(:after_inlining_handler) { double("after inlining handler") }
 
     before(:each) do
       Roadie.stub(:inline_css => 'unexpected value passed to inline_css')
       Roadie.stub(:current_provider => provider)
-      Roadie.stub(:after_inlining_handler => after_inlining_handler)
     end
 
     describe "for singlepart text/plain" do
@@ -120,7 +192,7 @@ module Roadie
 
     describe "for singlepart text/html" do
       it "inlines css to the email body" do
-        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, after_inlining_handler).and_return('html')
+        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, anything).and_return('html')
         mailer.singlepart_html.body.decoded.should == 'html'
       end
 
@@ -137,7 +209,7 @@ module Roadie
       end
 
       it "inlines css to the email's html part" do
-        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, after_inlining_handler).and_return('html')
+        Roadie.should_receive(:inline_css).with(provider, ['simple'], 'Hello HTML', anything, anything).and_return('html')
         email = mailer.multipart
         email.html_part.body.decoded.should == 'html'
         email.text_part.body.decoded.should == 'Hello Text'
