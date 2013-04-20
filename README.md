@@ -187,7 +187,7 @@ config.roadie.after_inlining = ProductLinkInliner.new
 # lib/product_link_inliner.rb
 class ProductLinkInliner
   def call(doc)
-    d.css(selector).each{|l| l['href'] = "http://www.foo.com" + l['href']}
+    doc.css(selector).each{|l| l['href'] = "http://www.foo.com" + l['href']}
   end
   
   def selector
