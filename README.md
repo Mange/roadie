@@ -141,7 +141,7 @@ If the `link` tag uses an absolute URL to the stylesheet, it will not be inlined
 Writing your own provider
 -------------------------
 
-A provider handles searching CSS files for you. Cou can easily create your own provider for your specific app by subclassing `Roadie::AssetProvider`. See the API documentation for information about how to build them.
+A provider handles searching CSS files for you. You can easily create your own provider for your specific app by subclassing `Roadie::AssetProvider`. See the API documentation for information about how to build them.
 
 Example Subclassing the `AssetPipelineProvider`:
 
