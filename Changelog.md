@@ -7,7 +7,7 @@
   * Keep `!important` when outputting styles to help combat web mail styles being `!important`
   * Support `:nth-child`, `:last-child`, etc.
     * To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
-  * Support for custom inliner
+  * Support for custom inliner (#58) — [Harish Shetty (kandadaboggu)](https://github.com/kandadaboggu) with friends
 * Other:
   * Be more specific on which versions are required; require newer `css_parser`
   * Officially support MRI 2.0.0
@@ -39,7 +39,7 @@
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.1...v2.3.2)
 
 * Bug fixes:
-  * Don't fail on selectors which start with @ (#28) – [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
+  * Don't fail on selectors which start with @ (#28) — [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
 
 ### 2.3.1
 
