@@ -45,6 +45,12 @@ module Roadie
       end
     end
 
+    # Returns the value of +config.roadie.after_inlining+
+    #
+    def after_inlining_handler
+      config.roadie.after_inlining
+    end
+
     private
       def config
         Roadie.app.config

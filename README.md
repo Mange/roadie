@@ -75,6 +75,7 @@ Roadie listens to the following options (set in `Application.rb` or in your envi
 * `config.action_mailer.default_url_options` - Used for making URLs absolute.
 * `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`.
 * `config.roadie.provider` - Set the provider manually, ignoring all other options. Use for advanced cases, or when you have non-default paths or other options.
+* `config.roadie.after_inlining` - Set a custom inliner for the HTML document. The custom inliner in invoked after the default inliner.
 
 Usage
 -----
@@ -160,6 +161,71 @@ class UserAssetsProvider < Roadie::AssetPipelineProvider
   end
 end
 ```
+
+Writing your own inliner
+-------------------------
+
+A custom inliner transforms an outgoing HTML email using application specific rules. The custom inliner is invoked after the default inliner. 
+
+A custom inliner can be created using a `lambda` that accepts one parameter or an object that responds to the `call` method with one parameter.
+
+Example for using lambda as custom inliner:
+
+```ruby
+# application.rb
+config.roadie.after_inlining = lambda do |d| 
+  d.css("a#new_user").each{|l| l['href'] = "http://www.foo.com" + l['href']}
+end
+```
+
+Example for using object as custom inliner:
+
+```ruby
+# application.rb
+config.roadie.after_inlining = ProductLinkInliner.new 
+
+# lib/product_link_inliner.rb
+class ProductLinkInliner
+  def call(doc)
+    doc.css(selector).each{|l| l['href'] = "http://www.foo.com" + l['href']}
+  end
+  
+  def selector
+    "#weekly-digest #products .product p.description a"
+  end  
+end
+```
+
+### Custom inliner scopes
+
+- **All HTML emails**
+
+```ruby
+# application.rb. Custom inliner for all emails.
+config.roadie.after_inlining = ProductLinkInliner.new 
+```
+- **All HTML emails sent by a mailer**
+
+```ruby
+class UserMailer < ActionMailer::Base
+  # Custom inliner for all mailer methods.
+  default :after_inlining => ProductLinkInliner.new
+
+  # ..
+end
+```
+
+- **All HTML emails sent by a specific mailer method**
+
+```ruby
+class UserMailer < ActionMailer::Base
+  def registration
+    # Custom inliner for registration emails
+    mail(:after_inlining => ProductLinkInliner.new)
+  end
+end
+```
+
 
 Bugs / TODO
 -----------

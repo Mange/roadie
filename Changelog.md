@@ -7,6 +7,7 @@
   * Keep `!important` when outputting styles to help combat web mail styles being `!important`
   * Support `:nth-child`, `:last-child`, etc.
     * To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
+  * Support for custom inliner
 * Other:
   * Be more specific on which versions are required; require newer `css_parser`
   * Officially support MRI 2.0.0
