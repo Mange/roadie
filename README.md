@@ -153,11 +153,12 @@ config.roadie.provider = UserAssetsProvider.new
 # lib/user_assets_provider.rb
 class UserAssetsProvider < Roadie::AssetPipelineProvider
   def find(name)
-    super
-  rescue CSSFileNotFound
     user = User.find_by_name(name)
-    raise unless user
-    user.custom_css
+    if user
+      user.custom_css
+    else
+      super
+    end
   end
 end
 ```
@@ -165,7 +166,7 @@ end
 Writing your own inliner
 -------------------------
 
-A custom inliner transforms an outgoing HTML email using application specific rules. The custom inliner is invoked after the default inliner. 
+A custom inliner transforms an outgoing HTML email using application specific rules. The custom inliner is invoked after the default inliner.
 
 A custom inliner can be created using a `lambda` that accepts one parameter or an object that responds to the `call` method with one parameter.
 
@@ -173,8 +174,10 @@ Example for using lambda as custom inliner:
 
 ```ruby
 # application.rb
-config.roadie.after_inlining = lambda do |d| 
-  d.css("a#new_user").each{|l| l['href'] = "http://www.foo.com" + l['href']}
+config.roadie.after_inlining = lambda do |document|
+  document.css("a#new_user").each do |link|
+    link['href'] = "http://www.foo.com#{link['href']}"
+  end
 end
 ```
 
@@ -182,17 +185,21 @@ Example for using object as custom inliner:
 
 ```ruby
 # application.rb
-config.roadie.after_inlining = ProductLinkInliner.new 
+config.roadie.after_inlining = PromotionInliner.new
 
 # lib/product_link_inliner.rb
-class ProductLinkInliner
-  def call(doc)
-    doc.css(selector).each{|l| l['href'] = "http://www.foo.com" + l['href']}
+class PromotionInliner
+  def call(document)
+    document.css("a.product").each do |link|
+      link['href'] = "http://www.foo.com#{link['href']}"
+    end
   end
-  
-  def selector
-    "#weekly-digest #products .product p.description a"
-  end  
+
+  def fix_link(link)
+    if link['class'] =~ /\bsale\b
+      link['href'] = link['href'] + '?source=newsletter'
+    end
+  end
 end
 ```
 
@@ -202,16 +209,14 @@ end
 
 ```ruby
 # application.rb. Custom inliner for all emails.
-config.roadie.after_inlining = ProductLinkInliner.new 
+config.roadie.after_inlining = PromotionInliner.new
 ```
 - **All HTML emails sent by a mailer**
 
 ```ruby
-class UserMailer < ActionMailer::Base
+class MarketingMailer < ActionMailer::Base
   # Custom inliner for all mailer methods.
-  default :after_inlining => ProductLinkInliner.new
-
-  # ..
+  default after_inlining: PromotionInliner.new
 end
 ```
 
@@ -221,11 +226,10 @@ end
 class UserMailer < ActionMailer::Base
   def registration
     # Custom inliner for registration emails
-    mail(:after_inlining => ProductLinkInliner.new)
+    mail(after_inlining: MarketingMailer.new)
   end
 end
 ```
-
 
 Bugs / TODO
 -----------
