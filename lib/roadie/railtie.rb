@@ -13,6 +13,14 @@ module Roadie
   #     config.roadie.provider = nil
   #       You can use this to set a provider yourself. See {Roadie::AssetProvider}.
   #
+  #     config.roadie.after_inlining = lambda do |doc| 
+  #       doc.css('#products p.desc a[href^="/"]').each do |link|
+  #         link['href'] = "http://www.foo.com" + link['href']
+  #       end
+  #     end
+  #       You can use this to set a custom inliner. A custom inliner transforms an outgoing HTML email using application specific rules. 
+  #       The custom inliner is invoked after the default inliner.A custom inliner can be created using a `lambda` that accepts one parameter 
+  #       or an object that responds to the `call` method with one parameter.
   #
   # @see Roadie
   # @see AssetProvider
@@ -20,6 +28,7 @@ module Roadie
     config.roadie = ActiveSupport::OrderedOptions.new
     config.roadie.enabled = true
     config.roadie.provider = nil
+    config.roadie.after_inlining = nil
 
     initializer "roadie.extend_action_mailer" do
       ActiveSupport.on_load(:action_mailer) do

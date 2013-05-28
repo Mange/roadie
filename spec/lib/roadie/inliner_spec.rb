@@ -10,7 +10,8 @@ describe Roadie::Inliner do
 
   def rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options).execute
+    after_inlining_handler = options[:after_inlining_handler]
+    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, after_inlining_handler).execute
   end
 
   describe "initialization" do
@@ -486,6 +487,31 @@ describe Roadie::Inliner do
     it "does not touch data: URIs" do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
+    end
+  end
+
+  describe "custom converter" do
+    let(:html) { '<div id="foo"></div>' }
+
+    it "is invoked" do
+      after_inlining_handler = double("converter")
+      after_inlining_handler.should_receive(:call).with(anything)
+      rendering(html, :after_inlining_handler => after_inlining_handler)
+    end
+
+    it "modifies the document using lambda" do
+      after_inlining_handler = lambda {|d| d.css("#foo").first["class"] = "bar"}
+      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
+    end
+
+    it "modifies the document using object" do
+      klass = Class.new do
+        def call(d)
+          d.css("#foo").first["class"] = "bar"
+        end
+      end
+      after_inlining_handler = klass.new
+      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
     end
   end
 

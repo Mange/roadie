@@ -75,6 +75,7 @@ Roadie listens to the following options (set in `Application.rb` or in your envi
 * `config.action_mailer.default_url_options` - Used for making URLs absolute.
 * `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`.
 * `config.roadie.provider` - Set the provider manually, ignoring all other options. Use for advanced cases, or when you have non-default paths or other options.
+* `config.roadie.after_inlining` - Set a custom inliner for the HTML document. The custom inliner in invoked after the default inliner.
 
 Usage
 -----
@@ -152,11 +153,80 @@ config.roadie.provider = UserAssetsProvider.new
 # lib/user_assets_provider.rb
 class UserAssetsProvider < Roadie::AssetPipelineProvider
   def find(name)
-    super
-  rescue CSSFileNotFound
     user = User.find_by_name(name)
-    raise unless user
-    user.custom_css
+    if user
+      user.custom_css
+    else
+      super
+    end
+  end
+end
+```
+
+Writing your own inliner
+-------------------------
+
+A custom inliner transforms an outgoing HTML email using application specific rules. The custom inliner is invoked after the default inliner.
+
+A custom inliner can be created using a `lambda` that accepts one parameter or an object that responds to the `call` method with one parameter.
+
+Example for using lambda as custom inliner:
+
+```ruby
+# application.rb
+config.roadie.after_inlining = lambda do |document|
+  document.css("a#new_user").each do |link|
+    link['href'] = "http://www.foo.com#{link['href']}"
+  end
+end
+```
+
+Example for using object as custom inliner:
+
+```ruby
+# application.rb
+config.roadie.after_inlining = PromotionInliner.new
+
+# lib/product_link_inliner.rb
+class PromotionInliner
+  def call(document)
+    document.css("a.product").each do |link|
+      link['href'] = "http://www.foo.com#{link['href']}"
+    end
+  end
+
+  def fix_link(link)
+    if link['class'] =~ /\bsale\b
+      link['href'] = link['href'] + '?source=newsletter'
+    end
+  end
+end
+```
+
+### Custom inliner scopes
+
+- **All HTML emails**
+
+```ruby
+# application.rb. Custom inliner for all emails.
+config.roadie.after_inlining = PromotionInliner.new
+```
+- **All HTML emails sent by a mailer**
+
+```ruby
+class MarketingMailer < ActionMailer::Base
+  # Custom inliner for all mailer methods.
+  default after_inlining: PromotionInliner.new
+end
+```
+
+- **All HTML emails sent by a specific mailer method**
+
+```ruby
+class UserMailer < ActionMailer::Base
+  def registration
+    # Custom inliner for registration emails
+    mail(after_inlining: MarketingMailer.new)
   end
 end
 ```

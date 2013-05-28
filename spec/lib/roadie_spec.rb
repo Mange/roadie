@@ -78,4 +78,15 @@ describe Roadie do
       end
     end
   end
+
+  describe ".after_inlining_handler" do
+    let(:after_inlining_handler) { double("after inlining handler") }
+    
+    it "returns the value of config.roadie.after_inlining_handler" do  
+      config.roadie.after_inlining = after_inlining_handler
+      Roadie.after_inlining_handler.should == after_inlining_handler
+      config.roadie.after_inlining = nil
+      Roadie.after_inlining_handler.should == nil
+    end
+  end
 end
