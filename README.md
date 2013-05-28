@@ -191,12 +191,12 @@ config.roadie.after_inlining = PromotionInliner.new
 class PromotionInliner
   def call(document)
     document.css("a.product").each do |link|
-      link['href'] = "http://www.foo.com#{link['href']}"
+      fix_link link
     end
   end
 
   def fix_link(link)
-    if link['class'] =~ /\bsale\b
+    if link['class'] =~ /\bsale\b/
       link['href'] = link['href'] + '?source=newsletter'
     end
   end
