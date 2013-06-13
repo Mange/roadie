@@ -57,7 +57,10 @@ module Roadie
       end
 
       def assets_enabled?
-        config.respond_to?(:assets) and config.assets and config.assets.enabled
+        # In Rails 4.0, config.assets.enabled is nil by default, so we need to
+        # explicitly make sure it's not false rather than checking for a
+        # truthy value.
+        config.respond_to?(:assets) and config.assets and config.assets.enabled != false
       end
   end
 end
