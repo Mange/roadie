@@ -38,7 +38,7 @@ module Roadie
     def current_provider
       return config.roadie.provider if config.roadie.provider
 
-      if config.respond_to?(:assets) and config.assets and config.assets.enabled
+      if assets_enabled?
         AssetPipelineProvider.new
       else
         FilesystemProvider.new
@@ -54,6 +54,10 @@ module Roadie
     private
       def config
         Roadie.app.config
+      end
+
+      def assets_enabled?
+        config.respond_to?(:assets) and config.assets and config.assets.enabled
       end
   end
 end
