@@ -69,6 +69,15 @@ describe Roadie do
       end
     end
 
+    context "with rails 4.0's asset pipeline enabled" do
+      before(:each) { config.assets.enabled = nil }
+
+      it "uses the AssetPipelineProvider" do
+        Roadie::AssetPipelineProvider.should_receive(:new).and_return(provider)
+        Roadie.current_provider.should == provider
+      end
+    end
+
     context "with rails' asset pipeline disabled" do
       before(:each) { config.assets.enabled = false }
 
@@ -81,8 +90,8 @@ describe Roadie do
 
   describe ".after_inlining_handler" do
     let(:after_inlining_handler) { double("after inlining handler") }
-    
-    it "returns the value of config.roadie.after_inlining_handler" do  
+
+    it "returns the value of config.roadie.after_inlining_handler" do
       config.roadie.after_inlining = after_inlining_handler
       Roadie.after_inlining_handler.should == after_inlining_handler
       config.roadie.after_inlining = nil
