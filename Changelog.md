@@ -3,7 +3,9 @@
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.4...master)
 
 * Enhancements:
-  * Support Rails 4 master (with the help of [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes))
+  * Support Rails 4.0, with the help of:
+    * [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes)
+    * [Dylan Markow](https://github.com/dmarkow)
   * Keep `!important` when outputting styles to help combat web mail styles being `!important`
   * Support `:nth-child`, `:last-child`, etc.
     * To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
