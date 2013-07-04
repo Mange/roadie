@@ -88,19 +88,19 @@ You can also specify the `:css` option to mailer to have it inlined automaticall
 
 ```ruby
 class Notifier < ActionMailer::Base
-  default :css => :email, :from => 'support@mycompany.com'
+  default :css => 'email', :from => 'support@mycompany.com'
 
   def registration_mail
     mail(:subject => 'Welcome Aboard', :to => 'someone@example.com')
   end
 
   def newsletter
-    mail(:subject => 'Newsletter', :to => 'someone@example.com', :css => [:email, :newsletter])
+    mail(:subject => 'Newsletter', :to => 'someone@example.com', :css => ['email', 'newsletter'])
   end
 end
 ```
 
-This will look for a css file called `email.css` in your assets. The `css` method can take either a string, a symbol or an array of both. The ".css" extension will be added automatically.
+This will look for a css file called `email.css` in your assets. The `css` method can take either a string or an array of strings. The ".css" extension will be added automatically.
 
 ### Image URL rewriting ###
 

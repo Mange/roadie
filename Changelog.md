@@ -14,6 +14,7 @@
   * Be more specific on which versions are required; require newer `css_parser`
   * Officially support MRI 2.0.0
   * Add experimental support for JRuby
+  * Remove documentation that talks about passing CSS filenames as symbols; unsupported in Rails 4. (Thanks to [PikachuEXE](https://github.com/PikachuEXE))
 
 ### 2.3.4
 

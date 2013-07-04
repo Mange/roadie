@@ -40,7 +40,7 @@ module Roadie
     #   MyProvider.find("mystyle.css")
     #   MyProvider.find(:mystyle)
     #
-    # @param [String, Symbol] name Name of the file requested
+    # @param [String] name Name of the file requested
     # @raise [CSSFileNotFound] In case any of the elements is not found
     def find(name)
       raise "Not implemented"
