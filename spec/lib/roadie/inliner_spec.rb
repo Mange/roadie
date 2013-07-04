@@ -484,6 +484,18 @@ describe Roadie::Inliner do
       end
     end
 
+    # This case was happening for some users when emails were rendered as part
+    # of the request cycle. I do not know it we *really* should accept these
+    # values, but it looks like Rails do accept it so we might as well do it
+    # too.
+    it "supports protocol settings with additional tokens" do
+      use_css "img { background: url(/a.jpg); }"
+      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https://'}).tap do |document|
+        document.should have_attribute('src' => 'https://example.com/b.jpg').at_selector('img')
+        document.should have_styling('background' => 'url(https://example.com/a.jpg)')
+      end
+    end
+
     it "does not touch data: URIs" do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')

@@ -202,12 +202,19 @@ module Roadie
       def absolute_url_base(base_path)
         return nil unless url_options
         port = url_options[:port]
+        scheme = protocol_to_scheme url_options[:protocol]
         URI::Generic.build({
-          :scheme => url_options[:protocol] || 'http',
+          :scheme => scheme,
           :host => url_options[:host],
           :port => (port ? port.to_i : nil),
           :path => base_path
         })
+      end
+
+      # Strip :// from any protocol, if present
+      def protocol_to_scheme(protocol)
+        return 'http' unless protocol
+        protocol.to_s[/^\w+/]
       end
 
       def all_link_elements_with_url
