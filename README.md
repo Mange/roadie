@@ -33,7 +33,7 @@ Tested with [Travis CI](http://travis-ci.org) using [almost all combinations of]
   * 3.0
   * 3.1
   * 3.2
-  * 4.0 beta1
+  * 4.0
 
 Let me know if you want any other combination supported officially.
 
