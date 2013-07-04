@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.3.4...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.0...master)
+
+* Nothing yet.
+
+### 2.4.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.4...v2.4.0)
 
 * Enhancements:
   * Support Rails 4.0, with the help of:
