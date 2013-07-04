@@ -38,7 +38,7 @@ module Roadie
     def current_provider
       return config.roadie.provider if config.roadie.provider
 
-      if config.respond_to?(:assets) and config.assets and config.assets.enabled
+      if assets_enabled?
         AssetPipelineProvider.new
       else
         FilesystemProvider.new
@@ -54,6 +54,13 @@ module Roadie
     private
       def config
         Roadie.app.config
+      end
+
+      def assets_enabled?
+        # In Rails 4.0, config.assets.enabled is nil by default, so we need to
+        # explicitly make sure it's not false rather than checking for a
+        # truthy value.
+        config.respond_to?(:assets) and config.assets and config.assets.enabled != false
       end
   end
 end
