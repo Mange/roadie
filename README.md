@@ -262,7 +262,7 @@ Put any styles using them in a separate stylesheet and make sure it is ignored. 
 Documentation
 -------------
 
-* [Online documentation for 2.3.0](http://rubydoc.info/gems/roadie/2.3.0/frames)
+* [Online documentation for gem](http://rubydoc.info/gems/roadie/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
