@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.4.0...master)
 
-* Nothing yet.
+* Bug fixes:
+  * Allow Nokogiri 1.5.x again; 1.6.x is unsupported in Ruby 1.8.7.
 
 ### 2.4.0
 
