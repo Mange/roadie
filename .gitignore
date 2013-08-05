@@ -7,5 +7,6 @@ pkg
 .idea/*
 .rvmrc
 
+Gemfile.lock
 doc
 tmp

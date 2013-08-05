@@ -28,15 +28,12 @@ Tested with [Travis CI](http://travis-ci.org) using [almost all combinations of]
 * Ruby:
   * MRI 1.8.7
   * MRI 1.9.3
+  * MRI 2.0.0
 * Rails
   * 3.0
   * 3.1
   * 3.2
-  * 4.0 master (not tested under MRI 1.8.7)
-
-There is also experimental support for the following versions of Ruby:
-
-* MRI 2.0.0
+  * 4.0
 
 Let me know if you want any other combination supported officially.
 
@@ -78,6 +75,7 @@ Roadie listens to the following options (set in `Application.rb` or in your envi
 * `config.action_mailer.default_url_options` - Used for making URLs absolute.
 * `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`.
 * `config.roadie.provider` - Set the provider manually, ignoring all other options. Use for advanced cases, or when you have non-default paths or other options.
+* `config.roadie.after_inlining` - Set a custom inliner for the HTML document. The custom inliner in invoked after the default inliner.
 
 Usage
 -----
@@ -90,19 +88,19 @@ You can also specify the `:css` option to mailer to have it inlined automaticall
 
 ```ruby
 class Notifier < ActionMailer::Base
-  default :css => :email, :from => 'support@mycompany.com'
+  default :css => 'email', :from => 'support@mycompany.com'
 
   def registration_mail
     mail(:subject => 'Welcome Aboard', :to => 'someone@example.com')
   end
 
   def newsletter
-    mail(:subject => 'Newsletter', :to => 'someone@example.com', :css => [:email, :newsletter])
+    mail(:subject => 'Newsletter', :to => 'someone@example.com', :css => ['email', 'newsletter'])
   end
 end
 ```
 
-This will look for a css file called `email.css` in your assets. The `css` method can take either a string, a symbol or an array of both. The ".css" extension will be added automatically.
+This will look for a css file called `email.css` in your assets. The `css` method can take either a string or an array of strings. The ".css" extension will be added automatically.
 
 ### Image URL rewriting ###
 
@@ -144,7 +142,7 @@ If the `link` tag uses an absolute URL to the stylesheet, it will not be inlined
 Writing your own provider
 -------------------------
 
-A provider handles searching CSS files for you. Cou can easily create your own provider for your specific app by subclassing `Roadie::AssetProvider`. See the API documentation for information about how to build them.
+A provider handles searching CSS files for you. You can easily create your own provider for your specific app by subclassing `Roadie::AssetProvider`. See the API documentation for information about how to build them.
 
 Example Subclassing the `AssetPipelineProvider`:
 
@@ -155,11 +153,80 @@ config.roadie.provider = UserAssetsProvider.new
 # lib/user_assets_provider.rb
 class UserAssetsProvider < Roadie::AssetPipelineProvider
   def find(name)
-    super
-  rescue CSSFileNotFound
     user = User.find_by_name(name)
-    raise unless user
-    user.custom_css
+    if user
+      user.custom_css
+    else
+      super
+    end
+  end
+end
+```
+
+Writing your own inliner
+-------------------------
+
+A custom inliner transforms an outgoing HTML email using application specific rules. The custom inliner is invoked after the default inliner.
+
+A custom inliner can be created using a `lambda` that accepts one parameter or an object that responds to the `call` method with one parameter.
+
+Example for using lambda as custom inliner:
+
+```ruby
+# application.rb
+config.roadie.after_inlining = lambda do |document|
+  document.css("a#new_user").each do |link|
+    link['href'] = "http://www.foo.com#{link['href']}"
+  end
+end
+```
+
+Example for using object as custom inliner:
+
+```ruby
+# application.rb
+config.roadie.after_inlining = PromotionInliner.new
+
+# lib/product_link_inliner.rb
+class PromotionInliner
+  def call(document)
+    document.css("a.product").each do |link|
+      fix_link link
+    end
+  end
+
+  def fix_link(link)
+    if link['class'] =~ /\bsale\b/
+      link['href'] = link['href'] + '?source=newsletter'
+    end
+  end
+end
+```
+
+### Custom inliner scopes
+
+- **All HTML emails**
+
+```ruby
+# application.rb. Custom inliner for all emails.
+config.roadie.after_inlining = PromotionInliner.new
+```
+- **All HTML emails sent by a mailer**
+
+```ruby
+class MarketingMailer < ActionMailer::Base
+  # Custom inliner for all mailer methods.
+  default after_inlining: PromotionInliner.new
+end
+```
+
+- **All HTML emails sent by a specific mailer method**
+
+```ruby
+class UserMailer < ActionMailer::Base
+  def registration
+    # Custom inliner for registration emails
+    mail(after_inlining: MarketingMailer.new)
   end
 end
 ```
@@ -195,7 +262,7 @@ Put any styles using them in a separate stylesheet and make sure it is ignored. 
 Documentation
 -------------
 
-* [Online documentation for 2.3.0](http://rubydoc.info/gems/roadie/2.3.0/frames)
+* [Online documentation for gem](http://rubydoc.info/gems/roadie/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
@@ -230,7 +297,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2011
+Copyright (c) 2009-2013
 
 * [Jim Neath](http://jimneath.org)
 * Magnus Bergmark <magnus.bergmark@gmail.com>

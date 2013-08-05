@@ -23,12 +23,20 @@ module Roadie
     end
 
     def to_s
-      [property, value].join(':')
+      [property, value_with_important].join(':')
     end
 
     def inspect
-      extra = [important ? '!important' : nil, specificity].compact
-      "#{to_s} (#{extra.join(' , ')})"
+      "#{to_s} (#{specificity})"
+    end
+
+    private
+    def value_with_important
+      if important
+        "#{value} !important"
+      else
+        value
+      end
     end
   end
 end

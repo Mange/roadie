@@ -10,7 +10,8 @@ describe Roadie::Inliner do
 
   def rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options).execute
+    after_inlining_handler = options[:after_inlining_handler]
+    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, after_inlining_handler).execute
   end
 
   describe "initialization" do
@@ -82,10 +83,10 @@ describe Roadie::Inliner do
       end
     end
 
-    it "respects !important properties" do
+    it "keeps !important properties" do
       use_css "a { text-decoration: underline !important; }
                a.hard-to-spot { text-decoration: none; }"
-      rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline')
+      rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline !important')
     end
 
     it "combines with already present inline styles" do
@@ -98,9 +99,37 @@ describe Roadie::Inliner do
       rendering('<p style="color: green"></p>').should have_styling([['color', 'red'], ['color', 'green']])
     end
 
-    it "ignores selectors with :psuedo-classes" do
-      use_css 'p:hover { color: red }'
-      rendering('<p></p>').should_not have_styling('color' => 'red')
+    it "does not apply link and dynamic pseudo selectors" do
+      use_css "
+        p:active { color: red }
+        p:focus { color: red }
+        p:hover { color: red }
+        p:link { color: red }
+        p:target { color: red }
+        p:visited { color: red }
+
+        p.active { width: 100%; }
+      "
+      rendering('<p class="active"></p>').should have_styling('width' => '100%')
+    end
+
+    it "does not crash on any pseudo element selectors" do
+      use_css "
+        p.some-element { width: 100%; }
+        p::some-element { color: red; }
+      "
+      rendering('<p class="some-element"></p>').should have_styling('width' => '100%')
+    end
+
+    it "works with nth-child" do
+      use_css "
+        p { color: red; }
+        p:nth-child(2n) { color: green; }
+      "
+      rendering("
+        <p class='one'></p>
+        <p class='two'></p>
+      ").should have_styling('color' => 'green').at_selector('.two')
     end
 
     it "ignores selectors with @" do
@@ -455,9 +484,46 @@ describe Roadie::Inliner do
       end
     end
 
+    # This case was happening for some users when emails were rendered as part
+    # of the request cycle. I do not know it we *really* should accept these
+    # values, but it looks like Rails do accept it so we might as well do it
+    # too.
+    it "supports protocol settings with additional tokens" do
+      use_css "img { background: url(/a.jpg); }"
+      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https://'}).tap do |document|
+        document.should have_attribute('src' => 'https://example.com/b.jpg').at_selector('img')
+        document.should have_styling('background' => 'url(https://example.com/a.jpg)')
+      end
+    end
+
     it "does not touch data: URIs" do
       use_css "div { background: url(data:abcdef); }"
       rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
+    end
+  end
+
+  describe "custom converter" do
+    let(:html) { '<div id="foo"></div>' }
+
+    it "is invoked" do
+      after_inlining_handler = double("converter")
+      after_inlining_handler.should_receive(:call).with(anything)
+      rendering(html, :after_inlining_handler => after_inlining_handler)
+    end
+
+    it "modifies the document using lambda" do
+      after_inlining_handler = lambda {|d| d.css("#foo").first["class"] = "bar"}
+      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
+    end
+
+    it "modifies the document using object" do
+      klass = Class.new do
+        def call(d)
+          d.css("#foo").first["class"] = "bar"
+        end
+      end
+      after_inlining_handler = klass.new
+      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
     end
   end
 

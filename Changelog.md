@@ -1,8 +1,36 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.3.4...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.1...master)
 
-* Support Rails 4 master (with the help of [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes))
+* Bug fixes:
+  * Fix Nokogiri version to allow only 1.5.x on ruby 1.8.7
+
+### 2.4.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.0...v2.4.1)
+
+* Bug fixes:
+  * Allow Nokogiri 1.5.x again; 1.6.x is unsupported in Ruby 1.8.7.
+
+### 2.4.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.3.4...v2.4.0)
+
+* Enhancements:
+  * Support Rails 4.0, with the help of:
+    * [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes)
+    * [Dylan Markow](https://github.com/dmarkow)
+  * Keep `!important` when outputting styles to help combat web mail styles being `!important`
+  * Support `:nth-child`, `:last-child`, etc.
+    * To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
+  * Support for custom inliner (#58) — [Harish Shetty (kandadaboggu)](https://github.com/kandadaboggu) with friends
+* Bug fixes:
+  * Don't crash when URL options have protocols with "://" in them (#52).
+* Other:
+  * Be more specific on which versions are required; require newer `css_parser`
+  * Officially support MRI 2.0.0
+  * Add experimental support for JRuby
+  * Remove documentation that talks about passing CSS filenames as symbols; unsupported in Rails 4. (Thanks to [PikachuEXE](https://github.com/PikachuEXE))
 
 ### 2.3.4
 
@@ -30,7 +58,7 @@
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.1...v2.3.2)
 
 * Bug fixes:
-  * Don't fail on selectors which start with @ (#28) – [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
+  * Don't fail on selectors which start with @ (#28) — [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
 
 ### 2.3.1
 
@@ -74,7 +102,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre1...v2.1.0.pre2)
 
-* Bug: Roadie broke url_for inside mailer views
+* Bug: Roadie broke `url_for` inside mailer views
 
 ### 2.1.0.pre1
 

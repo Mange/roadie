@@ -22,8 +22,14 @@ module Roadie
           @targets = default_css_targets
         end
 
+        if headers.has_key?(:after_inlining)
+          @after_inlining_handler = headers[:after_inlining]
+        else
+          @after_inlining_handler = default_after_inlining || Roadie.after_inlining_handler 
+        end
+
         mail_without_inline_styles(headers, &block).tap do |email|
-          email.header.fields.delete_if { |field| field.name == 'css' }
+          email.header.fields.delete_if { |field| %w(css after_inlining).include?(field.name) }
         end
       end
 
@@ -52,9 +58,17 @@ module Roadie
         self.class.default[:css]
       end
 
+      def default_after_inlining
+        self.class.default[:after_inlining]
+      end
+
+      def after_inlining_handler 
+        @after_inlining_handler 
+      end
+
       def inline_style_response(response)
         if response[:content_type] == 'text/html'
-          response.merge :body => Roadie.inline_css(Roadie.current_provider, css_targets, response[:body], url_options)
+          response.merge :body => Roadie.inline_css(Roadie.current_provider, css_targets, response[:body], url_options, after_inlining_handler)
         else
           response
         end

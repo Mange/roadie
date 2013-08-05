@@ -32,12 +32,14 @@ module Roadie
     # @param [Array] targets List of CSS files to load via the provider
     # @param [String] html
     # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+
-    def initialize(assets, targets, html, url_options)
+    # @param [lambda] after_inlining_handler A lambda that accepts one parameter or an object that responds to the +call+ method with one parameter.
+    def initialize(assets, targets, html, url_options, after_inlining_handler=nil)
       @assets = assets
       @css = assets.all(targets)
       @html = html
       @inline_css = []
       @url_options = url_options
+      @after_inlining_handler = after_inlining_handler
 
       if url_options and url_options[:asset_path_prefix]
         raise ArgumentError, "The asset_path_prefix URL option is not working anymore. You need to add the following configuration to your application.rb:\n" +
@@ -57,12 +59,13 @@ module Roadie
         inline_css_rules
         make_image_urls_absolute
         make_style_urls_absolute
+        after_inlining_handler.call(document) if after_inlining_handler.respond_to?(:call)
         @document = nil
       end
     end
 
     private
-      attr_reader :css, :html, :assets, :url_options, :document
+      attr_reader :css, :html, :assets, :url_options, :document, :after_inlining_handler
 
       def inline_css
         @inline_css.join("\n")
@@ -136,9 +139,9 @@ module Roadie
       def elements_with_declarations
         Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
           parsed_css.each_rule_set do |rule_set|
-            each_selector_without_pseudo(rule_set) do |selector, specificity|
+            each_good_selector(rule_set) do |selector|
               each_element_in_selector(selector) do |element|
-                style_declarations_in_rule_set(specificity, rule_set) do |declaration|
+                style_declarations_in_rule_set(selector.specificity, rule_set) do |declaration|
                   element_declarations[element] << declaration
                 end
               end
@@ -147,16 +150,26 @@ module Roadie
         end
       end
 
-      def each_selector_without_pseudo(rules)
-        rules.selectors.reject { |selector| selector.include?(':') or selector[0] == '@' }.each do |selector|
-          yield selector, CssParser.calculate_specificity(selector)
+      def each_good_selector(rules)
+        rules.selectors.each do |selector_string|
+          selector = Selector.new(selector_string)
+          yield selector if selector.inlinable?
         end
       end
 
       def each_element_in_selector(selector)
-        document.css(selector.strip).each do |element|
+        document.css(selector.to_s).each do |element|
           yield element
         end
+      # There's no way to get a list of supported pseudo rules, so we're left
+      # with having to rescue errors.
+      # Pseudo selectors that are known to be bad are skipped automatically but
+      # this will catch the rest.
+      rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
+        warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
+      rescue => error
+        warn "Roadie got error when looking for #{selector.inspect}: #{error}"
+        raise unless error.message.include?('XPath')
       end
 
       def style_declarations_in_rule_set(specificity, rule_set)
@@ -192,12 +205,19 @@ module Roadie
       def absolute_url_base(base_path)
         return nil unless url_options
         port = url_options[:port]
+        scheme = protocol_to_scheme url_options[:protocol]
         URI::Generic.build({
-          :scheme => url_options[:protocol] || 'http',
+          :scheme => scheme,
           :host => url_options[:host],
           :port => (port ? port.to_i : nil),
           :path => base_path
         })
+      end
+
+      # Strip :// from any protocol, if present
+      def protocol_to_scheme(protocol)
+        return 'http' unless protocol
+        protocol.to_s[/^\w+/]
       end
 
       def all_link_elements_with_url
