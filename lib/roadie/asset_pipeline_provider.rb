@@ -10,18 +10,24 @@ module Roadie
     #
     # @return [String] contents of the file
     def find(name)
-      asset_file(name).to_s.strip
+      asset_file(name).strip
     end
 
     private
-      def assets
-        Roadie.app.assets
+    
+      # If on-the-fly asset compilation is disabled, we must be precompiling assets.
+      def assets_precompiled?
+        !Rails.configuration.assets.compile rescue false
       end
-
-      def asset_file(name)
-        basename = remove_prefix(name)
-        assets[basename].tap do |file|
-          raise CSSFileNotFound.new(basename) unless file
+    
+      def asset_file(name)    
+        if assets_precompiled?
+          # Read the precompiled asset
+          asset_path = ActionController::Base.helpers.asset_path(name)
+          File.read(File.join(Rails.public_path, asset_path))
+        else
+          # This will compile and return the asset
+          Rails.application.assets.find_asset(name).to_s
         end
       end
   end
