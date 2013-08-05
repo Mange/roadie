@@ -4,9 +4,10 @@ require 'mail'
 
 describe "Integrations" do
   class RailsApp
-    def initialize(name, path)
+    def initialize(name, path, options = {})
       @name = name
       @path = File.expand_path("../railsapps/#{path}", __FILE__)
+      @runner = options.fetch(:runner, :script)
       reset
     end
 
@@ -39,8 +40,16 @@ describe "Integrations" do
       IO.popen(<<-SH).read
         unset BUNDLE_GEMFILE;
         unset RUBYOPT;
-        cd #{@path.shellescape} && script/rails runner #{file_path.shellescape}
+        cd #{@path.shellescape} && #{runner_script} #{file_path.shellescape}
       SH
+    end
+
+    def runner_script
+      case @runner
+      when :script then "script/rails runner"
+      when :bin then "bin/rails runner"
+      else raise "Unknown runner type: #{@runner}"
+      end
     end
   end
 
@@ -52,7 +61,9 @@ describe "Integrations" do
     RailsApp.new("Rails 3.0.x", 'rails_30'),
     RailsApp.new("Rails 3.1.x", 'rails_31'),
     RailsApp.new("Rails 3.2.x", 'rails_32'),
+    (RailsApp.new("Rails 4.0.x", 'rails_40', :runner => :bin) if RUBY_VERSION > "1.9"),
   ].each do |app|
+    next unless app
     before { app.reset }
 
     describe "with #{app}" do
