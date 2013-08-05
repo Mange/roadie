@@ -62,6 +62,7 @@ describe "Integrations" do
     RailsApp.new("Rails 3.1.x", 'rails_31'),
     RailsApp.new("Rails 3.2.x", 'rails_32'),
     (RailsApp.new("Rails 4.0.x", 'rails_40', :runner => :bin) if RUBY_VERSION > "1.9"),
+    (RailsApp.new("Rails 4.0.x without Asset Pipeline", 'rails_40_no_pipeline', :runner => :bin) if RUBY_VERSION > "1.9"),
   ].each do |app|
     next unless app
     before { app.reset }
@@ -91,8 +92,9 @@ describe "Integrations" do
 
       it "does not add headers for the roadie options and keeps custom headers in place" do
         email = app.read_email(:extra_email)
-        email.header.fields.map(&:name).should_not include('css')
-        email.header['X-Spam'].should be_present
+        header_names = email.header.fields.map(&:name)
+        header_names.should_not include('css')
+        header_names.should include('X-Spam')
       end
 
       it "only removes the css option when disabled" do

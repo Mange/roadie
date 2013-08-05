@@ -10,3 +10,6 @@ pkg
 Gemfile.lock
 doc
 tmp
+
+spec/railsapps/*/log
+spec/railsapps/*/tmp
