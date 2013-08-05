@@ -1,3 +1,11 @@
+**Note: This is an experimental branch; don't use it in any application!**
+
+Details on the experiment:
+
+This branch have better, more "real", integration tests by actually invoking real Rails applications rather than to try to fake rails in any way. This should make it easier to make larger changes to how Roadie works.
+
+The plan is to merge in this branch at one point; or perhaps cherry-picking only some of the commits to a more clean version of it.
+
 Roadie
 ======
 
