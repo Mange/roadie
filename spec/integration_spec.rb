@@ -57,12 +57,17 @@ describe "Integrations" do
     Nokogiri::HTML.parse mail.html_part.body.decoded
   end
 
+  rails_30 = RailsApp.new("Rails 3.0.x", 'rails_30')
+  rails_31 = RailsApp.new("Rails 3.1.x", 'rails_31')
+  rails_32 = RailsApp.new("Rails 3.2.x", 'rails_32')
+  rails_40 = RailsApp.new("Rails 4.0.x", 'rails_40', :runner => :bin)
+  rails_40_no_pipeline = RailsApp.new("Rails 4.0.x without Asset Pipeline", 'rails_40_no_pipeline', :runner => :bin)
+  rails_40_precompiled = RailsApp.new("Rails 4.0.x (precompiled)", 'rails_40_precompiled', :runner => :bin)
+
   [
-    RailsApp.new("Rails 3.0.x", 'rails_30'),
-    RailsApp.new("Rails 3.1.x", 'rails_31'),
-    RailsApp.new("Rails 3.2.x", 'rails_32'),
-    (RailsApp.new("Rails 4.0.x", 'rails_40', :runner => :bin) if RUBY_VERSION > "1.9"),
-    (RailsApp.new("Rails 4.0.x without Asset Pipeline", 'rails_40_no_pipeline', :runner => :bin) if RUBY_VERSION > "1.9"),
+    rails_30, rails_31, rails_32,
+    (rails_40 if RUBY_VERSION > "1.9"),
+    (rails_40_no_pipeline if RUBY_VERSION > "1.9"),
   ].each do |app|
     next unless app
     before { app.reset }
@@ -113,6 +118,27 @@ describe "Integrations" do
         document = parse_html_in_email(email)
         document.should have_selector('body h1')
         document.should_not have_styling('background' => 'url(https://example.app.org/images/rails.png)').at_selector('.image')
+      end
+    end
+  end
+
+  if RUBY_VERSION > "1.9"
+    describe "with precompiled assets" do
+      before { rails_40_precompiled.reset }
+      let(:document) do
+        parse_html_in_email rails_40_precompiled.read_email(:normal_email)
+      end
+
+      it "inlines the precompiled stylesheet" do
+        pending
+        # Precompiled version has green color; the file in app/assets have red
+        document.should have_styling('background-color' => 'green').at_selector('body')
+      end
+
+      it "inlines images with digests" do
+        pending
+        image_url = "https://example.app.org/images/rails-231a680f23887d9dd70710ea5efd3c62.png"
+        document.should have_styling('background' => "url(#{image_url})").at_selector('.image')
       end
     end
   end
