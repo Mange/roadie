@@ -74,6 +74,7 @@ require 'roadie/asset_provider'
 require 'roadie/asset_pipeline_provider'
 require 'roadie/filesystem_provider'
 
+require 'roadie/asset_scanner'
 require 'roadie/inliner'
 require 'roadie/document'
 
