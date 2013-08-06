@@ -9,11 +9,11 @@ The plan is to merge in this branch at one point; or perhaps cherry-picking only
 Roadie
 ======
 
-> Making HTML emails comfortable for the Rails rockstars
+> Making HTML emails comfortable for the Ruby rockstars
 
-Roadie tries to make sending HTML emails a little less painful in Rails 3+ by inlining stylesheets and rewrite relative URLs for you.
+Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewrite relative URLs for you inside your emails.
 
-If you want to have this in Rails 2, please see [MailStyle](https://www.github.com/purify/mail_style).
+[![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
 
 How does it work?
 -----------------
@@ -26,15 +26,142 @@ Roadie also rewrites all relative URLs in the email to a absolute counterpart, m
 
 ¹: Of course, rules like `:hover` will not work by definition. Only static styles can be added.
 
+Features
+--------
+
+* Writes CSS styles inline
+  * Respects `!important` styles
+  * Does not overwrite styles already present in the `style` attribute of tags
+  * Supports the same CSS selectors as [Nokogiri](http://nokogiri.org/) (use CSS3 selectors in your emails!)
+* Makes image urls absolute
+  * Hostname and port configurable on a per-environment basis
+* Makes link `href`s and `img` `src`s absolute
+* Automatically adds proper html skeleton when missing (you don't have to create a layout for emails)²
+* Allows you to inject stylesheets in a number of ways, at runtime
+
+²: This might be removed in a future version, though. You really ought to create a good layout and not let Roadie guess how you want to have it structured.
+
+Install & Usage
+---------------
+
+Add this gem to your Gemfile and bundle.
+
+```ruby
+gem 'roadie', '~> x.y.0'
+```
+
+You may then create a new instance of a Roadie document:
+
+```ruby
+document = Roadie::Document.new "<html><body></body></html>"
+document.add_css "body { color: green; }"
+document.transform
+    # => "<html><body style=\"color:green;\"></body></html>"
+```
+
+Your document instance can be configured several options:
+
+* `url_options` - Dictates how absolute URLs should be built.
+* `asset_providers` - A list of `Roadie::AssetProvider` that are invoked when external CSS is referenced.
+* `before_inlining` - A callback run before inlining starts.
+* `after_inlining` - A callback run after inlining is completed.
+
+### Making URLs absolute ###
+
+In order to make URLs absolute you need to first configure the URL options of the document.
+
+```ruby
+html = "... <a href="/about-us">Read more!</a> ..."
+document = Roadie::Document.new html
+document.url_options = {host: "myapp.com", protocol: "https"}
+document.transform
+  # => "... <a href="https://myapp.com/about-us">Read more!</a> ..."
+```
+
+The following URLs will be rewritten for you:
+* `a[href]` (HTML)
+* `img[src]` (HTML)
+* `url()` (CSS)
+
+### Referenced stylesheets ###
+
+By default, `style` and `link` elements in the email document's `head` are processed along with the stylesheets and removed from the `head`.
+
+You can set a special `data-roadie-ignore` attribute on `style` and `link` tags that you want to ignore (the attribute will be removed, however). This is the place to put things like `:hover` selectors that you want to have for email clients allowing them.
+
+Style and link elements with `media="print"` are also ignored.
+
+```html
+<head>
+  <link rel="stylesheet" type="text/css" href="/assets/emails/rock.css">         <!-- Will be inlined -->
+  <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">  <!-- Will NOT be inlined; absolute URL -->
+  <link rel="stylesheet" type="text/css" href="/assets/jazz.css" media="print">  <!-- Will NOT be inlined; print style -->
+  <link rel="stylesheet" type="text/css" href="/ambient.css" data-roadie-ignore> <!-- Will NOT be inlined; ignored -->
+  <style></style>                    <!-- Will be inlined -->
+  <style data-roadie-ignore></style> <!-- Will NOT be inlined; ignored -->
+</head>
+```
+
+### Custom providers ###
+
+You can configure how the Roadie document can find referenced stylesheets by setting the `asset_providers` setting of the document.
+By default, the `FilesystemProvider` will be assigned to documents, looking for files relative to the current working directory.
+
+Included providers:
+* `FilesystemProvider` - Looks for files on the filesystem, relative to the given directory.
+* `NullProvider` - Does not actually provide anything, it either raises errors on each reference or gives back empty results (default).
+
+You can easily create your own custom providers too:
+
+```ruby
+class UserAssetsProvider < Roadie::AssetProvider
+  def initialize(user_collection)
+    @user_collection = user_collection
+  end
+
+  def find_stylesheet(path)
+    if path =~ %r{/users/(\d+)\.css}
+      @user_collection.find_user($1).stylesheet
+    end
+  end
+end
+
+# Try to look for a user stylesheet first, then fall back to normal filesystem lookup.
+document.asset_providers = [
+  UserAssetsProvider.new(app),
+  Roadie::FilesystemProvider.new('./stylesheets'),
+]
+
+# You can also add your own provider to the chain without caring about the rest of it
+another_document.asset_providers.unshift my_provider
+```
+
+### Callbacks ###
+
+Callbacks allow you to do custom work on documents before they are inlined. The Nokogiri document tree is passed to the callable:
+
+```ruby
+class TrackNewsletterLinks
+  def call(document)
+    document.css("a").each { |link| fix_link(link) }
+  end
+
+  def fix_link(link)
+    divider = (link['href'] =~ /?/ ? '&' : '?')
+    link['href'] = link['href'] + divider + 'source=newsletter'
+  end
+end
+
+document.before_inlining = { |document| logger.debug "Inlining document with title #{document.at_css('head > title').try(:text)}" }
+document.after_inlining = TrackNewsletterLinks.new
+```
+
 Build Status
 ------------
-
-[![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
 
 Tested with [Travis CI](http://travis-ci.org) using [almost all combinations of](http://travis-ci.org/#!/Mange/roadie):
 
 * Ruby:
-  * MRI 1.8.7
   * MRI 1.9.3
   * MRI 2.0.0
 * Rails
@@ -49,203 +176,11 @@ Let me know if you want any other combination supported officially.
 
 This project follows [Semantic Versioning](http://semver.org/) and has been since version 1.0.0.
 
-Features
---------
-
-* Supports Rails' Asset Pipeline and simple filesystem access out of the box
-* You can add support for CSS from any place inside your apps
-* Writes CSS styles inline
-  * Respects `!important` styles
-  * Does not overwrite styles already present in the `style` attribute of tags
-  * Supports the same CSS selectors as [Nokogiri](http://nokogiri.org/) (use CSS3 selectors in your emails!)
-* Makes image urls absolute
-  * Hostname and port configurable on a per-environment basis
-* Makes link `href`s absolute
-* Automatically adds proper html skeleton when missing (you don't have to create a layout for emails)²
-
-²: This might be removed in a future version, though. You really ought to create a good layout and not let Roadie guess how you want to have it structured
-
-Install
--------
-
-Add the gem to Rails' Gemfile
-
-```ruby
-gem 'roadie'
-```
-
-Configuring
------------
-
-Roadie listens to the following options (set in `Application.rb` or in your environment's configuration files:
-
-* `config.roadie.enabled` - Set this to `false` to disable Roadie from working on your emails. Useful if you want to disable Roadie in some environments.
-* `config.action_mailer.default_url_options` - Used for making URLs absolute.
-* `config.assets.enabled` - If the asset pipeline is turned off, Roadie will default to searching for assets in `public/stylesheets`.
-* `config.roadie.provider` - Set the provider manually, ignoring all other options. Use for advanced cases, or when you have non-default paths or other options.
-* `config.roadie.after_inlining` - Set a custom inliner for the HTML document. The custom inliner in invoked after the default inliner.
-
-Usage
------
-
-Just add a `<link rel="stylesheet" />` or `<style type="text/css"></style>` element inside your email layout and it will be inlined automatically.
-
-**Note:** Do not use `stylesheet_link_tag` in your mail views. Just use a regular tag pointing to the logical asset name instead; e.g. `emails.css` instead of `emails-<SHA>.css`. This should hopefully be fixed in a later version. You are recommended to use the `:css` option to the mailer (detailed below) instead if you want to avoid problems with this.
-
-You can also specify the `:css` option to mailer to have it inlined automatically without you having to make a layout:
-
-```ruby
-class Notifier < ActionMailer::Base
-  default :css => 'email', :from => 'support@mycompany.com'
-
-  def registration_mail
-    mail(:subject => 'Welcome Aboard', :to => 'someone@example.com')
-  end
-
-  def newsletter
-    mail(:subject => 'Newsletter', :to => 'someone@example.com', :css => ['email', 'newsletter'])
-  end
-end
-```
-
-This will look for a css file called `email.css` in your assets. The `css` method can take either a string or an array of strings. The ".css" extension will be added automatically.
-
-### Image URL rewriting ###
-
-If you have `default_url_options[:host]` set in your mailer, then Roadie will do it's best to make the URLs of images and in stylesheets absolute.
-
-In `application.rb`:
-
-```ruby
-class Application
-  config.action_mailer.default_url_options = {:host => 'example.com'}
-end
-```
-
-If you want to to be different depending on your environment, just set it in your environment's configuration instead.
-
-### Ignoring stylesheets ###
-
-By default, `style` and `link` elements in the email document's `head` are processed along with the stylesheets and removed from the `head`.
-
-You can set a special `data-immutable="true"` attribute on `style` and `link` tags you do not want to be processed and removed from the document's `head`. This is the place to put things like `:hover` selectors that you want to have for email clients allowing them.
-
-Style and link elements with `media="print"` are always ignored.
-
-### Inlining link tags ###
-
-Any `link` element that is part of your email will be linked in. You can exclude them by setting `data-immutable` as you would on normal `style` elements. Linked stylesheets for print media is also ignored as you would expect.
-
-If the `link` tag uses an absolute URL to the stylesheet, it will not be inlined. Use a relative path instead:
-
-```html
-<head>
-  <link rel="stylesheet" type="text/css" href="/assets/emails/rock.css">             <!-- Will be inlined -->
-  <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">      <!-- Will NOT be inlined -->
-  <link rel="stylesheet" type="text/css" href="/assets/jazz.css" media="print">      <!-- Will NOT be inlined -->
-  <link rel="stylesheet" type="text/css" href="/ambient.css" data-immutable>         <!-- Will NOT be inlined -->
-</head>
-```
-
-Writing your own provider
--------------------------
-
-A provider handles searching CSS files for you. You can easily create your own provider for your specific app by subclassing `Roadie::AssetProvider`. See the API documentation for information about how to build them.
-
-Example Subclassing the `AssetPipelineProvider`:
-
-```ruby
-# application.rb
-config.roadie.provider = UserAssetsProvider.new
-
-# lib/user_assets_provider.rb
-class UserAssetsProvider < Roadie::AssetPipelineProvider
-  def find(name)
-    user = User.find_by_name(name)
-    if user
-      user.custom_css
-    else
-      super
-    end
-  end
-end
-```
-
-Writing your own inliner
--------------------------
-
-A custom inliner transforms an outgoing HTML email using application specific rules. The custom inliner is invoked after the default inliner.
-
-A custom inliner can be created using a `lambda` that accepts one parameter or an object that responds to the `call` method with one parameter.
-
-Example for using lambda as custom inliner:
-
-```ruby
-# application.rb
-config.roadie.after_inlining = lambda do |document|
-  document.css("a#new_user").each do |link|
-    link['href'] = "http://www.foo.com#{link['href']}"
-  end
-end
-```
-
-Example for using object as custom inliner:
-
-```ruby
-# application.rb
-config.roadie.after_inlining = PromotionInliner.new
-
-# lib/product_link_inliner.rb
-class PromotionInliner
-  def call(document)
-    document.css("a.product").each do |link|
-      fix_link link
-    end
-  end
-
-  def fix_link(link)
-    if link['class'] =~ /\bsale\b/
-      link['href'] = link['href'] + '?source=newsletter'
-    end
-  end
-end
-```
-
-### Custom inliner scopes
-
-- **All HTML emails**
-
-```ruby
-# application.rb. Custom inliner for all emails.
-config.roadie.after_inlining = PromotionInliner.new
-```
-- **All HTML emails sent by a mailer**
-
-```ruby
-class MarketingMailer < ActionMailer::Base
-  # Custom inliner for all mailer methods.
-  default after_inlining: PromotionInliner.new
-end
-```
-
-- **All HTML emails sent by a specific mailer method**
-
-```ruby
-class UserMailer < ActionMailer::Base
-  def registration
-    # Custom inliner for registration emails
-    mail(after_inlining: MarketingMailer.new)
-  end
-end
-```
-
 Bugs / TODO
 -----------
 
 * Improve overall performance
 * Clean up stylesheet assignment code
-* Assets referenced with digest URLs should be findable
-  * Roadie should be able to have multiple asset providers in a specific order
 
 FAQ
 ---
@@ -277,7 +212,12 @@ Documentation
 Running specs
 -------------
 
-Run specs for your current ruby against the latest compatible version of rails with `rake spec`. You can run against all supported combinations of ruby and rails by issuing `rake spec:all`.
+Start by setting up your machine, then you can run the specs like normal:
+
+```bash
+./setup.sh install
+rake spec
+```
 
 History and contributors
 ------------------------

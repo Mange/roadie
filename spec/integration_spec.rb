@@ -70,9 +70,10 @@ describe "Integrations" do
     (rails_40_no_pipeline if RUBY_VERSION > "1.9"),
   ].each do |app|
     next unless app
-    before { app.reset }
 
     describe "with #{app}" do
+      before { app.reset }
+
       it "inlines styles for multipart emails" do
         email = app.read_email(:normal_email)
 

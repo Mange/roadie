@@ -75,5 +75,6 @@ require 'roadie/asset_pipeline_provider'
 require 'roadie/filesystem_provider'
 
 require 'roadie/inliner'
+require 'roadie/document'
 
 require 'roadie/railtie' if defined?(Rails)
