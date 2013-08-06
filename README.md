@@ -11,7 +11,7 @@ Roadie
 
 > Making HTML emails comfortable for the Ruby rockstars
 
-Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewrite relative URLs for you inside your emails.
+Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewriting relative URLs for you inside your emails.
 
 [![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
 
