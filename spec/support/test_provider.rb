@@ -1,18 +1,12 @@
-class TestProvider < Roadie::AssetProvider
-  def initialize(prefix_or_files = {}, files = nil)
-    if prefix_or_files.is_a?(Hash)
-      super()
-      @files = prefix_or_files
-    else
-      super(prefix_or_files)
-      @files = files
-    end
-    @default = @files[:default]
+class TestProvider
+  include Roadie::AssetProvider
+
+  def initialize(files = {})
+    @files = files
+    @default = files[:default]
   end
 
-  def find(name)
-    @files.fetch(remove_prefix name) {
-      @default or raise Roadie::CSSFileNotFound, name
-    }
+  def find_stylesheet(name)
+    @files.fetch(name, @default)
   end
 end

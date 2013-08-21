@@ -17,6 +17,7 @@ module Roadie
     end
 
     it "defaults to the FilesystemProvider" do
+      pending "There are no longer a FilesystemProvider"
       document.should have(1).asset_providers
       provider = document.asset_providers.first
       provider.should be_instance_of(FilesystemProvider)

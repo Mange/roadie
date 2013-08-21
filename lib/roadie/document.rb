@@ -6,7 +6,8 @@ module Roadie
     def initialize(html)
       @html = html
       @asset_providers = [
-        FilesystemProvider.new("", Dir.pwd)
+        # FilesystemProvider.new("", Dir.pwd)
+        TestProvider.new
       ]
       @css = ""
     end

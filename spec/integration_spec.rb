@@ -3,6 +3,8 @@ require 'tempfile'
 require 'mail'
 
 describe "Integrations" do
+  before { pending "Skipping integration tests" }
+
   class RailsApp
     def initialize(name, path, options = {})
       @name = name

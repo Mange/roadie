@@ -1,23 +1,16 @@
 module Roadie
-  class ProviderList < AssetProvider
+  class ProviderList
+    include AssetProvider
+
     def initialize(providers)
-      super()
       @providers = providers
     end
 
-    def find(name)
+    def find_stylesheet(name)
       @providers.each do |provider|
-        css = safe_find(provider, name)
+        css = provider.find_stylesheet(name)
         return css if css
       end
-      raise CSSFileNotFound, name
-    end
-
-    private
-
-    def safe_find(provider, name)
-      provider.find(name)
-    rescue CSSFileNotFound
       nil
     end
   end

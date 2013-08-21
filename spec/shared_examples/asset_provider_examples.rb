@@ -1,15 +1,20 @@
-shared_examples_for Roadie::AssetProvider do
-  it "responds to #find" do
-    provider.should respond_to(:find)
-  end
+# TODO: How do we expose this so clients can test their own asset providers?
 
-  describe "#all(files)" do
-    it "loads files in order and join them with a newline" do
-      provider.should_receive(:find).with('one').twice.and_return('contents of one')
-      provider.should_receive(:find).with('two').twice.and_return('contents of two')
+shared_examples_for "asset provider" do
+  it "responds to #find_stylesheet"
 
-      provider.all(%w[one two]).should == "contents of one\ncontents of two"
-      provider.all(%w[two one]).should == "contents of two\ncontents of one"
+  describe "#find_stylesheet!" do
+    it "delegates to #find_stylesheet" do
+      provider.should_receive(:find_stylesheet).with("filename").and_return "foo"
+      provider.find_stylesheet!("filename").should == "foo"
+    end
+
+    it "raises CSSFileNotFound on nil" do
+      provider.stub find_stylesheet: nil
+
+      expect {
+        provider.find_stylesheet!("missing.css")
+      }.to raise_error Roadie::CSSFileNotFound, /missing\.css/
     end
   end
 end
