@@ -1,4 +1,8 @@
 shared_examples_for Roadie::AssetProvider do
+  it "responds to #find" do
+    provider.should respond_to(:find)
+  end
+
   describe "#all(files)" do
     it "loads files in order and join them with a newline" do
       provider.should_receive(:find).with('one').twice.and_return('contents of one')
