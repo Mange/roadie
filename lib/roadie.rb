@@ -71,6 +71,7 @@ require 'roadie/selector'
 require 'roadie/style_declaration'
 
 require 'roadie/asset_provider'
+require 'roadie/provider_list'
 require 'roadie/asset_pipeline_provider'
 require 'roadie/filesystem_provider'
 
