@@ -23,7 +23,7 @@ module Roadie
 
     STYLE_ELEMENT_QUERY = (
       "style:not([data-roadie-ignore]), " +
-      # TODO: When using Nokogiri 1.6 and later; we may use a double :not here
+      # TODO: When using Nokogiri 1.6.1 and later; we may use a double :not here
       #       instead of the extra code inside #read_css, and the #compact
       #       call in #find_css.
       "link[rel=stylesheet][src]:not([data-roadie-ignore])"
