@@ -1,11 +1,11 @@
 module Roadie
   class Document
-    attr_reader :html
-    attr_accessor :url_options, :asset_providers, :before_inlining, :after_inlining
+    attr_reader :html, :asset_providers
+    attr_accessor :url_options, :before_inlining, :after_inlining
 
     def initialize(html)
       @html = html
-      @asset_providers = ProviderList.new([FilesystemProvider.new])
+      @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @css = ""
     end
 
@@ -17,6 +17,10 @@ module Roadie
       # TODO: Fix this mess.
       # TODO: Handle "before" callback
       Inliner.new(Fakeprovider.new(@css), [], html, url_options, after_inlining).execute
+    end
+
+    def asset_providers=(list)
+      @asset_providers = ProviderList.wrap(list)
     end
 
     private

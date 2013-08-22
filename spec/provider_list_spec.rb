@@ -52,5 +52,27 @@ module Roadie
         provider.shift.should == other
       }.to change(provider, :size).by(-1)
     end
+
+    describe "wrapping" do
+      it "creates provider lists with the arguments" do
+        ProviderList.wrap(test_provider).should be_instance_of(ProviderList)
+        ProviderList.wrap(test_provider, test_provider).size.should == 2
+      end
+
+      it "flattens arrays" do
+        ProviderList.wrap([test_provider, test_provider], test_provider).size.should == 3
+        ProviderList.wrap([test_provider, test_provider]).size.should == 2
+      end
+
+      it "combines with providers from other lists" do
+        other_list = ProviderList.new([test_provider, test_provider])
+        ProviderList.wrap(test_provider, other_list).size.should == 3
+      end
+
+      it "returns the passed list if only a single ProviderList is passed" do
+        other_list = ProviderList.new([test_provider])
+        ProviderList.wrap(other_list).should eql other_list
+      end
+    end
   end
 end

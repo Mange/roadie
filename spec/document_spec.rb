@@ -28,8 +28,14 @@ module Roadie
 
     it "allows changes to the asset providers" do
       other_provider = double "Other proider"
+      old_list = document.asset_providers
+
       document.asset_providers = [other_provider]
-      document.asset_providers.should == [other_provider]
+      document.asset_providers.should be_instance_of(ProviderList)
+      document.asset_providers.each.to_a.should == [other_provider]
+
+      document.asset_providers = old_list
+      document.asset_providers.should == old_list
     end
 
     it "can store callbacks for inlining" do
