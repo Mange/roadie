@@ -1,9 +1,14 @@
 module Roadie
   class << self
-    # Shortcut for inlining CSS using {Inliner}
-    # @see Inliner
-    def inline_css(*args)
-      Roadie::Inliner.new(*args).execute
+    def inline_css(assets, targets, html, url_options, after_inlining_handler = nil)
+      document = Document.new(html)
+      # Note: Targets are not passed anymore; they are to be removed - all
+      # stylesheets should be given explicitly and/or be referenced from the
+      # HTML.
+      document.asset_providers = [assets]
+      document.url_options = url_options
+      document.after_inlining = after_inlining_handler
+      document.transform
     end
 
     # Shortcut to Rails.application
