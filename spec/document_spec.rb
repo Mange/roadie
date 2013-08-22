@@ -16,7 +16,11 @@ module Roadie
       document.url_options.should == {host: "foo.bar"}
     end
 
-    it "defaults to the FilesystemProvider" do
+    it "has a ProviderList" do
+      document.asset_providers.should be_instance_of(ProviderList)
+    end
+
+    it "defaults to having just a FilesystemProvider in the provider list" do
       document.should have(1).asset_providers
       provider = document.asset_providers.first
       provider.should be_instance_of(FilesystemProvider)

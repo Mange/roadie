@@ -1,5 +1,7 @@
 module Roadie
   class ProviderList
+    extend Forwardable
+    include Enumerable
     include AssetProvider
 
     def initialize(providers)
@@ -13,5 +15,7 @@ module Roadie
       end
       nil
     end
+
+    def_delegators :@providers, :each, :size, :push, :pop, :unshift, :shift
   end
 end
