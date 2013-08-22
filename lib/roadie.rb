@@ -40,6 +40,7 @@ require 'roadie/style_declaration'
 
 require 'roadie/asset_provider'
 require 'roadie/provider_list'
+require 'roadie/filesystem_provider'
 
 require 'roadie/asset_scanner'
 require 'roadie/inliner'

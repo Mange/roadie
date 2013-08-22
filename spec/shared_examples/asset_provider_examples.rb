@@ -1,7 +1,9 @@
 # TODO: How do we expose this so clients can test their own asset providers?
 
 shared_examples_for "asset provider" do
-  it "responds to #find_stylesheet"
+  it "responds to #find_stylesheet" do
+    provider.should respond_to(:find_stylesheet)
+  end
 
   describe "#find_stylesheet!" do
     it "delegates to #find_stylesheet" do
