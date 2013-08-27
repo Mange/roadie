@@ -57,8 +57,7 @@ module Roadie
         extract_link_elements
         extract_inline_style_elements
         inline_css_rules
-        make_image_urls_absolute
-        make_style_urls_absolute
+        make_urls_absolute
         after_inlining_handler.call(document) if after_inlining_handler.respond_to?(:call)
         @document = nil
       end
@@ -178,9 +177,14 @@ module Roadie
         end
       end
 
-      def make_image_urls_absolute
-        document.css('img').each do |img|
-          img['src'] = ensure_absolute_url(img['src']) if img['src']
+      def make_urls_absolute
+        make_dom_urls_absolute
+        make_style_urls_absolute
+      end
+
+      def make_dom_urls_absolute
+        if url_options
+          UrlRewriter.new(UrlGenerator.new(url_options)).transform_dom document
         end
       end
 
