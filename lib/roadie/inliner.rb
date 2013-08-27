@@ -179,52 +179,9 @@ module Roadie
       end
 
       def make_urls_absolute
-        make_dom_urls_absolute
-        make_style_urls_absolute
-      end
-
-      def make_dom_urls_absolute
         if @url_generator
           UrlRewriter.new(@url_generator).transform_dom document
         end
-      end
-
-      def make_style_urls_absolute
-        if @url_generator
-          document.css('*[style]').each do |element|
-            styling = element['style']
-            element['style'] = styling.gsub(CSS_URL_REGEXP) { "url(#{$1}#{@url_generator.generate_url($2, '/stylesheets')}#{$1})" }
-          end
-        end
-      end
-
-      def ensure_absolute_url(url, base_path = nil)
-        base, uri = absolute_url_base(base_path), URI.parse(url)
-        if uri.relative? and base
-          base.merge(uri).to_s
-        else
-          uri.to_s
-        end
-      rescue URI::InvalidURIError
-        return url
-      end
-
-      def absolute_url_base(base_path)
-        return nil unless url_options
-        port = url_options[:port]
-        scheme = protocol_to_scheme url_options[:protocol]
-        URI::Generic.build({
-          :scheme => scheme,
-          :host => url_options[:host],
-          :port => (port ? port.to_i : nil),
-          :path => base_path
-        })
-      end
-
-      # Strip :// from any protocol, if present
-      def protocol_to_scheme(protocol)
-        return 'http' unless protocol
-        protocol.to_s[/^\w+/]
       end
 
       def all_link_elements_with_url
