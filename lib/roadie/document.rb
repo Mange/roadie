@@ -16,7 +16,11 @@ module Roadie
     def transform
       # TODO: Fix this mess.
       # TODO: Handle "before" callback
-      Inliner.new(Fakeprovider.new(@css), [], html, url_options, after_inlining).execute
+      url_rewriter = make_url_rewriter
+      dom = Nokogiri::HTML.parse html
+      Inliner.new(Fakeprovider.new(@css), [], dom, after_inlining).execute
+      url_rewriter.transform_dom(dom) if url_rewriter
+      dom.dup.to_html
     end
 
     def asset_providers=(list)
@@ -30,6 +34,12 @@ module Roadie
     class Fakeprovider
       def initialize(css); @css = css; end
       def all(*); @css; end
+    end
+
+    def make_url_rewriter
+      if url_options
+        UrlRewriter.new(UrlGenerator.new(url_options))
+      end
     end
   end
 end

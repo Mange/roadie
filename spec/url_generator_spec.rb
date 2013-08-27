@@ -7,6 +7,12 @@ module Roadie
       UrlGenerator.new(host: "foo.com").url_options.should == {host: "foo.com"}
     end
 
+    it "raises an argument error if no URL options are specified" do
+      expect {
+        UrlGenerator.new(nil)
+      }.to raise_error ArgumentError, /url options/i
+    end
+
     it "raises an argument error if no host is specified" do
       expect {
         UrlGenerator.new(port: 3000)
@@ -72,6 +78,10 @@ module Roadie
       it "accepts input paths without a slash in the beginning" do
         url("bar", host: "example.com", path: "/foo").should == "http://example.com/foo/bar"
         url("bar", host: "example.com", path: "/foo/").should == "http://example.com/foo/bar"
+      end
+
+      it "does not touch data: URIs" do
+        url("data:deadbeef", host: "example.com").should == "data:deadbeef"
       end
     end
 

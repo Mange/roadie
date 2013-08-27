@@ -19,6 +19,7 @@ module Roadie
     # @option url_options [String] :scheme URL scheme ("http" is default)
     # @option url_options [String] :protocol alias for :scheme
     def initialize(url_options)
+      raise ArgumentError, "No URL options were specified" unless url_options
       raise ArgumentError, "No :host was specified; options are: #{url_options.inspect}" unless url_options[:host]
       validate_options url_options
 

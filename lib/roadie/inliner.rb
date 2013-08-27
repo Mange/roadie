@@ -5,67 +5,34 @@ require 'css_parser'
 
 module Roadie
   # This class is the core of Roadie as it does all the actual work. You just give it
-  # the CSS rules, the HTML and the url_options for rewriting URLs and let it go on
-  # doing all the heavy lifting and building.
+  # the CSS rules and the DOM tree and let it go on doing all the heavy lifting and building.
   class Inliner
-    # Regexp matching all the url() declarations in CSS
-    #
-    # It matches without any quotes and with both single and double quotes
-    # inside the parenthesis. There's much room for improvement, of course.
-    CSS_URL_REGEXP = %r{
-      url\(
-        (
-          (?:["']|%22)?    # Optional opening quote
-        )
-        (
-          [^(]*            # Text leading up to before opening parens
-          (?:\([^)]*\))*   # Texts containing parens pairs
-          [^(]+            # Texts without parens - required
-        )
-        \1                 # Closing quote
-      \)
-    }x
-
-    # Initialize a new Inliner with the given Provider, CSS targets, HTML, and `url_options`.
+    # Initialize a new Inliner with the given Provider, CSS targets, and DOM tree
     #
     # @param [AssetProvider] assets
     # @param [Array] targets List of CSS files to load via the provider
-    # @param [String] html
-    # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+
+    # @param [Nokogiri::HTML::Document] dom
     # @param [lambda] after_inlining_handler A lambda that accepts one parameter or an object that responds to the +call+ method with one parameter.
-    def initialize(assets, targets, html, url_options, after_inlining_handler=nil)
+    def initialize(assets, targets, dom, after_inlining_handler=nil)
       @assets = assets
       @css = assets.all(targets)
-      @html = html
+      @dom = dom
       @inline_css = []
-      @url_options = url_options
-      @url_generator = UrlGenerator.new(url_options) if url_options
       @after_inlining_handler = after_inlining_handler
-
-      if url_options and url_options[:asset_path_prefix]
-        raise ArgumentError, "The asset_path_prefix URL option is not working anymore. You need to add the following configuration to your application.rb:\n" +
-                             "    config.roadie.provider = AssetPipelineProvider.new(#{url_options[:asset_path_prefix].inspect})\n" +
-                             "Note that the prefix \"/assets\" is the default one, so you do not need to configure anything in that case."
-      end
     end
 
-    # Start the inlining and return the final HTML output
+    # Start the inlining, mutating the DOM tree
     # @return [String]
     def execute
-      adjust_html do |document|
-        @document = document
-        add_missing_structure
-        extract_link_elements
-        extract_inline_style_elements
-        inline_css_rules
-        make_urls_absolute
-        after_inlining_handler.call(document) if after_inlining_handler.respond_to?(:call)
-        @document = nil
-      end
+      add_missing_structure
+      extract_link_elements
+      extract_inline_style_elements
+      inline_css_rules
+      after_inlining_handler.call(dom) if after_inlining_handler.respond_to?(:call)
     end
 
     private
-      attr_reader :css, :html, :assets, :url_options, :document, :after_inlining_handler
+      attr_reader :css, :html, :assets, :dom, :after_inlining_handler
 
       def inline_css
         @inline_css.join("\n")
@@ -78,27 +45,21 @@ module Roadie
         end
       end
 
-      def adjust_html
-        Nokogiri::HTML.parse(html).tap do |document|
-          yield document
-        end.dup.to_html
-      end
-
       def add_missing_structure
-        html_node = document.at_css('html')
+        html_node = dom.at_css('html')
         html_node['xmlns'] ||= 'http://www.w3.org/1999/xhtml'
 
-        if document.at_css('html > head')
-          head = document.at_css('html > head')
+        if dom.at_css('html > head')
+          head = dom.at_css('html > head')
         else
-          head = Nokogiri::XML::Node.new('head', document)
-          document.at_css('html').children.before(head)
+          head = Nokogiri::XML::Node.new('head', dom)
+          dom.at_css('html').children.before(head)
         end
 
         # This is handled automatically by Nokogiri in Ruby 1.9, IF charset of string != utf-8
         # We want UTF-8 to be specified as well, so we still do this.
-        unless document.at_css('html > head > meta[http-equiv=Content-Type]')
-          meta = Nokogiri::XML::Node.new('meta', document)
+        unless dom.at_css('html > head > meta[http-equiv=Content-Type]')
+          meta = Nokogiri::XML::Node.new('meta', dom)
           meta['http-equiv'] = 'Content-Type'
           meta['content'] = 'text/html; charset=UTF-8'
           head.add_child(meta)
@@ -114,7 +75,7 @@ module Roadie
       end
 
       def extract_inline_style_elements
-        document.css("style").each do |style|
+        dom.css("style").each do |style|
           next if style['media'] == 'print' or style['data-immutable']
           @inline_css << style.content
           style.remove
@@ -158,7 +119,7 @@ module Roadie
       end
 
       def each_element_in_selector(selector)
-        document.css(selector.to_s).each do |element|
+        dom.css(selector.to_s).each do |element|
           yield element
         end
       # There's no way to get a list of supported pseudo rules, so we're left
@@ -178,14 +139,8 @@ module Roadie
         end
       end
 
-      def make_urls_absolute
-        if @url_generator
-          UrlRewriter.new(@url_generator).transform_dom document
-        end
-      end
-
       def all_link_elements_with_url
-        document.css("link[rel=stylesheet]").map { |link| [link, URI.parse(link['href'])] }
+        dom.css("link[rel=stylesheet]").map { |link| [link, URI.parse(link['href'])] }
       end
 
       def all_link_elements_to_be_inlined_with_url

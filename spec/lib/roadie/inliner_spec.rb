@@ -9,17 +9,10 @@ describe Roadie::Inliner do
   end
 
   def rendering(html, options = {})
-    url_options = options.fetch(:url_options, {:host => 'example.com'})
     after_inlining_handler = options[:after_inlining_handler]
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, after_inlining_handler).execute
-  end
-
-  describe "initialization" do
-    it "warns about asset_path_prefix being non-functional" do
-      expect {
-        Roadie::Inliner.new(provider, [], '', :asset_path_prefix => 'foo')
-      }.to raise_error(ArgumentError, /asset_path_prefix/)
-    end
+    dom = Nokogiri::HTML.parse html
+    Roadie::Inliner.new(provider, ['global.css'], dom, after_inlining_handler).execute
+    dom
   end
 
   describe "inlining styles" do
@@ -436,72 +429,6 @@ describe Roadie::Inliner do
     end
   end
 
-  describe "making urls absolute" do
-    it "works on image sources" do
-      rendering('<img src="/images/foo.jpg" />').should have_attribute('src' => 'http://example.com/images/foo.jpg')
-      rendering('<img src="../images/foo.jpg" />').should have_attribute('src' => 'http://example.com/images/foo.jpg')
-      rendering('<img src="foo.jpg" />').should have_attribute('src' => 'http://example.com/foo.jpg')
-    end
-
-    it "does not touch image sources that are already absolute" do
-      rendering('<img src="http://other.example.org/images/foo.jpg" />').should have_attribute('src' => 'http://other.example.org/images/foo.jpg')
-    end
-
-    it "works on inlined style attributes" do
-      rendering('<p style="background: url(/paper.png)"></p>').should have_styling('background' => 'url(http://example.com/paper.png)')
-      rendering('<p style="background: url(&quot;/paper.png&quot;)"></p>').should have_styling('background' => 'url("http://example.com/paper.png")')
-    end
-
-    it "works on external style declarations" do
-      use_css "p { background-image: url(/paper.png); }
-               table { background-image: url('/paper.png'); }
-               div { background-image: url(\"/paper.png\"); }"
-      rendering('<p></p>').should have_styling('background-image' => 'url(http://example.com/paper.png)')
-      rendering('<table></table>').should have_styling('background-image' => "url('http://example.com/paper.png')")
-      rendering('<div></div>').should have_styling('background-image' => 'url("http://example.com/paper.png")')
-    end
-
-    it "does not touch style urls that are already absolute" do
-      external_url = 'url(http://other.example.org/paper.png)'
-      use_css "p { background-image: #{external_url}; }"
-      rendering('<p></p>').should have_styling('background-image' => external_url)
-      rendering(%(<div style="background-image: #{external_url}"></div>)).should have_styling('background-image' => external_url)
-    end
-
-    it "does not touch the urls when no url options are defined" do
-      use_css "img { background: url(/a.jpg); }"
-      rendering('<img src="/b.jpg" />', :url_options => nil).tap do |document|
-        document.should have_attribute('src' => '/b.jpg').at_selector('img')
-        document.should have_styling('background' => 'url(/a.jpg)')
-      end
-    end
-
-    it "supports port and protocol settings" do
-      use_css "img { background: url(/a.jpg); }"
-      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https', :port => '8080'}).tap do |document|
-        document.should have_attribute('src' => 'https://example.com:8080/b.jpg').at_selector('img')
-        document.should have_styling('background' => 'url(https://example.com:8080/a.jpg)')
-      end
-    end
-
-    # This case was happening for some users when emails were rendered as part
-    # of the request cycle. I do not know it we *really* should accept these
-    # values, but it looks like Rails do accept it so we might as well do it
-    # too.
-    it "supports protocol settings with additional tokens" do
-      use_css "img { background: url(/a.jpg); }"
-      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https://'}).tap do |document|
-        document.should have_attribute('src' => 'https://example.com/b.jpg').at_selector('img')
-        document.should have_styling('background' => 'url(https://example.com/a.jpg)')
-      end
-    end
-
-    it "does not touch data: URIs" do
-      use_css "div { background: url(data:abcdef); }"
-      rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
-    end
-  end
-
   describe "custom converter" do
     let(:html) { '<div id="foo"></div>' }
 
@@ -560,23 +487,6 @@ describe Roadie::Inliner do
         </head>
       </html>
       HTML
-    end
-  end
-
-  describe "css url regex" do
-    it "parses css urls" do
-      {
-        %{url(/foo.jpg)}                   => '/foo.jpg',
-        %{url("/foo.jpg")}                 => '/foo.jpg',
-        %{url('/foo.jpg')}                 => '/foo.jpg',
-        %{url(http://localhost/foo.jpg)}   => 'http://localhost/foo.jpg',
-        %{url("http://localhost/foo.jpg")} => 'http://localhost/foo.jpg',
-        %{url('http://localhost/foo.jpg')} => 'http://localhost/foo.jpg',
-        %{url(/andromeda_(galaxy).jpg)}    => '/andromeda_(galaxy).jpg',
-      }.each do |raw, expected|
-        raw =~ Roadie::Inliner::CSS_URL_REGEXP
-        $2.should == expected
-      end
     end
   end
 end
