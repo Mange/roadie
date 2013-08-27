@@ -19,12 +19,12 @@ shared_examples_for "delegating find_stylesheet! method" do
       subject.find_stylesheet!("filename").should == "foo"
     end
 
-    it "raises CSSFileNotFound on nil" do
+    it "raises CssNotFound on nil" do
       subject.stub find_stylesheet: nil
 
       expect {
         subject.find_stylesheet!("missing.css")
-      }.to raise_error Roadie::CSSFileNotFound, /missing\.css/
+      }.to raise_error Roadie::CssNotFound, /missing\.css/
     end
   end
 end

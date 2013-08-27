@@ -132,7 +132,7 @@ document.transform # =>
                    # </html>
 ```
 
-If a referenced stylesheet cannot be found, the `#transform` method will raise an `Roadie::CSSNotFound` error. If you instead want to ignore missing stylesheets, you can use the `NullProvider`.
+If a referenced stylesheet cannot be found, the `#transform` method will raise an `Roadie::CssNotFound` error. If you instead want to ignore missing stylesheets, you can use the `NullProvider`.
 
 ### Configuring providers ###
 
@@ -162,7 +162,7 @@ document.asset_providers.push Roadie::NullProvider.new
 
 Writing your own provider is also easy. You just need to provide:
  * `#find_stylesheet(name)`, returning either strings or nil.
- * `#find_stylesheet!(name)`, returning either strings or raising Roadie::CSSNotFound.
+ * `#find_stylesheet!(name)`, returning either strings or raising Roadie::CssNotFound.
 
 ```ruby
 class UserAssetsProvider
@@ -177,7 +177,7 @@ class UserAssetsProvider
   end
 
   def find_stylesheet!(name)
-    find_stylesheet(name) or raise Roadie::CSSNotFound.new(name)
+    find_stylesheet(name) or raise Roadie::CssNotFound.new(name)
   end
 
   # Instead of implementing #find_stylesheet!, you could also:

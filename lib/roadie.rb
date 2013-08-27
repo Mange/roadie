@@ -40,7 +40,7 @@ end
 
 require 'roadie/version'
 
-require 'roadie/css_file_not_found'
+require 'roadie/css_not_found'
 require 'roadie/invalid_url_path'
 
 require 'roadie/selector'
