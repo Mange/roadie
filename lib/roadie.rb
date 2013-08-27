@@ -39,7 +39,10 @@ module Roadie
 end
 
 require 'roadie/version'
+
 require 'roadie/css_file_not_found'
+require 'roadie/invalid_url_path'
+
 require 'roadie/selector'
 require 'roadie/style_declaration'
 
@@ -48,6 +51,7 @@ require 'roadie/provider_list'
 require 'roadie/filesystem_provider'
 
 require 'roadie/asset_scanner'
+require 'roadie/url_generator'
 require 'roadie/inliner'
 require 'roadie/document'
 
