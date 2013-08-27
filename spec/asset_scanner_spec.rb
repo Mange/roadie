@@ -58,7 +58,7 @@ module Roadie
         provider.should_receive(:find_stylesheet).with(
           "/some/url.css"
         ).and_return "p { color: green; }"
-        dom = dom_fragment %(<link rel="stylesheet" src="/some/url.css">)
+        dom = dom_fragment %(<link rel="stylesheet" href="/some/url.css">)
 
         scanner = AssetScanner.new dom, provider
 
@@ -66,7 +66,7 @@ module Roadie
       end
 
       it "ignores referenced print stylesheets" do
-        dom = dom_fragment %(<link rel="stylesheet" src="/error.css" media="print">)
+        dom = dom_fragment %(<link rel="stylesheet" href="/error.css" media="print">)
         provider.should_not_receive(:find_stylesheet)
 
         scanner = AssetScanner.new dom, provider
@@ -75,7 +75,7 @@ module Roadie
       end
 
       it "does not look for ignored referenced stylesheets" do
-        dom = dom_fragment %(<link rel="stylesheet" src="/error.css" data-roadie-ignore>)
+        dom = dom_fragment %(<link rel="stylesheet" href="/error.css" data-roadie-ignore>)
         provider.should_not_receive(:find_stylesheet)
 
         scanner = AssetScanner.new dom, provider
@@ -91,9 +91,9 @@ module Roadie
             <head>
               <title>Hello world!</title>
               <style>a { color: green; }</style>
-              <link rel="stylesheet" src="/some/url.css">
-              <link rel="stylesheet" src="/error.css" media="print">
-              <link rel="stylesheet" src="/cool.css" data-roadie-ignore>
+              <link rel="stylesheet" href="/some/url.css">
+              <link rel="stylesheet" href="/error.css" media="print">
+              <link rel="stylesheet" href="/cool.css" data-roadie-ignore>
             </head>
             <body>
               <style data-roadie-ignore>a { color: red; }</style>
@@ -114,7 +114,7 @@ module Roadie
         dom.should have_selector("link[media=print]")
 
         dom.should_not have_selector("html > head > style")
-        dom.should_not have_selector("html > head > link[src='/some/url.css']")
+        dom.should_not have_selector("html > head > link[href='/some/url.css']")
       end
     end
   end

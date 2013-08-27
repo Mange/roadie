@@ -26,7 +26,7 @@ module Roadie
       # TODO: When using Nokogiri 1.6.1 and later; we may use a double :not here
       #       instead of the extra code inside #read_css, and the #compact
       #       call in #find_css.
-      "link[rel=stylesheet][src]:not([data-roadie-ignore])"
+      "link[rel=stylesheet][href]:not([data-roadie-ignore])"
     ).freeze
 
     def read_css(element)
@@ -34,7 +34,7 @@ module Roadie
         element.text.strip
       else
         unless element['media'] == "print"
-          asset_provider.find_stylesheet(element['src'])
+          asset_provider.find_stylesheet(element['href'])
         end
       end
     end
