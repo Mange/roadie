@@ -1,10 +1,11 @@
 require 'spec_helper'
-require 'shared_examples/asset_provider_examples'
+require 'shared_examples/asset_provider'
 
 describe TestProvider do
   subject(:provider) { TestProvider.new }
 
   it_behaves_like "asset provider"
+  it_behaves_like "delegating find_stylesheet! method"
 
   it "finds styles from a predefined hash" do
     provider = TestProvider.new({

@@ -1,12 +1,11 @@
 # encoding: UTF-8
 require 'spec_helper'
-require 'shared_examples/asset_provider_examples'
+require 'shared_examples/asset_provider'
 
 module Roadie
   describe FilesystemProvider do
-    it_behaves_like "asset provider" do
-      subject(:provider) { FilesystemProvider.new }
-    end
+    it_behaves_like "asset provider"
+    it_behaves_like "delegating find_stylesheet! method"
 
     it "takes a path" do
       FilesystemProvider.new("/tmp").path.should == "/tmp"

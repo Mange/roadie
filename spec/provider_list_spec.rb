@@ -1,6 +1,6 @@
 # encoding: UTF-8
 require 'spec_helper'
-require 'shared_examples/asset_provider_examples'
+require 'shared_examples/asset_provider'
 
 module Roadie
   describe ProviderList do
@@ -8,6 +8,7 @@ module Roadie
     subject(:provider) { ProviderList.new([test_provider]) }
 
     it_behaves_like "asset provider"
+    it_behaves_like "delegating find_stylesheet! method"
 
     it "finds using all given providers" do
       first = TestProvider.new "foo.css" => "foo"
