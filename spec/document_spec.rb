@@ -47,9 +47,25 @@ module Roadie
       document.before_inlining.should == callable
       document.after_inlining.should == callable
     end
+
+    describe "transforming" do
+      it "runs the before and after callbacks" do
+        document = Document.new "<body></body>"
+        before = double call: nil
+        after = double call: nil
+        document.before_inlining = before
+        document.after_inlining = after
+
+        before.should_receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
+        Inliner.should_receive(:new).ordered.and_return double.as_null_object
+        after.should_receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
+
+        document.transform
+      end
+    end
   end
 
-  describe Document, "integration" do
+  describe Document, "(integration)" do
     it "can transform the document" do
       document = Document.new <<-HTML
         <html>

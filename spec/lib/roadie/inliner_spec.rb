@@ -9,9 +9,8 @@ describe Roadie::Inliner do
   end
 
   def rendering(html, options = {})
-    after_inlining_handler = options[:after_inlining_handler]
     dom = Nokogiri::HTML.parse html
-    Roadie::Inliner.new(provider, ['global.css'], dom, after_inlining_handler).execute
+    Roadie::Inliner.new(provider, ['global.css'], dom).execute
     dom
   end
 
@@ -426,31 +425,6 @@ describe Roadie::Inliner do
           document.should have_selector('link')
         end
       end
-    end
-  end
-
-  describe "custom converter" do
-    let(:html) { '<div id="foo"></div>' }
-
-    it "is invoked" do
-      after_inlining_handler = double("converter")
-      after_inlining_handler.should_receive(:call).with(anything)
-      rendering(html, :after_inlining_handler => after_inlining_handler)
-    end
-
-    it "modifies the document using lambda" do
-      after_inlining_handler = lambda {|d| d.css("#foo").first["class"] = "bar"}
-      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
-    end
-
-    it "modifies the document using object" do
-      klass = Class.new do
-        def call(d)
-          d.css("#foo").first["class"] = "bar"
-        end
-      end
-      after_inlining_handler = klass.new
-      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
     end
   end
 

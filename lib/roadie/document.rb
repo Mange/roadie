@@ -15,10 +15,11 @@ module Roadie
 
     def transform
       # TODO: Fix this mess.
-      # TODO: Handle "before" callback
       dom = Nokogiri::HTML.parse html
-      Inliner.new(Fakeprovider.new(@css), [], dom, after_inlining).execute
+      callback before_inlining, dom
+      Inliner.new(Fakeprovider.new(@css), [], dom).execute
       make_url_rewriter.transform_dom(dom)
+      callback after_inlining, dom
       dom.dup.to_html
     end
 
@@ -41,6 +42,10 @@ module Roadie
       else
         NullUrlRewriter.new
       end
+    end
+
+    def callback(callable, dom)
+      callable.(dom) if callable.respond_to?(:call)
     end
   end
 end

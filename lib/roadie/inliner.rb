@@ -12,13 +12,11 @@ module Roadie
     # @param [AssetProvider] assets
     # @param [Array] targets List of CSS files to load via the provider
     # @param [Nokogiri::HTML::Document] dom
-    # @param [lambda] after_inlining_handler A lambda that accepts one parameter or an object that responds to the +call+ method with one parameter.
-    def initialize(assets, targets, dom, after_inlining_handler=nil)
+    def initialize(assets, targets, dom)
       @assets = assets
       @css = assets.all(targets)
       @dom = dom
       @inline_css = []
-      @after_inlining_handler = after_inlining_handler
     end
 
     # Start the inlining, mutating the DOM tree
@@ -28,11 +26,10 @@ module Roadie
       extract_link_elements
       extract_inline_style_elements
       inline_css_rules
-      after_inlining_handler.call(dom) if after_inlining_handler.respond_to?(:call)
     end
 
     private
-      attr_reader :css, :html, :assets, :dom, :after_inlining_handler
+      attr_reader :css, :html, :assets, :dom
 
       def inline_css
         @inline_css.join("\n")
