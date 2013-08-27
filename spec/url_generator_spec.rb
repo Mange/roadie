@@ -74,5 +74,37 @@ module Roadie
         url("bar", host: "example.com", path: "/foo/").should == "http://example.com/foo/bar"
       end
     end
+
+    # URLs in resources that are not based inside the root requires that we may
+    # specify a "custom base" to properly handle relative paths. Here's an
+    # example:
+    #
+    #   # /
+    #   #  document.html
+    #   #  images/
+    #   #    bg.png
+    #   #  stylesheets/
+    #   #    my_style.css
+    #
+    #   # stylesheets/my_style.css
+    #   body { background-image: url(../images/bg.png); }
+    #
+    # In this example, the stylesheet refers to /images/bg.png by using a
+    # relative path from /stylesheets/. In order to understand these cases, we
+    # need to specify where the "base" is in relation to the root.
+    describe "generating URLs with custom base" do
+      it "resolves relative paths" do
+        generator = UrlGenerator.new(host: "foo.com")
+        generator.generate_url("../images/bg.png", "/stylesheets").should == "http://foo.com/images/bg.png"
+        generator.generate_url("../images/bg.png", "email/stylesheets").should == "http://foo.com/email/images/bg.png"
+        generator.generate_url("images/bg.png", "email/").should == "http://foo.com/email/images/bg.png"
+      end
+
+      it "does not use the base when presented with a root-based path" do
+        generator = UrlGenerator.new(host: "foo.com")
+        generator.generate_url("/images/bg.png", "/stylesheets").should == "http://foo.com/images/bg.png"
+        generator.generate_url("/images/bg.png", "email/stylesheets").should == "http://foo.com/images/bg.png"
+      end
+    end
   end
 end

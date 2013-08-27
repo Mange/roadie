@@ -15,46 +15,62 @@ module Roadie
     # @param [Hash] url_options
     # @option url_options [String] :host (required)
     # @option url_options [String, Integer] :port
-    # @option url_options [String] :path Base path
+    # @option url_options [String] :path root path
     # @option url_options [String] :scheme URL scheme ("http" is default)
-    # @option url_options [String] :protocol Alias for :scheme
+    # @option url_options [String] :protocol alias for :scheme
     def initialize(url_options)
       raise ArgumentError, "No :host was specified; options are: #{url_options.inspect}" unless url_options[:host]
       validate_options url_options
 
       @url_options = url_options
-      @base_uri = build_base_uri
+      @root_uri = build_root_uri
     end
 
     # Generate an absolute URL from a relative URL.
     #
     # If the passed path is already an absolute URL, it will be returned as-is.
-    # If passed an blank path, the "base URL" will be returned. The base URL is
+    # If passed an blank path, the "root URL" will be returned. The root URL is
     # the URL that the {#url_options} would generate by themselves.
     #
+    # An optional base can be specified for the URL generation. The base is
+    # another relative path from the root that specifies an "offset" from which
+    # the path was found in. A common usecase is to convert a relative path
+    # found in a stylesheet which resides in a subdirectory. In that case
+    # {base} could be "/stylesheets".
+    #
+    # @param [String] base The base which the relative path comes from
     # @returns [String] an absolute URL
-    def generate_url(path)
-      return base_uri.to_s if path.nil? or path.empty?
+    def generate_url(path, base = "/")
+      return root_uri.to_s if path.nil? or path.empty?
       return path if path_is_absolute?(path)
 
-      merge_uri_with_path(base_uri, path).to_s
+      combine_segments(root_uri, base, path).to_s
     end
 
     private
-    attr_reader :base_uri
+    attr_reader :root_uri
 
-    def build_base_uri
+    def build_root_uri
       path = make_absolute url_options[:path]
       port = parse_port url_options[:port]
       scheme = normalize_scheme(url_options[:scheme] || url_options[:protocol])
       URI::Generic.build(scheme: scheme, host: url_options[:host], port: port, path: path)
     end
 
-    def merge_uri_with_path(base, path)
-      if base.path
-        path = File.join(base.path, path)
+    def combine_segments(root, base, path)
+      new_path = apply_base(base, path)
+      if root.path
+        new_path = File.join(root.path, new_path)
       end
-      base.merge(path)
+      root.merge(new_path)
+    end
+
+    def apply_base(base, path)
+      if path[0] == "/"
+        path
+      else
+        File.join(base, path)
+      end
     end
 
     # Strip :// from any scheme, if present

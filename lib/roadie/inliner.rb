@@ -39,6 +39,7 @@ module Roadie
       @html = html
       @inline_css = []
       @url_options = url_options
+      @url_generator = UrlGenerator.new(url_options) if url_options
       @after_inlining_handler = after_inlining_handler
 
       if url_options and url_options[:asset_path_prefix]
@@ -183,15 +184,17 @@ module Roadie
       end
 
       def make_dom_urls_absolute
-        if url_options
-          UrlRewriter.new(UrlGenerator.new(url_options)).transform_dom document
+        if @url_generator
+          UrlRewriter.new(@url_generator).transform_dom document
         end
       end
 
       def make_style_urls_absolute
-        document.css('*[style]').each do |element|
-          styling = element['style']
-          element['style'] = styling.gsub(CSS_URL_REGEXP) { "url(#{$1}#{ensure_absolute_url($2, '/stylesheets')}#{$1})" }
+        if @url_generator
+          document.css('*[style]').each do |element|
+            styling = element['style']
+            element['style'] = styling.gsub(CSS_URL_REGEXP) { "url(#{$1}#{@url_generator.generate_url($2, '/stylesheets')}#{$1})" }
+          end
         end
       end
 
