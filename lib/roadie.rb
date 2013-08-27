@@ -53,6 +53,7 @@ require 'roadie/filesystem_provider'
 require 'roadie/asset_scanner'
 require 'roadie/url_generator'
 require 'roadie/url_rewriter'
+require 'roadie/null_url_rewriter'
 require 'roadie/inliner'
 require 'roadie/document'
 

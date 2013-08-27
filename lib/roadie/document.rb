@@ -16,10 +16,9 @@ module Roadie
     def transform
       # TODO: Fix this mess.
       # TODO: Handle "before" callback
-      url_rewriter = make_url_rewriter
       dom = Nokogiri::HTML.parse html
       Inliner.new(Fakeprovider.new(@css), [], dom, after_inlining).execute
-      url_rewriter.transform_dom(dom) if url_rewriter
+      make_url_rewriter.transform_dom(dom)
       dom.dup.to_html
     end
 
@@ -39,6 +38,8 @@ module Roadie
     def make_url_rewriter
       if url_options
         UrlRewriter.new(UrlGenerator.new(url_options))
+      else
+        NullUrlRewriter.new
       end
     end
   end

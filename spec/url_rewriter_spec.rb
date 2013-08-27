@@ -1,12 +1,15 @@
 require 'spec_helper'
+require 'shared_examples/url_rewriter'
 
 module Roadie
   describe UrlRewriter do
+    let(:generator) { double("URL generator") }
+    subject(:rewriter) { UrlRewriter.new(generator) }
+
+    it_behaves_like "url rewriter"
+
     describe "transforming DOM trees" do
       def dom_document(html); Nokogiri::HTML.parse html; end
-
-      let(:generator) { double("URL generator") }
-      let(:rewriter) { UrlRewriter.new(generator) }
 
       it "rewrites all a[href]" do
         generator.should_receive(:generate_url).with("some/path").and_return "http://foo.com/"
@@ -49,9 +52,6 @@ module Roadie
     end
 
     describe "transforming css" do
-      let(:generator) { double("URL generator") }
-      let(:rewriter) { UrlRewriter.new(generator) }
-
       it "rewrites all url() directives" do
         generator.should_receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
         css = "body { background: top url(some/path.jpg) #eee; }"
