@@ -62,7 +62,7 @@ document.transform
 Your document instance can be configured several options:
 
 * `url_options` - Dictates how absolute URLs should be built.
-* `asset_providers` - A list of `Roadie::AssetProvider` that are invoked when external CSS is referenced.
+* `asset_providers` - A single (or list of) asset providers that are invoked when external CSS is referenced. See below.
 * `before_inlining` - A callback run before inlining starts.
 * `after_inlining` - A callback run after inlining is completed.
 
@@ -102,28 +102,86 @@ Style and link elements with `media="print"` are also ignored.
 </head>
 ```
 
-### Custom providers ###
+Roadie will use the given asset providers to look for the actual CSS that is referenced. If you don't change the default, it will use the `Roadie::FilesystemProvider` which looks for stylesheets on the filesystem, relative to the current working directory.
 
-You can configure how the Roadie document can find referenced stylesheets by setting the `asset_providers` setting of the document.
-By default, the `FilesystemProvider` will be assigned to documents, looking for files relative to the current working directory.
-
-Included providers:
-* `FilesystemProvider` - Looks for files on the filesystem, relative to the given directory.
-* `NullProvider` - Does not actually provide anything, it either raises errors on each reference or gives back empty results (default).
-
-You can easily create your own custom providers too:
+Example:
 
 ```ruby
-class UserAssetsProvider < Roadie::AssetProvider
+# /home/user/foo/stylesheets/primary.css
+body { color: blue; }
+
+# /home/user/foo/script.rb
+html = <<-HTML
+<html>
+  <head>
+  <link rel="stylesheet" type="text/css" href="/stylesheets/primary.css">
+  </head>
+  <body>
+  </body>
+</html>
+HTML
+
+Dir.pwd # => "/home/user/foo"
+document = Roadie::Document.new html
+document.transform # =>
+                   # <html>
+                   #   <head>
+                   #   </head>
+                   #   <body style="color: green;">
+                   #   </body>
+                   # </html>
+```
+
+If a referenced stylesheet cannot be found, the `#transform` method will raise an `Roadie::CSSNotFound` error. If you instead want to ignore missing stylesheets, you can use the `NullProvider`.
+
+### Configuring providers ###
+
+You can write your own providers if you need very specific behavior for your app, or you can use the built-in providers.
+
+Included providers:
+* `FilesystemProvider` - Looks for files on the filesystem, relative to the given directory unless otherwise specified.
+* `ProviderList` – Wraps a list of other providers and searches them in order. The `asset_providers` setting is an instance of this. It behaves a lot like an array, so you can push, pop, shift and unshift to it.
+* `NullProvider` - Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers.
+
+If you want to search several locations on the filesystem, just declare that:
+
+```ruby
+document.asset_providers = [
+  Roadie::FilesystemProvider.new(App.root.join("resources", "stylesheets")),
+  Roadie::FilesystemProvider.new(App.root.join("system", "uploads", "stylesheets")),
+]
+```
+
+If you want to ignore stylesheets that cannot be found instead of crashing, push the `NullProvider` to the end:
+
+```ruby
+document.asset_providers.push Roadie::NullProvider.new
+```
+
+### Writing your own provider ###
+
+Writing your own provider is also easy. You just need to provide:
+ * `#find_stylesheet(name)`, returning either strings or nil.
+ * `#find_stylesheet!(name)`, returning either strings or raising Roadie::CSSNotFound.
+
+```ruby
+class UserAssetsProvider
   def initialize(user_collection)
     @user_collection = user_collection
   end
 
-  def find_stylesheet(path)
-    if path =~ %r{/users/(\d+)\.css}
+  def find_stylesheet(name)
+    if name =~ %r{^/users/(\d+)\.css$}
       @user_collection.find_user($1).stylesheet
     end
   end
+
+  def find_stylesheet!(name)
+    find_stylesheet(name) or raise Roadie::CSSNotFound.new(name)
+  end
+
+  # Instead of implementing #find_stylesheet!, you could also:
+  # include Roadie::AssetProvider
 end
 
 # Try to look for a user stylesheet first, then fall back to normal filesystem lookup.
@@ -131,9 +189,6 @@ document.asset_providers = [
   UserAssetsProvider.new(app),
   Roadie::FilesystemProvider.new('./stylesheets'),
 ]
-
-# You can also add your own provider to the chain without caring about the rest of it
-another_document.asset_providers.unshift my_provider
 ```
 
 ### Callbacks ###
