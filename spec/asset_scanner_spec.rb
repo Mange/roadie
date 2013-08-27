@@ -3,22 +3,21 @@ require 'spec_helper'
 
 module Roadie
   describe AssetScanner do
-    # TODO: Implement a TestProvider and use it in a real set
-    let(:providers) { double("Asset provider set") }
+    let(:provider) { double("Asset provider") }
     let(:dom) { dom_document "<html></html>" }
 
     def dom_fragment(html); Nokogiri::HTML.fragment html; end
     def dom_document(html); Nokogiri::HTML.parse html; end
 
     it "is initialized with a DOM tree and a asset provider set" do
-      scanner = AssetScanner.new dom, providers
+      scanner = AssetScanner.new dom, provider
       scanner.dom.should == dom
-      scanner.asset_providers.should == providers
+      scanner.asset_provider.should == provider
     end
 
     describe "finding" do
       it "returns nothing when no stylesheets are referenced" do
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
         scanner.find_css.should == []
       end
 
@@ -35,7 +34,7 @@ module Roadie
             </body>
           </html>
         HTML
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
         scanner.find_css.should == [
           "a { color: green; }",
           "body { color: red; }",
@@ -51,35 +50,35 @@ module Roadie
             </head>
           </html>
         HTML
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
         scanner.find_css.should == ["a { color: green; }"]
       end
 
-      it "finds referenced stylesheets through the providers" do
-        providers.should_receive(:find_stylesheet).with(
+      it "finds referenced stylesheets through the provider" do
+        provider.should_receive(:find_stylesheet).with(
           "/some/url.css"
         ).and_return "p { color: green; }"
         dom = dom_fragment %(<link rel="stylesheet" src="/some/url.css">)
 
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
 
         scanner.find_css.should == ["p { color: green; }"]
       end
 
       it "ignores referenced print stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" src="/error.css" media="print">)
-        providers.should_not_receive(:find_stylesheet)
+        provider.should_not_receive(:find_stylesheet)
 
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
 
         scanner.find_css.should == []
       end
 
       it "does not look for ignored referenced stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" src="/error.css" data-roadie-ignore>)
-        providers.should_not_receive(:find_stylesheet)
+        provider.should_not_receive(:find_stylesheet)
 
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
 
         scanner.find_css.should == []
       end
@@ -101,9 +100,9 @@ module Roadie
             </body>
           </html>
         HTML
-        providers.stub find_stylesheet: "body { color: green; }"
+        provider.stub find_stylesheet: "body { color: green; }"
 
-        scanner = AssetScanner.new dom, providers
+        scanner = AssetScanner.new dom, provider
 
         scanner.extract_css.should == [
           "a { color: green; }",

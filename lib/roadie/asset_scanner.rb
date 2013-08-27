@@ -1,10 +1,10 @@
 module Roadie
   class AssetScanner
-    attr_reader :dom, :asset_providers
+    attr_reader :dom, :asset_provider
 
-    def initialize(dom, asset_providers)
+    def initialize(dom, asset_provider)
       @dom = dom
-      @asset_providers = asset_providers
+      @asset_provider = asset_provider
     end
 
     def find_css
@@ -34,7 +34,7 @@ module Roadie
         element.text.strip
       else
         unless element['media'] == "print"
-          asset_providers.find_stylesheet(element['src'])
+          asset_provider.find_stylesheet(element['src'])
         end
       end
     end
