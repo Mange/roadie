@@ -90,5 +90,33 @@ module Roadie
       paragraph.text.should == "Hello, world!"
       paragraph.to_xml.should == '<p style="color:green">Hello, world!</p>'
     end
+
+    it "extracts styles from the HTML" do
+      document = Document.new <<-HTML
+        <html>
+          <head>
+            <title>Greetings</title>
+            <link rel="stylesheet" href="/sample.css" type="text/css">
+          </head>
+          <body>
+            <p>Hello, world!</p>
+          </body>
+        </html>
+      HTML
+
+      document.asset_providers = TestProvider.new({
+        "/sample.css" => "p { color: red; text-align: right; }",
+      })
+
+      document.add_css "p { color: green; text-size: 2em; }"
+
+      result = Nokogiri::HTML.parse document.transform
+
+      result.should have_styling({
+        "text-align" => "right",
+        "color"      => "green",
+        "text-size"  => "2em",
+      }).at_selector("p")
+    end
   end
 end

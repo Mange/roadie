@@ -16,29 +16,21 @@ module Roadie
       @assets = assets
       @css = assets.all(targets)
       @dom = dom
-      @inline_css = []
     end
 
     # Start the inlining, mutating the DOM tree
     # @return [String]
     def execute
       add_missing_structure
-      extract_link_elements
-      extract_inline_style_elements
       inline_css_rules
     end
 
     private
       attr_reader :css, :html, :assets, :dom
 
-      def inline_css
-        @inline_css.join("\n")
-      end
-
       def parsed_css
         CssParser::Parser.new.tap do |parser|
           parser.add_block! clean_css(css) if css
-          parser.add_block! clean_css(inline_css)
         end
       end
 
@@ -60,22 +52,6 @@ module Roadie
           meta['http-equiv'] = 'Content-Type'
           meta['content'] = 'text/html; charset=UTF-8'
           head.add_child(meta)
-        end
-      end
-
-      def extract_link_elements
-        all_link_elements_to_be_inlined_with_url.each do |link, url|
-          asset = assets.find(url.path)
-          @inline_css << asset.to_s
-          link.remove
-        end
-      end
-
-      def extract_inline_style_elements
-        dom.css("style").each do |style|
-          next if style['media'] == 'print' or style['data-immutable']
-          @inline_css << style.content
-          style.remove
         end
       end
 
@@ -133,19 +109,6 @@ module Roadie
       def style_declarations_in_rule_set(specificity, rule_set)
         rule_set.each_declaration do |property, value, important|
           yield StyleDeclaration.new(property, value, important, specificity)
-        end
-      end
-
-      def all_link_elements_with_url
-        dom.css("link[rel=stylesheet]").map { |link| [link, URI.parse(link['href'])] }
-      end
-
-      def all_link_elements_to_be_inlined_with_url
-        all_link_elements_with_url.reject do |link, url|
-          absolute_path_url = (url.host or url.path.nil?)
-          blacklisted_element = (link['media'] == 'print' or link['data-immutable'])
-
-          absolute_path_url or blacklisted_element
         end
       end
 

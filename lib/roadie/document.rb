@@ -17,7 +17,8 @@ module Roadie
       # TODO: Fix this mess.
       dom = Nokogiri::HTML.parse html
       callback before_inlining, dom
-      Inliner.new(Fakeprovider.new(@css), [], dom).execute
+      document_styles = AssetScanner.new(dom, asset_providers).extract_css
+      Inliner.new(Fakeprovider.new(document_styles, @css), [], dom).execute
       make_url_rewriter.transform_dom(dom)
       callback after_inlining, dom
       dom.dup.to_html
@@ -32,7 +33,7 @@ module Roadie
     # Used to make the old code work with the new API. This glue will be
     # removed as soon as we don't need it anymore.
     class Fakeprovider
-      def initialize(css); @css = css; end
+      def initialize(*css); @css = css.flatten.join("\n"); end
       def all(*); @css; end
     end
 
