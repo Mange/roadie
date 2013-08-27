@@ -2,25 +2,16 @@
 require 'spec_helper'
 
 describe Roadie::Inliner do
-  let(:provider) { double("asset provider", :all => '') }
+  before { @css = "" }
+  def use_css(css) @css = css end
 
-  def use_css(css)
-    provider.stub(:all).with(['global.css']).and_return(css)
-  end
-
-  def rendering(html, options = {})
+  def rendering(html, css = @css)
     dom = Nokogiri::HTML.parse html
-    Roadie::Inliner.new(provider, ['global.css'], dom).execute
+    Roadie::Inliner.new(dom).inline(css)
     dom
   end
 
   describe "inlining styles" do
-    before(:each) do
-      # Make sure to have some css even when we don't specify any
-      # We have specific tests for when this is nil
-      use_css ''
-    end
-
     it "inlines simple attributes" do
       use_css 'p { color: green }'
       rendering('<p></p>').should have_styling('color' => 'green')

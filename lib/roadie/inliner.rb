@@ -4,29 +4,27 @@ require 'uri'
 require 'css_parser'
 
 module Roadie
-  # This class is the core of Roadie as it does all the actual work. You just give it
-  # the CSS rules and the DOM tree and let it go on doing all the heavy lifting and building.
   class Inliner
-    # Initialize a new Inliner with the given Provider, CSS targets, and DOM tree
-    #
-    # @param [AssetProvider] assets
-    # @param [Array] targets List of CSS files to load via the provider
     # @param [Nokogiri::HTML::Document] dom
-    def initialize(assets, targets, dom)
-      @assets = assets
-      @css = assets.all(targets)
+    def initialize(dom)
       @dom = dom
     end
 
-    # Start the inlining, mutating the DOM tree
-    # @return [String]
-    def execute
+    # Start the inlining, mutating the DOM tree.
+    #
+    # @param [String] css
+    # @return [nil]
+    def inline(css)
+      # TODO: This should not be in here!
       add_missing_structure
+
+      # TODO: Refactor these calls
+      @css = css
       inline_css_rules
     end
 
     private
-      attr_reader :css, :html, :assets, :dom
+      attr_reader :css, :dom
 
       def parsed_css
         CssParser::Parser.new.tap do |parser|
