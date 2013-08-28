@@ -158,40 +158,4 @@ describe Roadie::Inliner do
       }.not_to raise_error
     end
   end
-
-  describe "inserting tags" do
-    it "inserts a doctype if not present" do
-      rendering('<html><body></body></html>').to_xml.should include('<!DOCTYPE ')
-      rendering('<!DOCTYPE html><html><body></body></html>').to_xml.should_not match(/(DOCTYPE.*?){2}/)
-    end
-
-    it "sets xmlns of <html> to that of XHTML" do
-      rendering('<html><body></body></html>').should have_node('html').with_attributes("xmlns" => "http://www.w3.org/1999/xhtml")
-    end
-
-    it "inserts basic html structure if not present" do
-      rendering('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
-    end
-
-    it "inserts <head> if not present" do
-      rendering('<html><body></body></html>').should have_selector('html > head + body')
-    end
-
-    it "inserts meta tag describing content-type" do
-      rendering('<html><head></head><body></body></html>').tap do |document|
-        document.should have_selector('head meta[http-equiv="Content-Type"]')
-        document.css('head meta[http-equiv="Content-Type"]').first['content'].should == 'text/html; charset=UTF-8'
-      end
-    end
-
-    it "does not insert duplicate meta tags describing content-type" do
-      rendering(<<-HTML).to_html.scan('meta').should have(1).item
-      <html>
-        <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        </head>
-      </html>
-      HTML
-    end
-  end
 end

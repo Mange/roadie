@@ -15,9 +15,6 @@ module Roadie
     # @param [String] css
     # @return [nil]
     def inline(css)
-      # TODO: This should not be in here!
-      add_missing_structure
-
       # TODO: Refactor these calls
       @css = css
       inline_css_rules
@@ -29,27 +26,6 @@ module Roadie
       def parsed_css
         CssParser::Parser.new.tap do |parser|
           parser.add_block! clean_css(css) if css
-        end
-      end
-
-      def add_missing_structure
-        html_node = dom.at_css('html')
-        html_node['xmlns'] ||= 'http://www.w3.org/1999/xhtml'
-
-        if dom.at_css('html > head')
-          head = dom.at_css('html > head')
-        else
-          head = Nokogiri::XML::Node.new('head', dom)
-          dom.at_css('html').children.before(head)
-        end
-
-        # This is handled automatically by Nokogiri in Ruby 1.9, IF charset of string != utf-8
-        # We want UTF-8 to be specified as well, so we still do this.
-        unless dom.at_css('html > head > meta[http-equiv=Content-Type]')
-          meta = Nokogiri::XML::Node.new('meta', dom)
-          meta['http-equiv'] = 'Content-Type'
-          meta['content'] = 'text/html; charset=UTF-8'
-          head.add_child(meta)
         end
       end
 
