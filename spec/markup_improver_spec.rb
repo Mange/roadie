@@ -5,12 +5,16 @@ module Roadie
   describe MarkupImprover do
     def improve(html)
       dom = Nokogiri::HTML.parse html
-      MarkupImprover.new(dom).improve
+      MarkupImprover.new(dom, html).improve
       dom
     end
 
     it "inserts <head> if not present" do
       improve('<html><body></body></html>').should have_selector('html > head + body')
+    end
+
+    it "inserts basic html structure if not present" do
+      improve('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
     end
 
     it "inserts meta tag describing content-type" do
@@ -32,26 +36,20 @@ module Roadie
       HTML
     end
 
-    # These are "features" of Nokogiri (or rather libxml) that we cannot even
-    # turn off. Just by parsing the HTML, an <html> and <body> element is
-    # introduced for example. These examples are here just in case Nokogiri
-    # changes its behavior in a later version, and/or if Roadie ever starts
-    # using another backend.
-    describe "(inherent improvement)" do
-      it "inserts a doctype if not present" do
-        # TODO: See if it is possible to always make it into a HTML5 doctype
-        improve('<html><body></body></html>').to_html.should include('<!DOCTYPE ')
+    describe "automatic doctype" do
+      it "inserts a HTML5 doctype if no doctype is present" do
+        improve("<html></html>").internal_subset.to_xml.should == "<!DOCTYPE html>"
       end
 
-      it "does not add a doctype if another is already specified" do
+      it "does not insert duplicate doctypes" do
         html = improve('<!DOCTYPE html><html><body></body></html>').to_html
         html.scan('DOCTYPE').size.should == 1
-        # Make sure it's unchanged
-        html.should include('<!DOCTYPE html>')
       end
 
-      it "inserts basic html structure if not present" do
-        improve('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
+      it "leaves other doctypes alone" do
+        dtd = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">"
+        html = "#{dtd}<html></html>"
+        improve(html).internal_subset.to_xml.should == dtd
       end
     end
   end

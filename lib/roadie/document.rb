@@ -17,7 +17,7 @@ module Roadie
       # TODO: Fix this mess.
       dom = Nokogiri::HTML.parse html
       callback before_inlining, dom
-      MarkupImprover.new(dom).improve
+      MarkupImprover.new(dom, html).improve
       document_styles = AssetScanner.new(dom, asset_providers).extract_css
       css = [document_styles, @css].flatten.join("\n")
       Inliner.new(dom).inline(css)

@@ -1,10 +1,12 @@
 module Roadie
   class MarkupImprover
-    def initialize(dom)
+    def initialize(dom, original_html)
       @dom = dom
+      @html = original_html
     end
 
     def improve
+      ensure_doctype
       head = ensure_head_element
       ensure_charset_element head
     end
@@ -12,12 +14,24 @@ module Roadie
     private
     attr_reader :dom
 
+    def ensure_doctype
+      return if @html.include?('<!DOCTYPE ')
+      # Nokogiri adds a "default" doctype to the DOM, which we will remove
+      dom.internal_subset.remove unless dom.internal_subset.nil?
+      dom.create_internal_subset 'html', nil, nil
+    end
+
     def ensure_head_element
       if (head = dom.at_xpath('html/head'))
         head
       else
         head = Nokogiri::XML::Node.new('head', dom)
-        dom.at_xpath('html').children.before(head)
+        html = dom.at_xpath('html')
+        if html.children.size > 0
+          html.children.before(head)
+        else
+          html << head
+        end
         head
       end
     end
