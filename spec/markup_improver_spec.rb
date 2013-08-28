@@ -9,43 +9,50 @@ module Roadie
       dom
     end
 
-    it "inserts a doctype if not present" do
-      improve('<html><body></body></html>').to_xml.should include('<!DOCTYPE ')
-      improve('<!DOCTYPE html><html><body></body></html>').to_xml.should_not match(/(DOCTYPE.*?){2}/)
-    end
-
-    it "sets xmlns of <html> to that of XHTML" do
-      improve('<html><body></body></html>').should have_node('html').with_attributes("xmlns" => "http://www.w3.org/1999/xhtml")
-    end
-
-    # This is a "feature" of Nokogiri (or rather libxml) that we cannot even
-    # turn off. Just by parsing the HTML, an <html> and <body> element is
-    # introduced. This spec is here just in case Nokogiri changes its
-    # behavior in a later version, and/or if Roadie ever starts using another
-    # backend.
-    it "inserts basic html structure if not present" do
-      improve('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
-    end
-
     it "inserts <head> if not present" do
       improve('<html><body></body></html>').should have_selector('html > head + body')
     end
 
     it "inserts meta tag describing content-type" do
-      improve('<html><head></head><body></body></html>').tap do |dom|
-        dom.should have_selector('head meta[http-equiv="Content-Type"]')
-        dom.css('head meta[http-equiv="Content-Type"]').first['content'].should == 'text/html; charset=UTF-8'
-      end
+      dom = improve('<html><head></head><body></body></html>')
+
+      dom.should have_selector('head meta')
+      meta = dom.at_css('head meta')
+      meta['http-equiv'].should == 'Content-Type'
+      meta['content'].should == 'text/html; charset=UTF-8'
     end
 
     it "does not insert duplicate meta tags describing content-type" do
-      improve(<<-HTML).to_html.scan('meta').should have(1).item
+      improve(<<-HTML).xpath('//meta').should have(1).item
       <html>
         <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+          <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
         </head>
       </html>
       HTML
+    end
+
+    # These are "features" of Nokogiri (or rather libxml) that we cannot even
+    # turn off. Just by parsing the HTML, an <html> and <body> element is
+    # introduced for example. These examples are here just in case Nokogiri
+    # changes its behavior in a later version, and/or if Roadie ever starts
+    # using another backend.
+    describe "(inherent improvement)" do
+      it "inserts a doctype if not present" do
+        # TODO: See if it is possible to always make it into a HTML5 doctype
+        improve('<html><body></body></html>').to_html.should include('<!DOCTYPE ')
+      end
+
+      it "does not add a doctype if another is already specified" do
+        html = improve('<!DOCTYPE html><html><body></body></html>').to_html
+        html.scan('DOCTYPE').size.should == 1
+        # Make sure it's unchanged
+        html.should include('<!DOCTYPE html>')
+      end
+
+      it "inserts basic html structure if not present" do
+        improve('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
+      end
     end
   end
 end

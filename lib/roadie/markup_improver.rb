@@ -5,31 +5,40 @@ module Roadie
     end
 
     def improve
-      add_missing_structure
+      head = ensure_head_element
+      ensure_charset_element head
     end
 
     private
     attr_reader :dom
 
-    def add_missing_structure
-      html_node = dom.at_css('html')
-      html_node['xmlns'] ||= 'http://www.w3.org/1999/xhtml'
-
-      if dom.at_css('html > head')
-        head = dom.at_css('html > head')
+    def ensure_head_element
+      if (head = dom.at_xpath('html/head'))
+        head
       else
         head = Nokogiri::XML::Node.new('head', dom)
-        dom.at_css('html').children.before(head)
+        dom.at_xpath('html').children.before(head)
+        head
       end
+    end
 
-      # This is handled automatically by Nokogiri in Ruby 1.9, IF charset of string != utf-8
-      # We want UTF-8 to be specified as well, so we still do this.
-      unless dom.at_css('html > head > meta[http-equiv=Content-Type]')
-        meta = Nokogiri::XML::Node.new('meta', dom)
-        meta['http-equiv'] = 'Content-Type'
-        meta['content'] = 'text/html; charset=UTF-8'
-        head.add_child(meta)
+    def ensure_charset_element(parent)
+      if content_type_meta_element_missing?
+        parent.add_child make_content_type_element
       end
+    end
+
+    def content_type_meta_element_missing?
+      dom.xpath('html/head/meta').none? do |meta|
+        meta['http-equiv'].downcase == 'content-type'
+      end
+    end
+
+    def make_content_type_element
+      meta = Nokogiri::XML::Node.new('meta', dom)
+      meta['http-equiv'] = 'Content-Type'
+      meta['content'] = 'text/html; charset=UTF-8'
+      meta
     end
   end
 end
