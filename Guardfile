@@ -1,4 +1,4 @@
-guard 'rspec' do
+guard 'rspec', cli: '--format nested' do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/roadie/(.+)\.rb$})     { |m| ["spec/lib/roadie/#{m[1]}_spec.rb", "spec/#{m[1]}_spec.rb"] }
 
