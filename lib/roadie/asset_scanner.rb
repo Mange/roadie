@@ -29,14 +29,37 @@ module Roadie
       "link[rel=stylesheet][href]:not([data-roadie-ignore])"
     ).freeze
 
+    CLEANING_MATCHER = /
+      (^\s*             # Beginning-of-lines matches
+        (<!\[CDATA\[)|
+        (<!--+)
+      )|(               # End-of-line matches
+        (--+>)|
+        (\]\]>)
+      $)
+    /x.freeze
+
     def read_css(element)
       if element.name == "style"
-        element.text.strip
+        read_style_element element
       else
-        unless element['media'] == "print"
-          asset_provider.find_stylesheet(element['href'])
-        end
+        read_link_element element
       end
+    end
+
+    def read_style_element(element)
+      clean_css element.text.strip
+    end
+
+    def read_link_element(element)
+      if element['media'] != "print" && element["href"]
+        css = asset_provider.find_stylesheet element['href']
+        clean_css css if css
+      end
+    end
+
+    def clean_css(css)
+      css.gsub(CLEANING_MATCHER, '')
     end
   end
 end

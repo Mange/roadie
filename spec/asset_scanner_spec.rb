@@ -82,6 +82,44 @@ module Roadie
 
         scanner.find_css.should == []
       end
+
+      it 'ignores HTML comments and CDATA sections' do
+        # TinyMCE posts invalid CSS. We support that just to be pragmatic.
+        dom = dom_fragment %(<style><![CDATA[
+          <!--
+          p { color: green }
+          -->
+        ]]></style>)
+
+        scanner = AssetScanner.new dom, provider
+        scanner.find_css.each(&:strip!).should == ["p { color: green }"]
+      end
+
+      it 'ignores CDATA sections' do
+        dom = dom_fragment %(<style>
+          <!--
+          <![CDATA[
+              <![CDATA[
+          span { color: red }
+          ]]>
+          -->
+        </style>)
+
+        scanner = AssetScanner.new dom, provider
+        scanner.find_css.each(&:strip!).should == ["span { color: red }"]
+      end
+
+      it "does not pick up scripts generating styles" do
+        dom = dom_fragment <<-HTML
+          <script>
+            var color = "red";
+            document.write("<style type='text/css'>p { color: " + color + "; }</style>");
+          </script>
+        HTML
+
+        scanner = AssetScanner.new dom, provider
+        scanner.find_css.should == []
+      end
     end
 
     describe "extracting" do

@@ -25,7 +25,7 @@ module Roadie
 
       def parsed_css
         CssParser::Parser.new.tap do |parser|
-          parser.add_block! clean_css(css) if css
+          parser.add_block! css if css
         end
       end
 
@@ -84,20 +84,6 @@ module Roadie
         rule_set.each_declaration do |property, value, important|
           yield StyleDeclaration.new(property, value, important, specificity)
         end
-      end
-
-      CLEANING_MATCHER = /
-        (^\s*             # Beginning-of-lines matches
-          (<!\[CDATA\[)|
-          (<!--+)
-        )|(               # End-of-line matches
-          (--+>)|
-          (\]\]>)
-        $)
-      /x.freeze
-
-      def clean_css(css)
-        css.gsub(CLEANING_MATCHER, '')
       end
   end
 end
