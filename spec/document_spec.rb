@@ -112,9 +112,10 @@ module Roadie
 
       result = Nokogiri::HTML.parse document.transform
 
+      # TODO: Erratic; have_styling is order-dependent
       result.should have_styling({
-        "text-align" => "right",
         "color"      => "green",
+        "text-align" => "right",
         "text-size"  => "2em",
       }).at_selector("p")
     end

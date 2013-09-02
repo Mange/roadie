@@ -1,3 +1,4 @@
+# TODO: Replace this entire file with the normal domain objects instead
 module SpecHelpers
   class << self
     def styling_of_node(node)

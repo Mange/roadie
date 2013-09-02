@@ -20,7 +20,7 @@ module Roadie
       MarkupImprover.new(dom, html).improve
       document_styles = AssetScanner.new(dom, asset_providers).extract_css
       css = [document_styles, @css].flatten.join("\n")
-      Inliner.new(dom).inline(css)
+      Inliner.new(css).inline(dom)
       make_url_rewriter.transform_dom(dom)
       callback after_inlining, dom
       dom.dup.to_html

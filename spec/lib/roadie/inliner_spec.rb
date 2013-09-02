@@ -7,7 +7,7 @@ describe Roadie::Inliner do
 
   def rendering(html, css = @css)
     dom = Nokogiri::HTML.parse html
-    Roadie::Inliner.new(dom).inline(css)
+    Roadie::Inliner.new(css).inline(dom)
     dom
   end
 
@@ -77,9 +77,13 @@ describe Roadie::Inliner do
       rendering('<p style="font-size: 1.1em"></p>').should have_styling([['color', 'green'], ['font-size', '1.1em']])
     end
 
-    it "does not touch already present inline styles" do
-      use_css "p { color: red }"
-      rendering('<p style="color: green"></p>').should have_styling([['color', 'red'], ['color', 'green']])
+    it "does not override inline styles" do
+      use_css "p { text-transform: uppercase; color: red }"
+      rendering('<p style="color: green"></p>').should have_styling([
+        ['text-transform', 'uppercase'],
+        ['color', 'red'],
+        ['color', 'green'],
+      ])
     end
 
     it "does not apply link and dynamic pseudo selectors" do

@@ -5,85 +5,90 @@ require 'css_parser'
 
 module Roadie
   class Inliner
-    # @param [Nokogiri::HTML::Document] dom
-    def initialize(dom)
-      @dom = dom
+    # @param [String] css
+    def initialize(css)
+      # TODO: Pass a list of Stylesheet rather than raw CSS
+      @stylesheet = Stylesheet.new("unnamed", css)
     end
 
     # Start the inlining, mutating the DOM tree.
     #
-    # @param [String] css
+    # @param [Nokogiri::HTML::Document] dom
     # @return [nil]
-    def inline(css)
-      # TODO: Refactor these calls
-      @css = css
-      inline_css_rules
+    def inline(dom)
+      style_map = StyleMap.new
+      stylesheet.each_inlinable_block do |block|
+        dom.css(block.selector.to_s).each do |element|
+          style_map.add element, block.properties
+        end
+      end
+
+      style_map.each_element do |element, rules|
+        element["style"] = [rules.to_s, element["style"]].compact.join(";")
+      end
+
+      nil
     end
 
     private
-      attr_reader :css, :dom
+    attr_reader :stylesheet
 
-      def parsed_css
-        CssParser::Parser.new.tap do |parser|
-          parser.add_block! css if css
-        end
+    def each_element_in_selector(dom, selector)
+      dom.css(selector.to_s).each do |element|
+        yield element
+      end
+    # There's no way to get a list of supported pseudo rules, so we're left
+    # with having to rescue errors.
+    # Pseudo selectors that are known to be bad are skipped automatically but
+    # this will catch the rest.
+    rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
+      warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
+    rescue => error
+      warn "Roadie got error when looking for #{selector.inspect}: #{error}"
+      raise unless error.message.include?('XPath')
+    end
+
+    class StyleMap
+      def initialize
+        @map = {}
       end
 
-      def inline_css_rules
-        elements_with_declarations.each do |element, declarations|
-          ordered_declarations = []
-          seen_properties = Set.new
-          declarations.sort.reverse_each do |declaration|
-            next if seen_properties.include?(declaration.property)
-            ordered_declarations.unshift(declaration)
-            seen_properties << declaration.property
-          end
-
-          rules_string = ordered_declarations.map { |declaration| declaration.to_s }.join(';')
-          element['style'] = [rules_string, element['style']].compact.join(';')
-        end
+      def add(element, new_properties)
+        properties = (@map[element] ||= Rules.empty)
+        properties.merge(new_properties)
       end
 
-      def elements_with_declarations
-        Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
-          parsed_css.each_rule_set do |rule_set|
-            each_good_selector(rule_set) do |selector|
-              each_element_in_selector(selector) do |element|
-                style_declarations_in_rule_set(selector.specificity, rule_set) do |declaration|
-                  element_declarations[element] << declaration
-                end
-              end
-            end
-          end
-        end
+      def each_element
+        @map.each_pair { |element, rules| yield element, rules }
+      end
+    end
+
+    class Rules
+      def self.empty() new([]) end
+
+      def initialize(properties)
+        @properties = properties
       end
 
-      def each_good_selector(rules)
-        rules.selectors.each do |selector_string|
-          selector = Selector.new(selector_string)
-          yield selector if selector.inlinable?
-        end
+      def merge(new_properties)
+        @properties += new_properties
       end
 
-      def each_element_in_selector(selector)
-        dom.css(selector.to_s).each do |element|
-          yield element
-        end
-      # There's no way to get a list of supported pseudo rules, so we're left
-      # with having to rescue errors.
-      # Pseudo selectors that are known to be bad are skipped automatically but
-      # this will catch the rest.
-      rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
-        warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
-      rescue => error
-        warn "Roadie got error when looking for #{selector.inspect}: #{error}"
-        raise unless error.message.include?('XPath')
+      def to_s
+        sorted_properties.map(&:to_s).join(";")
       end
 
-      def style_declarations_in_rule_set(specificity, rule_set)
-        rule_set.each_declaration do |property, value, important|
-          yield StyleDeclaration.new(property, value, important, specificity)
+      protected
+      attr_reader :properties
+
+      private
+      def sorted_properties
+        rules = {}
+        properties.sort.each do |property|
+          rules[property.property] = property
         end
+        rules.values.sort
       end
+    end
   end
 end
