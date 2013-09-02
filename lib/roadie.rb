@@ -43,8 +43,10 @@ require 'roadie/version'
 require 'roadie/css_not_found'
 require 'roadie/invalid_url_path'
 
+require 'roadie/stylesheet'
 require 'roadie/selector'
-require 'roadie/style_declaration'
+require 'roadie/style_property'
+require 'roadie/style_block'
 
 require 'roadie/asset_provider'
 require 'roadie/provider_list'
