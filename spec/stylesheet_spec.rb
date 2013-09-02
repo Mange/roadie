@@ -22,13 +22,15 @@ module Roadie
     end
 
     it "can iterate all inlinable blocks" do
-      inlinable = double(inlinable?: true)
-      bad = double(inlinable?: false)
+      inlinable = double(inlinable?: true, selector: "good", properties: "props")
+      bad = double(inlinable?: false, selector: "bad", properties: "props")
 
       stylesheet = Stylesheet.new("example.css", "")
       stylesheet.stub blocks: [bad, inlinable, bad]
 
-      stylesheet.each_inlinable_block.to_a.should == [inlinable]
+      stylesheet.each_inlinable_block.to_a.should == [
+        ["good", "props"],
+      ]
     end
   end
 end

@@ -17,14 +17,13 @@ module Roadie
     # @return [nil]
     def inline(dom)
       style_map = StyleMap.new
-      stylesheet.each_inlinable_block do |block|
-        dom.css(block.selector.to_s).each do |element|
-          style_map.add element, block.properties
-        end
+
+      stylesheet.each_inlinable_block do |selector, properties|
+        style_map.add_elements elements_in_selector(selector, dom), properties
       end
 
       style_map.each_element do |element, rules|
-        element["style"] = [rules.to_s, element["style"]].compact.join(";")
+        apply_element_style element, rules
       end
 
       nil
@@ -33,24 +32,33 @@ module Roadie
     private
     attr_reader :stylesheet
 
-    def each_element_in_selector(dom, selector)
-      dom.css(selector.to_s).each do |element|
-        yield element
-      end
+    def apply_element_style(element, rules)
+      # TODO: Remove the duplicate properties
+      element["style"] = [rules.to_s, element["style"]].compact.join(";")
+    end
+
+    def elements_in_selector(selector, dom)
+      dom.css(selector.to_s)
     # There's no way to get a list of supported pseudo rules, so we're left
     # with having to rescue errors.
     # Pseudo selectors that are known to be bad are skipped automatically but
     # this will catch the rest.
     rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
       warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
+      []
     rescue => error
       warn "Roadie got error when looking for #{selector.inspect}: #{error}"
       raise unless error.message.include?('XPath')
+      []
     end
 
     class StyleMap
       def initialize
         @map = {}
+      end
+
+      def add_elements(elements, new_properties)
+        elements.each { |element| add(element, new_properties) }
       end
 
       def add(element, new_properties)

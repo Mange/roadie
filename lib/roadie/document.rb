@@ -14,15 +14,17 @@ module Roadie
     end
 
     def transform
-      # TODO: Fix this mess.
       dom = Nokogiri::HTML.parse html
+
       callback before_inlining, dom
-      MarkupImprover.new(dom, html).improve
-      document_styles = AssetScanner.new(dom, asset_providers).extract_css
-      css = [document_styles, @css].flatten.join("\n")
-      Inliner.new(css).inline(dom)
-      make_url_rewriter.transform_dom(dom)
+
+      improve dom
+      inline dom
+      rewrite_urls dom
+
       callback after_inlining, dom
+
+      # #dup is called since it fixed a few segfaults in certain versions of Nokogiri
       dom.dup.to_html
     end
 
@@ -31,6 +33,20 @@ module Roadie
     end
 
     private
+    def improve(dom)
+      MarkupImprover.new(dom, html).improve
+    end
+
+    def inline(dom)
+      document_styles = AssetScanner.new(dom, asset_providers).extract_css
+      css = [document_styles, @css].flatten.join("\n")
+      Inliner.new(css).inline(dom)
+    end
+
+    def rewrite_urls(dom)
+      make_url_rewriter.transform_dom(dom)
+    end
+
     def make_url_rewriter
       if url_options
         UrlRewriter.new(UrlGenerator.new(url_options))

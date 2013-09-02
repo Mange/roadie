@@ -79,6 +79,7 @@ describe Roadie::Inliner do
 
     it "does not override inline styles" do
       use_css "p { text-transform: uppercase; color: red }"
+      # TODO: Remove the duplicate properties
       rendering('<p style="color: green"></p>').should have_styling([
         ['text-transform', 'uppercase'],
         ['color', 'red'],
