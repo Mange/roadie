@@ -30,13 +30,14 @@ module Roadie
     # @param [String] html
     # @param [Hash] url_options Supported keys: +:host+, +:port+, +:protocol+
     # @param [lambda] after_inlining_handler A lambda that accepts one parameter or an object that responds to the +call+ method with one parameter.
-    def initialize(assets, targets, html, url_options, after_inlining_handler=nil)
+    def initialize(assets, targets, html, url_options, after_inlining_handler=nil, document_options={})
       @assets = assets
       @css = assets.all(targets)
       @html = html
       @inline_css = []
       @url_options = url_options
       @after_inlining_handler = after_inlining_handler
+      @document_options = document_options
 
       if url_options and url_options[:asset_path_prefix]
         raise ArgumentError, "The asset_path_prefix URL option is not working anymore. You need to add the following configuration to your application.rb:\n" +
@@ -76,13 +77,16 @@ module Roadie
       end
 
       def adjust_html
-        Nokogiri::HTML.parse(html).tap do |document|
+        parse_method = @document_options.key?(:fragment) ? :fragment : :parse
+
+        Nokogiri::HTML.__send__(parse_method, html).tap do |document|
           yield document
         end.dup.to_html
       end
 
       def add_missing_structure
         html_node = document.at_css('html')
+        return unless html_node
         html_node['xmlns'] ||= 'http://www.w3.org/1999/xhtml'
 
         if document.at_css('html > head').present?
