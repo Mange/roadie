@@ -135,7 +135,7 @@ module Roadie
 
       def elements_with_declarations
         Hash.new { |hash, key| hash[key] = [] }.tap do |element_declarations|
-          parsed_css.each_rule_set do |rule_set|
+          parsed_css.each_rule_set do |rule_set, _|
             each_good_selector(rule_set) do |selector|
               each_element_in_selector(selector) do |element|
                 style_declarations_in_rule_set(selector.specificity, rule_set) do |declaration|
