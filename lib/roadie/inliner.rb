@@ -33,7 +33,6 @@ module Roadie
     attr_reader :stylesheet
 
     def apply_element_style(element, rules)
-      # TODO: Remove the duplicate properties
       element["style"] = [rules.to_s, element["style"]].compact.join(";")
     end
 
@@ -62,8 +61,8 @@ module Roadie
       end
 
       def add(element, new_properties)
-        properties = (@map[element] ||= Rules.empty)
-        properties.merge(new_properties)
+        properties = (@map[element] ||= StyleProperties.new([]))
+        properties.merge!(new_properties)
       end
 
       def each_element

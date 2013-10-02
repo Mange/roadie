@@ -39,22 +39,22 @@ describe Roadie::Inliner do
     end
 
     it "uses the attributes with the highest specificity when conflicts arises" do
-      use_css "p { color: red; }
-              .safe { color: green; }"
-      rendering('<p class="safe"></p>').should have_styling('color' => 'green')
+      use_css ".safe { color: green; }
+              p { color: red; }"
+      rendering('<p class="safe"></p>').should have_styling([['color', 'red'], ['color', 'green']])
     end
 
     it "sorts styles by specificity order" do
-      use_css 'p      { margin: 2px; }
-               #big   { margin: 10px; }
-               .down  { margin-bottom: 5px; }'
+      use_css 'p          { important: no; }
+               #important { important: very; }
+               .important { important: yes; }'
 
-      rendering('<p class="down"></p>').should have_styling([
-        ['margin', '2px'], ['margin-bottom', '5px']
+      rendering('<p class="important"></p>').should have_styling([
+        %w[important no], %w[important yes]
       ])
 
-      rendering('<p class="down" id="big"></p>').should have_styling([
-        ['margin-bottom', '5px'], ['margin', '10px']
+      rendering('<p class="important" id="important"></p>').should have_styling([
+        %w[important no], %w[important yes], %w[important very]
       ])
     end
 
@@ -69,7 +69,9 @@ describe Roadie::Inliner do
     it "keeps !important properties" do
       use_css "a { text-decoration: underline !important; }
                a.hard-to-spot { text-decoration: none; }"
-      rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline !important')
+      rendering('<a class="hard-to-spot"></a>').should have_styling([
+        ['text-decoration', 'none'], ['text-decoration', 'underline !important']
+      ])
     end
 
     it "combines with already present inline styles" do
@@ -79,7 +81,7 @@ describe Roadie::Inliner do
 
     it "does not override inline styles" do
       use_css "p { text-transform: uppercase; color: red }"
-      # TODO: Remove the duplicate properties
+      # The two color properties are kept to make css fallbacks work correctly
       rendering('<p style="color: green"></p>').should have_styling([
         ['text-transform', 'uppercase'],
         ['color', 'red'],
@@ -114,10 +116,10 @@ describe Roadie::Inliner do
         p { color: red; }
         p:nth-child(2n) { color: green; }
       "
-      rendering("
-        <p class='one'></p>
-        <p class='two'></p>
-      ").should have_styling('color' => 'green').at_selector('.two')
+      result = rendering("<p></p> <p></p>")
+
+      result.should have_styling([['color', 'red']]).at_selector('p:first')
+      result.should have_styling([['color', 'red'], ['color', 'green']]).at_selector('p:last')
     end
 
     it "ignores selectors with @" do
