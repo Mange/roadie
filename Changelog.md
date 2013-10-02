@@ -1,9 +1,17 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.4.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.2...master)
+
+* Nothing yet
+
+### 2.4.2
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.1...v2.4.2)
 
 * Bug fixes:
   * Fix Nokogiri version to allow only 1.5.x on ruby 1.8.7
+  * Blacklist :before, :after, :-ms-input-placeholder, :-moz-placeholder selectors – [Brian Bauer (bbauer)][https://github.com/bbauer].
+  * Build failed on 1.8.7 due to a change in `css_parser`
 
 ### 2.4.1
 
