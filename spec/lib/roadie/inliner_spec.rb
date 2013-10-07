@@ -8,10 +8,15 @@ describe Roadie::Inliner do
     provider.stub(:all).with(['global.css']).and_return(css)
   end
 
-  def rendering(html, options = {})
+  def raw_rendering(html, options = {})
     url_options = options.fetch(:url_options, {:host => 'example.com'})
+    document_options = options.fetch(:document_options) { {} }
     after_inlining_handler = options[:after_inlining_handler]
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, after_inlining_handler).execute
+    Roadie::Inliner.new(provider, ['global.css'], html, url_options, after_inlining_handler, document_options).execute
+  end
+
+  def rendering(html, options = {})
+    Nokogiri::HTML.parse(raw_rendering(html, options))
   end
 
   describe "initialization" do
@@ -142,6 +147,10 @@ describe Roadie::Inliner do
         }
       }'
       expect { rendering('<p></p>') }.not_to raise_error
+    end
+
+    it 'parses fragment when given fragment document option' do
+      raw_rendering('<p></p>', :document_options => { :fragment => true }).should_not match(/<html>/)
     end
 
     it 'ignores HTML comments and CDATA sections' do
