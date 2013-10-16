@@ -53,8 +53,8 @@ module Roadie
 
     def read_link_element(element)
       if element['media'] != "print" && element["href"]
-        css = asset_provider.find_stylesheet element['href']
-        clean_css css if css
+        stylesheet = asset_provider.find_stylesheet element['href']
+        stylesheet.to_s if stylesheet # TODO: AssetScanner should return Stylesheets too
       end
     end
 

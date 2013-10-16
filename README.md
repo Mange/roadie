@@ -155,8 +155,8 @@ document.asset_providers.push Roadie::NullProvider.new
 ### Writing your own provider ###
 
 Writing your own provider is also easy. You just need to provide:
- * `#find_stylesheet(name)`, returning either strings or nil.
- * `#find_stylesheet!(name)`, returning either strings or raising Roadie::CssNotFound.
+ * `#find_stylesheet(name)`, returning either a `Roadie::Stylesheet` or nil.
+ * `#find_stylesheet!(name)`, returning either a `Roadie::Stylesheet` or raising `Roadie::CssNotFound`.
 
 ```ruby
 class UserAssetsProvider
@@ -166,7 +166,8 @@ class UserAssetsProvider
 
   def find_stylesheet(name)
     if name =~ %r{^/users/(\d+)\.css$}
-      @user_collection.find_user($1).stylesheet
+      user = @user_collection.find_user($1)
+      Roadie::Stylesheet.new("user #{user.id} stylesheet", user.stylesheet)
     end
   end
 

@@ -3,7 +3,7 @@ require 'spec_helper'
 
 module Roadie
   describe AssetScanner do
-    let(:provider) { double("Asset provider") }
+    let(:provider) { TestProvider.new }
     let(:dom) { dom_document "<html></html>" }
 
     def dom_fragment(html); Nokogiri::HTML.fragment html; end
@@ -55,19 +55,18 @@ module Roadie
       end
 
       it "finds referenced stylesheets through the provider" do
-        provider.should_receive(:find_stylesheet).with(
-          "/some/url.css"
-        ).and_return "p { color: green; }"
         dom = dom_fragment %(<link rel="stylesheet" href="/some/url.css">)
-
+        provider = TestProvider.new "/some/url.css" => "p { color: green; }"
         scanner = AssetScanner.new dom, provider
 
-        scanner.find_css.should == ["p { color: green; }"]
+        # TODO: Should return Stylesheets instead
+        scanner.find_css.should == ["p{color:green}"]
       end
 
       it "ignores referenced print stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" media="print">)
         provider.should_not_receive(:find_stylesheet)
+        provider.should_not_receive(:find_stylesheet!)
 
         scanner = AssetScanner.new dom, provider
 
@@ -77,6 +76,7 @@ module Roadie
       it "does not look for ignored referenced stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" data-roadie-ignore>)
         provider.should_not_receive(:find_stylesheet)
+        provider.should_not_receive(:find_stylesheet!)
 
         scanner = AssetScanner.new dom, provider
 
@@ -138,13 +138,13 @@ module Roadie
             </body>
           </html>
         HTML
-        provider.stub find_stylesheet: "body { color: green; }"
-
+        provider = TestProvider.new "/some/url.css" => "body { color: green; }"
         scanner = AssetScanner.new dom, provider
 
+        # TODO: Should return Stylesheets instead
         scanner.extract_css.should == [
           "a { color: green; }",
-          "body { color: green; }",
+          "body{color:green}",
         ]
         dom.should have_selector("html > head > title")
         dom.should have_selector("html > body > style[data-roadie-ignore]")

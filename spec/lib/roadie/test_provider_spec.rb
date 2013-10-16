@@ -1,19 +1,20 @@
 require 'spec_helper'
-require 'shared_examples/asset_provider'
+require 'roadie/rspec'
 
 describe TestProvider do
   subject(:provider) { TestProvider.new }
 
-  it_behaves_like "asset provider"
-  it_behaves_like "delegating find_stylesheet! method"
+  it_behaves_like "roadie asset provider", valid_name: "existing.css", invalid_name: "invalid.css" do
+    subject { TestProvider.new "existing.css" => "" }
+  end
 
   it "finds styles from a predefined hash" do
     provider = TestProvider.new({
       "foo.css" => "a { color: red; }",
       "bar.css" => "body { color: green; }",
     })
-    provider.find_stylesheet("foo.css").should == "a { color: red; }"
-    provider.find_stylesheet("bar.css").should == "body { color: green; }"
+    provider.find_stylesheet("foo.css").to_s.should_not include("body")
+    provider.find_stylesheet("bar.css").to_s.should include("body")
     provider.find_stylesheet("baz.css").should be_nil
   end
 
@@ -22,7 +23,7 @@ describe TestProvider do
       "foo.css" => "a { color: red; }",
       :default  => "body { color: green; }",
     })
-    provider.find_stylesheet("foo.css").should == "a { color: red; }"
-    provider.find_stylesheet("bar.css").should == "body { color: green; }"
+    provider.find_stylesheet("foo.css").to_s.should_not include("body")
+    provider.find_stylesheet("bar.css").to_s.should include("body")
   end
 end

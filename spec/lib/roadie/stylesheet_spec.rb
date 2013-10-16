@@ -32,5 +32,10 @@ module Roadie
         ["good", "props"],
       ]
     end
+
+    it "has a string representation of the contents" do
+      stylesheet = Stylesheet.new("example.css", "body { color: green;}a{ color: red; font-size: small }")
+      stylesheet.to_s.should == "body{color:green}\na{color:red;font-size:small}"
+    end
   end
 end

@@ -7,6 +7,7 @@ class TestProvider
   end
 
   def find_stylesheet(name)
-    @files.fetch(name, @default)
+    contents = @files.fetch(name, @default)
+    Roadie::Stylesheet.new name, contents if contents
   end
 end

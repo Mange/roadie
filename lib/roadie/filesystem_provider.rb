@@ -11,7 +11,9 @@ module Roadie
 
     def find_stylesheet(name)
       file_path = build_file_path(name)
-      File.read(file_path) if File.exist? file_path
+      if File.exist? file_path
+        Stylesheet.new file_path, File.read(file_path)
+      end
     end
 
     private

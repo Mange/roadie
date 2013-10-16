@@ -14,6 +14,10 @@ module Roadie
       }.each(&block)
     end
 
+    def to_s
+      blocks.map(&:to_s).join("\n")
+    end
+
     private
     def parse_blocks(css)
       blocks = []
