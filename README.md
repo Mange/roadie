@@ -186,6 +186,24 @@ document.asset_providers = [
 ]
 ```
 
+You can test for compliance by using the built-in RSpec examples:
+
+```ruby
+require 'spec_helper'
+require 'roadie/rspec'
+
+describe MyOwnProvider do
+  # Will use the default `subject` (MyOwnProvider.new)
+  it_behaves_like "roadie asset provider", valid_name: "found.css", invalid_name: "does_not_exist.css"
+
+  # Extra setup just for these tests:
+  it_behaves_like "roadie asset provider", valid_name: "found.css", invalid_name: "does_not_exist.css" do
+    subject { MyOwnProvider.new(...) }
+    before { Whatever.stub ... }
+  end
+end
+```
+
 ### Callbacks ###
 
 Callbacks allow you to do custom work on documents before they are inlined. The Nokogiri document tree is passed to the callable:
