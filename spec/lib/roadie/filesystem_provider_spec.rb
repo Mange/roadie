@@ -16,7 +16,7 @@ module Roadie
     end
 
     describe "finding stylesheets" do
-      let(:fixtures_path) { File.expand_path "../fixtures", __FILE__ }
+      let(:fixtures_path) { File.expand_path "../../../fixtures", __FILE__ }
       let(:provider) { FilesystemProvider.new(fixtures_path) }
 
       it "finds files in the path" do
