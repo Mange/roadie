@@ -69,33 +69,5 @@ module Roadie
         @map.each_pair { |element, rules| yield element, rules }
       end
     end
-
-    class Rules
-      def self.empty() new([]) end
-
-      def initialize(properties)
-        @properties = properties
-      end
-
-      def merge(new_properties)
-        @properties += new_properties
-      end
-
-      def to_s
-        sorted_properties.map(&:to_s).join(";")
-      end
-
-      protected
-      attr_reader :properties
-
-      private
-      def sorted_properties
-        rules = {}
-        properties.sort.each do |property|
-          rules[property.property] = property
-        end
-        rules.values.sort
-      end
-    end
   end
 end
