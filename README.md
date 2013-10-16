@@ -1,4 +1,4 @@
-**Note: This is an experimental branch; don't use it in any application!**
+**Note: This is a pre-release version. It is not yet suitable for use anywhere.**
 
 Roadie
 ======
@@ -38,7 +38,7 @@ Features
 Install & Usage
 ---------------
 
-Add this gem to your Gemfile and bundle.
+[Add this gem to your Gemfile as recommended by Rubygems](http://rubygems.org/gems/roadie) and run `bundle install`.
 
 ```ruby
 gem 'roadie', '~> x.y.0'
@@ -208,28 +208,18 @@ document.after_inlining = TrackNewsletterLinks.new
 Build Status
 ------------
 
-Tested with [Travis CI](http://travis-ci.org) using [almost all combinations of](http://travis-ci.org/#!/Mange/roadie):
+Tested with [Travis CI](http://travis-ci.org) using:
 
-* Ruby:
-  * MRI 1.9.3
-  * MRI 2.0.0
-* Rails
-  * 3.0
-  * 3.1
-  * 3.2
-  * 4.0
+* MRI 1.9.3
+* MRI 2.0.0
+
+[(Build status)](http://travis-ci.org/#!/Mange/roadie)
 
 Let me know if you want any other combination supported officially.
 
 ### Versioning ###
 
 This project follows [Semantic Versioning](http://semver.org/) and has been since version 1.0.0.
-
-Bugs / TODO
------------
-
-* Improve overall performance
-* Clean up stylesheet assignment code
 
 FAQ
 ---
@@ -261,15 +251,15 @@ Documentation
 Running specs
 -------------
 
-Start by setting up your machine, then you can run the specs like normal:
-
 ```bash
-./setup.sh install
-rake spec
+bundle install
+bundle exec rspec spec
 ```
 
 History and contributors
 ------------------------
+
+This gem was previously tied to Rails. It is now framework-agnostic and supports any type of HTML documents. If you want to use it with Rails, check out [roadie-rails](https://github.com/Mange/roadie-rails).
 
 Major contributors to Roadie:
 
@@ -278,17 +268,6 @@ Major contributors to Roadie:
 
 You can [see all contributors](https://github.com/Mange/roadie/contributors) on GitHub.
 
-This gem was originally developed for Rails 2 use on [Purify](http://purifyapp.com) under the name [MailStyle](https://www.github.com/purify/mail_style). However, the author stopped maintaining it and a fork took place to make it Rails 3+ compatible.
-
-The following people have contributed to the orignal gem:
-
-* [Jim Neath](http://jimneath.org) (Original author)
-* [Lars Klevans](http://tastybyte.blogspot.com/)
-* [Jonas Grimfelt](http://github.com/grimen)
-* [Ben Johnson](http://www.binarylogic.com)
-* [Istvan Hoka](http://istvanhoka.com/)
-* [Voraz](http://blog.voraz.com.br)
-
 License
 -------
 
@@ -296,8 +275,7 @@ License
 
 Copyright (c) 2009-2013
 
-* [Jim Neath](http://jimneath.org)
-* Magnus Bergmark <magnus.bergmark@gmail.com>
+* [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the ‘Software’), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
