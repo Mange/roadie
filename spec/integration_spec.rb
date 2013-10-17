@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe "Roadie functionality" do
+  def parse_html(html)
+    Nokogiri::HTML.parse(html)
+  end
+
   it "adds missing structure" do
     html = "<h1>Hello world!</h1>".encode("Shift_JIS")
     document = Roadie::Document.new(html)
@@ -31,7 +35,7 @@ describe "Roadie functionality" do
       h1 { text-align: center; }
     CSS
 
-    result = Nokogiri::HTML.parse(document.transform)
+    result = parse_html document.transform
     result.should have_styling('text-align' => 'center').at_selector('h1')
     result.should have_styling('color' => 'red').at_selector('p > em')
   end
@@ -51,7 +55,7 @@ describe "Roadie functionality" do
       </html>
     HTML
 
-    result = Nokogiri::HTML.parse(document.transform)
+    result = parse_html document.transform
     result.should have_styling('font-size' => '200%').at_selector('p > em')
   end
 
@@ -89,7 +93,7 @@ describe "Roadie functionality" do
     HTML
 
     document.url_options = {host: "myapp.com", scheme: "https", path: "rails/app/"}
-    result = Nokogiri::HTML.parse(document.transform)
+    result = parse_html document.transform
 
     result.at_css("a")["href"].should == "https://myapp.com/rails/app/about_us"
     result.at_css("img")["src"].should == "https://myapp.com/rails/app/assets/about_us-abcdef1234567890.png"
@@ -111,7 +115,7 @@ describe "Roadie functionality" do
     document.before_inlining = proc { |dom| dom.at_css("body")["class"] = "roadie" }
     document.after_inlining = proc { |dom| dom.at_css("span").remove }
 
-    result = Nokogiri::HTML.parse(document.transform)
+    result = parse_html document.transform
     result.at_css("body")["class"].should == "roadie"
     result.at_css("span").should be_nil
   end
