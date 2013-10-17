@@ -31,8 +31,8 @@ module Roadie
     def style_map(dom)
       style_map = StyleMap.new
 
-      each_inlinable_block do |selector, properties|
-        elements = elements_matching_selector(selector, dom)
+      each_inlinable_block do |stylesheet, selector, properties|
+        elements = elements_matching_selector(stylesheet, selector, dom)
         style_map.add elements, properties
       end
 
@@ -42,7 +42,7 @@ module Roadie
     def each_inlinable_block
       stylesheets.each do |stylesheet|
         stylesheet.each_inlinable_block do |selector, properties|
-          yield selector, properties
+          yield stylesheet, selector, properties
         end
       end
     end
@@ -51,17 +51,17 @@ module Roadie
       element["style"] = [properties.to_s, element["style"]].compact.join(";")
     end
 
-    def elements_matching_selector(selector, dom)
+    def elements_matching_selector(stylesheet, selector, dom)
       dom.css(selector.to_s)
     # There's no way to get a list of supported pseudo selectors, so we're left
     # with having to rescue errors.
     # Pseudo selectors that are known to be bad are skipped automatically but
     # this will catch the rest.
     rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
-      warn "Roadie cannot use #{selector.inspect} when inlining stylesheets"
+      warn "Roadie cannot use #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet) when inlining stylesheets"
       []
     rescue => error
-      warn "Roadie got error when looking for #{selector.inspect}: #{error}"
+      warn "Roadie got error when looking for #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet): #{error}"
       raise unless error.message.include?('XPath')
       []
     end

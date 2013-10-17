@@ -112,6 +112,17 @@ module Roadie
         rendering('<p class="some-element"></p>').should have_styling('width' => '100%')
       end
 
+      it "warns on selectors that crash Nokogiri" do
+        dom = Nokogiri::HTML.parse "<p></p>"
+
+        stylesheet = Stylesheet.new "foo.css", "p[%^=foo] { color: red; }"
+        inliner = Inliner.new([stylesheet])
+        inliner.should_receive(:warn).with(
+          %{Roadie cannot use "p[%^=foo]" (from "foo.css" stylesheet) when inlining stylesheets}
+        )
+        inliner.inline(dom)
+      end
+
       it "works with nth-child" do
         use_css "
           p { color: red; }
