@@ -39,6 +39,7 @@ module Roadie
 
     def inline(dom)
       document_styles = AssetScanner.new(dom, asset_providers).extract_css
+      # TODO: Send stylesheets instead
       css = [document_styles, @css].flatten.join("\n")
       Inliner.new(css).inline(dom)
     end

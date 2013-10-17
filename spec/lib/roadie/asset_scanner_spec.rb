@@ -35,10 +35,14 @@ module Roadie
           </html>
         HTML
         scanner = AssetScanner.new dom, provider
-        scanner.find_css.should == [
-          "a { color: green; }",
-          "body { color: red; }",
-        ]
+
+        stylesheets = scanner.find_css
+
+        stylesheets.should have(2).stylesheets
+        stylesheets[0].to_s.should include("green")
+        stylesheets[1].to_s.should include("red")
+
+        stylesheets.first.name.should == "(inline)"
       end
 
       it "does not find any embedded stylesheets marked for ignoring" do
@@ -51,16 +55,17 @@ module Roadie
           </html>
         HTML
         scanner = AssetScanner.new dom, provider
-        scanner.find_css.should == ["a { color: green; }"]
+        scanner.find_css.should have(1).stylesheet
       end
 
       it "finds referenced stylesheets through the provider" do
+        stylesheet = double "A stylesheet"
+        provider.should_receive(:find_stylesheet).with("/some/url.css").and_return stylesheet
+
         dom = dom_fragment %(<link rel="stylesheet" href="/some/url.css">)
-        provider = TestProvider.new "/some/url.css" => "p { color: green; }"
         scanner = AssetScanner.new dom, provider
 
-        # TODO: Should return Stylesheets instead
-        scanner.find_css.should == ["p{color:green}"]
+        scanner.find_css.should == [stylesheet]
       end
 
       it "ignores referenced print stylesheets" do
@@ -92,21 +97,11 @@ module Roadie
         ]]></style>)
 
         scanner = AssetScanner.new dom, provider
-        scanner.find_css.each(&:strip!).should == ["p { color: green }"]
-      end
+        stylesheet = scanner.find_css.first
 
-      it 'ignores CDATA sections' do
-        dom = dom_fragment %(<style>
-          <!--
-          <![CDATA[
-              <![CDATA[
-          span { color: red }
-          ]]>
-          -->
-        </style>)
-
-        scanner = AssetScanner.new dom, provider
-        scanner.find_css.each(&:strip!).should == ["span { color: red }"]
+        stylesheet.to_s.should include("green")
+        stylesheet.to_s.should_not include("!--")
+        stylesheet.to_s.should_not include("CDATA")
       end
 
       it "does not pick up scripts generating styles" do
@@ -128,7 +123,7 @@ module Roadie
           <html>
             <head>
               <title>Hello world!</title>
-              <style>a { color: green; }</style>
+              <style>span { color: green; }</style>
               <link rel="stylesheet" href="/some/url.css">
               <link rel="stylesheet" href="/error.css" media="print">
               <link rel="stylesheet" href="/cool.css" data-roadie-ignore>
@@ -141,11 +136,12 @@ module Roadie
         provider = TestProvider.new "/some/url.css" => "body { color: green; }"
         scanner = AssetScanner.new dom, provider
 
-        # TODO: Should return Stylesheets instead
-        scanner.extract_css.should == [
-          "a { color: green; }",
-          "body{color:green}",
-        ]
+        stylesheets = scanner.extract_css
+
+        stylesheets.should have(2).stylesheets
+        stylesheets[0].to_s.should include("span")
+        stylesheets[1].to_s.should include("body")
+
         dom.should have_selector("html > head > title")
         dom.should have_selector("html > body > style[data-roadie-ignore]")
         dom.should have_selector("link[data-roadie-ignore]")

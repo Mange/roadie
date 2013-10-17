@@ -8,14 +8,14 @@ module Roadie
     end
 
     def find_css
-      @dom.css(STYLE_ELEMENT_QUERY).map { |element| read_css(element) }.compact
+      @dom.css(STYLE_ELEMENT_QUERY).map { |element| read_stylesheet(element) }.compact
     end
 
     def extract_css
       @dom.css(STYLE_ELEMENT_QUERY).map { |element|
-        css = read_css(element)
-        element.remove if css
-        css
+        stylesheet = read_stylesheet(element)
+        element.remove if stylesheet
+        stylesheet
       }.compact
     end
 
@@ -24,11 +24,13 @@ module Roadie
     STYLE_ELEMENT_QUERY = (
       "style:not([data-roadie-ignore]), " +
       # TODO: When using Nokogiri 1.6.1 and later; we may use a double :not here
-      #       instead of the extra code inside #read_css, and the #compact
+      #       instead of the extra code inside #read_stylesheet, and the #compact
       #       call in #find_css.
       "link[rel=stylesheet][href]:not([data-roadie-ignore])"
     ).freeze
 
+    # Cleans out stupid CDATA and/or HTML comments from the style text
+    # TinyMCE causes this, allegedly
     CLEANING_MATCHER = /
       (^\s*             # Beginning-of-lines matches
         (<!\[CDATA\[)|
@@ -39,7 +41,7 @@ module Roadie
       $)
     /x.freeze
 
-    def read_css(element)
+    def read_stylesheet(element)
       if element.name == "style"
         read_style_element element
       else
@@ -48,13 +50,12 @@ module Roadie
     end
 
     def read_style_element(element)
-      clean_css element.text.strip
+      Stylesheet.new "(inline)", clean_css(element.text.strip)
     end
 
     def read_link_element(element)
       if element['media'] != "print" && element["href"]
-        stylesheet = asset_provider.find_stylesheet element['href']
-        stylesheet.to_s if stylesheet # TODO: AssetScanner should return Stylesheets too
+        asset_provider.find_stylesheet element['href']
       end
     end
 
