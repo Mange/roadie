@@ -5,10 +5,9 @@ require 'css_parser'
 
 module Roadie
   class Inliner
-    # @param [String] css
-    def initialize(css)
-      # TODO: Pass a list of Stylesheet rather than raw CSS
-      @stylesheet = Stylesheet.new("unnamed", css)
+    # @param [Array<Stylesheet>] stylesheets
+    def initialize(stylesheets)
+      @stylesheets = stylesheets
     end
 
     # Start the inlining, mutating the DOM tree.
@@ -21,7 +20,7 @@ module Roadie
     end
 
     private
-    attr_reader :stylesheet
+    attr_reader :stylesheets
 
     def apply(style_map)
       style_map.each_element do |element, properties|
@@ -32,12 +31,20 @@ module Roadie
     def style_map(dom)
       style_map = StyleMap.new
 
-      stylesheet.each_inlinable_block do |selector, properties|
+      each_inlinable_block do |selector, properties|
         elements = elements_matching_selector(selector, dom)
         style_map.add elements, properties
       end
 
       style_map
+    end
+
+    def each_inlinable_block
+      stylesheets.each do |stylesheet|
+        stylesheet.each_inlinable_block do |selector, properties|
+          yield selector, properties
+        end
+      end
     end
 
     def apply_element_style(element, properties)

@@ -2,12 +2,12 @@
 require 'spec_helper'
 
 describe Roadie::Inliner do
-  before { @css = "" }
-  def use_css(css) @css = css end
+  before { @stylesheet = "" }
+  def use_css(css) @stylesheet = Roadie::Stylesheet.new("example", css) end
 
-  def rendering(html, css = @css)
+  def rendering(html, stylesheet = @stylesheet)
     dom = Nokogiri::HTML.parse html
-    Roadie::Inliner.new(css).inline(dom)
+    Roadie::Inliner.new([stylesheet]).inline(dom)
     dom
   end
 

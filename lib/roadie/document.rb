@@ -33,15 +33,17 @@ module Roadie
     end
 
     private
+    def stylesheet
+      Stylesheet.new "(Document styles)", @css
+    end
+
     def improve(dom)
       MarkupImprover.new(dom, html).improve
     end
 
     def inline(dom)
-      document_styles = AssetScanner.new(dom, asset_providers).extract_css
-      # TODO: Send stylesheets instead
-      css = [document_styles, @css].flatten.join("\n")
-      Inliner.new(css).inline(dom)
+      dom_stylesheets = AssetScanner.new(dom, asset_providers).extract_css
+      Inliner.new(dom_stylesheets + [stylesheet]).inline(dom)
     end
 
     def rewrite_urls(dom)
