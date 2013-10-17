@@ -28,6 +28,6 @@ module Roadie
     # with it, among other things.
     def to_ary() to_a end
 
-    def_delegators :@providers, :each, :size, :push, :pop, :unshift, :shift
+    def_delegators :@providers, :each, :size, :push, :<<, :pop, :unshift, :shift
   end
 end

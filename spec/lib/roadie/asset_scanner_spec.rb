@@ -60,7 +60,7 @@ module Roadie
 
       it "finds referenced stylesheets through the provider" do
         stylesheet = double "A stylesheet"
-        provider.should_receive(:find_stylesheet).with("/some/url.css").and_return stylesheet
+        provider.should_receive(:find_stylesheet!).with("/some/url.css").and_return stylesheet
 
         dom = dom_fragment %(<link rel="stylesheet" href="/some/url.css">)
         scanner = AssetScanner.new dom, provider
@@ -70,7 +70,6 @@ module Roadie
 
       it "ignores referenced print stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" media="print">)
-        provider.should_not_receive(:find_stylesheet)
         provider.should_not_receive(:find_stylesheet!)
 
         scanner = AssetScanner.new dom, provider
@@ -80,7 +79,6 @@ module Roadie
 
       it "does not look for ignored referenced stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" data-roadie-ignore>)
-        provider.should_not_receive(:find_stylesheet)
         provider.should_not_receive(:find_stylesheet!)
 
         scanner = AssetScanner.new dom, provider

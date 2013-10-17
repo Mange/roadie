@@ -36,7 +36,8 @@ module Roadie
 
       expect {
         provider.push other
-      }.to change(provider, :size).by(1)
+        provider << other
+      }.to change(provider, :size).by(2)
 
       expect {
         provider.pop.should == other

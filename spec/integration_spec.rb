@@ -56,8 +56,6 @@ describe "Roadie functionality" do
   end
 
   it "crashes when stylesheets cannot be found, unless using NullProvider" do
-    pending "Not yet implemented"
-
     document = Roadie::Document.new <<-HTML
       <!DOCTYPE html>
       <html>
@@ -71,7 +69,7 @@ describe "Roadie functionality" do
 
     expect { document.transform }.to raise_error(Roadie::CssNotFound, /does_not_exist\.css/)
 
-    document.providers << Roadie::NullProvider.new
+    document.asset_providers << Roadie::NullProvider.new
     expect { document.transform }.to_not raise_error
   end
 

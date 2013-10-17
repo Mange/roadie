@@ -149,7 +149,7 @@ document.asset_providers = [
 If you want to ignore stylesheets that cannot be found instead of crashing, push the `NullProvider` to the end:
 
 ```ruby
-document.asset_providers.push Roadie::NullProvider.new
+document.asset_providers << Roadie::NullProvider.new
 ```
 
 ### Writing your own provider ###

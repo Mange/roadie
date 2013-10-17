@@ -55,7 +55,7 @@ module Roadie
 
     def read_link_element(element)
       if element['media'] != "print" && element["href"]
-        asset_provider.find_stylesheet element['href']
+        asset_provider.find_stylesheet! element['href']
       end
     end
 
