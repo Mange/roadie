@@ -26,7 +26,7 @@ end
 class StylingExpectation
   def initialize(styling)
     case styling
-    when Nokogiri::XML::Node then @rules = parse_node_styles(styling)
+    when Nokogiri::XML::Node then @rules = parse_rules(styling['style'] || "")
     when String then @rules = parse_rules(styling)
     when Array then @rules = styling
     when Hash then @rules = styling.to_a
@@ -35,7 +35,7 @@ class StylingExpectation
   end
 
   def ==(other)
-    other.rules == rules
+    rules == other.rules
   end
 
   def to_s() rules.to_s end
@@ -44,11 +44,7 @@ class StylingExpectation
   attr_reader :rules
 
   private
-  def parse_node_styles(node)
-    SpecHelpers.styling_of_node(node)
-  end
-
   def parse_rules(css)
-    SpecHelpers.parse_style(css)
+    SpecHelpers.parse_styling(css)
   end
 end
