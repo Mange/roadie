@@ -30,10 +30,18 @@ module Roadie
     attr_reader :dom
 
     def ensure_doctype_present
+      return if uses_buggy_jruby?
       return if @html.include?('<!DOCTYPE ')
       # Nokogiri adds a "default" doctype to the DOM, which we will remove
       dom.internal_subset.remove unless dom.internal_subset.nil?
       dom.create_internal_subset 'html', nil, nil
+    end
+
+    # JRuby up to at least 1.6.0 has a bug where the doctype of a document cannot be changed.
+    # See https://github.com/sparklemotion/nokogiri/issues/984
+    def uses_buggy_jruby?
+      # No reason to check for version yet since no existing version has a fix.
+      defined?(JRuby)
     end
 
     def ensure_head_element_present

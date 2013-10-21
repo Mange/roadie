@@ -9,12 +9,20 @@ describe "Roadie functionality" do
     html = "<h1>Hello world!</h1>".encode("Shift_JIS")
     document = Roadie::Document.new(html)
     result = document.transform
-    result.should include("<!DOCTYPE html>")
+
+    unless defined?(JRuby)
+      # JRuby has a bug that makes DTD manipulation impossible
+      # See Nokogiri bugs #984 and #985
+      # https://github.com/sparklemotion/nokogiri/issues/984
+      # https://github.com/sparklemotion/nokogiri/issues/985
+      result.should include("<!DOCTYPE html>")
+    end
+
     result.should include("<html>")
     result.should include("<head>")
-    result.should include("<meta")
     result.should include("<body>")
 
+    result.should include("<meta")
     result.should include("text/html; charset=Shift_JIS")
   end
 

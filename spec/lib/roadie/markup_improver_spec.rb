@@ -9,8 +9,16 @@ module Roadie
       dom
     end
 
+    # JRuby up to at least 1.6.0 has a bug where the doctype of a document cannot be changed.
+    # See https://github.com/sparklemotion/nokogiri/issues/984
+    def pending_for_buggy_jruby
+      # No reason to check for version yet since no existing version has a fix.
+      pending "Pending until Nokogiri issue #984 is fixed and released" if defined?(JRuby)
+    end
+
     describe "automatic doctype" do
       it "inserts a HTML5 doctype if no doctype is present" do
+        pending_for_buggy_jruby
         improve("<html></html>").internal_subset.to_xml.should == "<!DOCTYPE html>"
       end
 
@@ -22,7 +30,7 @@ module Roadie
       it "leaves other doctypes alone" do
         dtd = "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.0 Transitional//EN\" \"http://www.w3.org/TR/REC-html40/loose.dtd\">"
         html = "#{dtd}<html></html>"
-        improve(html).internal_subset.to_xml.should == dtd
+        improve(html).internal_subset.to_xml.strip.should == dtd
       end
     end
 
