@@ -40,8 +40,7 @@ module Roadie
         initialize matches[:property], matches[:value].strip, !!matches[:important], specificity
         self
       else
-        # TODO: Implement a proper error class
-        raise "Cannot parse declaration #{declaration.inspect}"
+        raise UnparseableDeclaration, "Cannot parse declaration #{declaration.inspect}"
       end
     end
 

@@ -71,6 +71,12 @@ module Roadie
         parsing("color: green !important", 1).should == ["color", "green", true, 1]
         parsing("color: green !important;", 1).should == ["color", "green", true, 1]
       end
+
+      it "raises an error on unparseable declarations" do
+        expect {
+          parsing("I want a red apple!", 1)
+        }.to raise_error(Roadie::UnparseableDeclaration, /red apple/)
+      end
     end
   end
 end

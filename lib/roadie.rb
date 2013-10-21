@@ -1,4 +1,5 @@
 module Roadie
+  UnparseableDeclaration = Class.new(RuntimeError)
 end
 
 require 'roadie/version'
