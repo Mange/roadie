@@ -230,10 +230,11 @@ Tested with [Travis CI](http://travis-ci.org) using:
 
 * MRI 1.9.3
 * MRI 2.0.0
+* JRuby (latest)
 
 [(Build status)](http://travis-ci.org/#!/Mange/roadie)
 
-Let me know if you want any other combination supported officially.
+Let me know if you want any other VM supported officially.
 
 ### Versioning ###
 
