@@ -26,7 +26,7 @@ end
 class StylingExpectation
   def initialize(styling)
     case styling
-    when Nokogiri::XML::Node then @rules = parse_rules(styling['style'] || "")
+    when Nokogiri::XML::Node then @rules = parse_rules(styling['style'])
     when String then @rules = parse_rules(styling)
     when Array then @rules = styling
     when Hash then @rules = styling.to_a
@@ -45,6 +45,11 @@ class StylingExpectation
 
   private
   def parse_rules(css)
-    SpecHelpers.parse_styling(css)
+    css.split(';').map { |property| parse_property(property) }
+  end
+
+  def parse_property(property)
+    rule, value = property.split(':', 2).map(&:strip)
+    [rule, value]
   end
 end
