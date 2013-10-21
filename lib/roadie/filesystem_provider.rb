@@ -1,6 +1,6 @@
 module Roadie
   class FilesystemProvider
-    InsecurePathError = Class.new(RuntimeError)
+    InsecurePathError = Class.new(Error)
 
     include AssetProvider
     attr_reader :path

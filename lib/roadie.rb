@@ -1,11 +1,8 @@
 module Roadie
-  UnparseableDeclaration = Class.new(RuntimeError)
 end
 
 require 'roadie/version'
-
-require 'roadie/css_not_found'
-require 'roadie/invalid_url_path'
+require 'roadie/errors'
 
 require 'roadie/stylesheet'
 require 'roadie/selector'
