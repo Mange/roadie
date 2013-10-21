@@ -19,14 +19,13 @@ RSpec::Matchers.define :have_styling do |rules|
 
   def styles_at_selector(document)
     document.should have_selector(@selector)
-    StylingExpectation.new document.at_css(@selector)
+    StylingExpectation.new document.at_css(@selector)['style']
   end
 end
 
 class StylingExpectation
   def initialize(styling)
     case styling
-    when Nokogiri::XML::Node then @rules = parse_rules(styling['style'])
     when String then @rules = parse_rules(styling)
     when Array then @rules = styling
     when Hash then @rules = styling.to_a
