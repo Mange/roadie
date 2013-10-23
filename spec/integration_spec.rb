@@ -93,6 +93,7 @@ describe "Roadie functionality" do
           <style>
             body { background: url("/assets/bg-abcdef1234567890.png"); }
           </style>
+          <link rel="stylesheet" href="/style.css">
         </head>
         <body>
           <a href="/about_us"><img src="/assets/about_us-abcdef1234567890.png" alt="About us"></a>
@@ -100,14 +101,23 @@ describe "Roadie functionality" do
       </html>
     HTML
 
+    document.asset_providers = TestProvider.new(
+      "/style.css" => "a { background: url(/assets/link-abcdef1234567890.png); }"
+    )
     document.url_options = {host: "myapp.com", scheme: "https", path: "rails/app/"}
     result = parse_html document.transform
 
     result.at_css("a")["href"].should == "https://myapp.com/rails/app/about_us"
+
     result.at_css("img")["src"].should == "https://myapp.com/rails/app/assets/about_us-abcdef1234567890.png"
+
     result.should have_styling(
       "background" => 'url("https://myapp.com/rails/app/assets/bg-abcdef1234567890.png")'
     ).at_selector("body")
+
+    result.should have_styling(
+      "background" => 'url(https://myapp.com/rails/app/assets/link-abcdef1234567890.png)'
+    ).at_selector("a")
   end
 
   it "allows custom callbacks during inlining" do
