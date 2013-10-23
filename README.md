@@ -1,13 +1,17 @@
 Roadie
 ======
 
+[![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
+[![Code Climate](https://codeclimate.com/github/Mange/roadie.png)](https://codeclimate.com/github/Mange/roadie)
+[![Gem Version](https://badge.fury.io/rb/roadie.png)](http://badge.fury.io/rb/roadie)
+[![Dependency Status](https://gemnasium.com/Mange/roadie.png)](https://gemnasium.com/Mange/roadie)
+
 **Note: This README details the 3.0 version of Roadie. You might be using 2.0, which is much older.**
 
 > Making HTML emails comfortable for the Ruby rockstars
 
 Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewriting relative URLs for you inside your emails.
 
-[![Build history and status](https://secure.travis-ci.org/Mange/roadie.png)](http://travis-ci.org/#!/Mange/roadie)
 
 How does it work?
 -----------------
