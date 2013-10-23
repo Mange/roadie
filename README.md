@@ -231,10 +231,13 @@ Tested with [Travis CI](http://travis-ci.org) using:
 * MRI 1.9.3
 * MRI 2.0.0
 * JRuby (latest)
+* Rubinius >= 2.1 (experimental)
 
 [(Build status)](http://travis-ci.org/#!/Mange/roadie)
 
 Let me know if you want any other VM supported officially.
+
+Rubinius support is experimental since it it currently hindered by a Rubinius bug that will probably be fixed shortly.
 
 ### Versioning ###
 
