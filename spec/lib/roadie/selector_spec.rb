@@ -43,6 +43,11 @@ module Roadie
       Selector.new(selector).specificity.should == CssParser.calculate_specificity(selector)
     end
 
+    it "can be told about the specificity at initialization" do
+      selector = "html p.active.nice #main.deep-selector"
+      Selector.new(selector, 1337).specificity.should == 1337
+    end
+
     it "is equal to other selectors when they match the same things" do
       Selector.new("foo").should == Selector.new("foo ")
       Selector.new("foo").should_not == "foo"

@@ -1,93 +1,46 @@
+# encoding: UTF-8
 require 'spec_helper'
-require 'shared_examples/asset_provider_examples'
-require 'tmpdir'
+require 'roadie/rspec'
+require 'shared_examples/asset_provider'
 
 module Roadie
   describe FilesystemProvider do
-    let(:provider) { FilesystemProvider.new }
+    let(:fixtures_path) { File.expand_path "../../../fixtures", __FILE__ }
+    subject(:provider) { FilesystemProvider.new(fixtures_path) }
 
-    it_behaves_like AssetProvider
+    it_behaves_like "roadie asset provider", valid_name: "stylesheets/green.css", invalid_name: "foo"
 
-    it "has a configurable prefix" do
-      FilesystemProvider.new("/prefix").prefix.should == "/prefix"
+    it "takes a path" do
+      FilesystemProvider.new("/tmp").path.should == "/tmp"
     end
 
-    it "has a configurable path" do
-      path = Pathname.new("/path")
-      FilesystemProvider.new('', path).path.should == path
+    it "defaults to the current working directory" do
+      FilesystemProvider.new.path.should == Dir.pwd
     end
 
-    it "bases the path on the project root if passed a string with a relative path" do
-      FilesystemProvider.new('', "foo/bar").path.should == Roadie.app.root.join("foo", "bar")
-      FilesystemProvider.new('', "/foo/bar").path.should == Pathname.new("/foo/bar")
-    end
+    describe "finding stylesheets" do
+      it "finds files in the path" do
+        full_path = File.join(fixtures_path, "stylesheets", "green.css")
+        file_contents = File.read full_path
 
-    it 'has a path of "<root>/public/stylesheets" by default' do
-      FilesystemProvider.new.path.should == Roadie.app.root.join('public', 'stylesheets')
-    end
-
-    it 'has a prefix of "/stylesheets" by default' do
-      FilesystemProvider.new.prefix.should == "/stylesheets"
-    end
-
-    describe "#find(file)" do
-      around(:each) do |example|
-        Dir.mktmpdir do |path|
-          Dir.chdir(path) { example.run }
-        end
+        stylesheet = provider.find_stylesheet("stylesheets/green.css")
+        stylesheet.name.should == full_path
+        stylesheet.to_s.should == Stylesheet.new("", file_contents).to_s
       end
 
-      let(:provider) { FilesystemProvider.new('/prefix', Pathname.new('.')) }
-
-      def create_file(name, contents = '')
-        Pathname.new(name).tap do |path|
-          path.dirname.mkpath unless path.dirname.directory?
-          path.open('w') { |file| file << contents }
-        end
+      it "returns nil on non-existant files" do
+        provider.find_stylesheet("non/existant.css").should be_nil
       end
 
-      it "loads files from the filesystem" do
-        create_file('foo.css', 'contents of foo.css')
-        provider.find('foo.css').should == 'contents of foo.css'
+      it "finds files inside the base path when using absolute paths" do
+        full_path = File.join(fixtures_path, "stylesheets", "green.css")
+        provider.find_stylesheet("/stylesheets/green.css").name.should == full_path
       end
 
-      it "removes the prefix" do
-        create_file('foo.css', 'contents of foo.css')
-        provider.find('/prefix/foo.css').should == 'contents of foo.css'
-        provider.find('prefix/foo.css').should == 'contents of foo.css'
-      end
-
-      it 'tries the filename with a ".css" extension if it does not exist' do
-        create_file('bar',     'in bare bar')
-        create_file('bar.css', 'in bar.css')
-        create_file('foo.css', 'in foo.css')
-
-        provider.find('bar').should == 'in bare bar'
-        provider.find('foo').should == 'in foo.css'
-      end
-
-      it "strips the contents" do
-        create_file('foo.css', "   contents  \n ")
-        provider.find('foo.css').should == "contents"
-      end
-
-      it "supports nested directories" do
-        create_file('path/to/foo.css')
-        create_file('path/from/bar.css')
-
-        provider.find('path/to/foo.css')
-        provider.find('path/from/bar.css')
-      end
-
-      it "works with double slashes in the path" do
-        create_file('path/to/foo.css')
-        provider.find('path/to//foo.css')
-      end
-
-      it "raises a Roadie::CSSFileNotFound error when the file could not be found" do
+      it "does not read files above the base directory" do
         expect {
-          provider.find('not_here.css')
-        }.to raise_error(Roadie::CSSFileNotFound, /not_here/)
+          provider.find_stylesheet("../#{File.basename(__FILE__)}")
+        }.to raise_error FilesystemProvider::InsecurePathError
       end
     end
   end

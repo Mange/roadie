@@ -1,581 +1,149 @@
 # encoding: UTF-8
 require 'spec_helper'
 
-describe Roadie::Inliner do
-  let(:provider) { double("asset provider", :all => '') }
+module Roadie
+  describe Inliner do
+    before { @stylesheet = "" }
+    def use_css(css) @stylesheet = Stylesheet.new("example", css) end
 
-  def use_css(css)
-    provider.stub(:all).with(['global.css']).and_return(css)
-  end
-
-  def rendering(html, options = {})
-    url_options = options.fetch(:url_options, {:host => 'example.com'})
-    after_inlining_handler = options[:after_inlining_handler]
-    Nokogiri::HTML.parse Roadie::Inliner.new(provider, ['global.css'], html, url_options, after_inlining_handler).execute
-  end
-
-  describe "initialization" do
-    it "warns about asset_path_prefix being non-functional" do
-      expect {
-        Roadie::Inliner.new(provider, [], '', :asset_path_prefix => 'foo')
-      }.to raise_error(ArgumentError, /asset_path_prefix/)
-    end
-  end
-
-  describe "inlining styles" do
-    before(:each) do
-      # Make sure to have some css even when we don't specify any
-      # We have specific tests for when this is nil
-      use_css ''
+    def rendering(html, stylesheet = @stylesheet)
+      dom = Nokogiri::HTML.parse html
+      Inliner.new([stylesheet]).inline(dom)
+      dom
     end
 
-    it "inlines simple attributes" do
-      use_css 'p { color: green }'
-      rendering('<p></p>').should have_styling('color' => 'green')
-    end
-
-    it "inlines browser-prefixed attributes" do
-      use_css 'p { -vendor-color: green }'
-      rendering('<p></p>').should have_styling('-vendor-color' => 'green')
-    end
-
-    it "inlines CSS3 attributes" do
-      use_css 'p { border-radius: 2px; }'
-      rendering('<p></p>').should have_styling('border-radius' => '2px')
-    end
-
-    it "keeps the order of the styles that are inlined" do
-      use_css 'h1 { padding: 2px; margin: 5px; }'
-      rendering('<h1></h1>').should have_styling([['padding', '2px'], ['margin', '5px']])
-    end
-
-    it "combines multiple selectors into one" do
-      use_css 'p { color: green; }
-              .tip { float: right; }'
-      rendering('<p class="tip"></p>').should have_styling([['color', 'green'], ['float', 'right']])
-    end
-
-    it "uses the attributes with the highest specificity when conflicts arises" do
-      use_css "p { color: red; }
-              .safe { color: green; }"
-      rendering('<p class="safe"></p>').should have_styling('color' => 'green')
-    end
-
-    it "sorts styles by specificity order" do
-      use_css 'p      { margin: 2px; }
-               #big   { margin: 10px; }
-               .down  { margin-bottom: 5px; }'
-
-      rendering('<p class="down"></p>').should have_styling([
-        ['margin', '2px'], ['margin-bottom', '5px']
-      ])
-
-      rendering('<p class="down" id="big"></p>').should have_styling([
-        ['margin-bottom', '5px'], ['margin', '10px']
-      ])
-    end
-
-    it "supports multiple selectors for the same rules" do
-      use_css 'p, a { color: green; }'
-      rendering('<p></p><a></a>').tap do |document|
-        document.should have_styling('color' => 'green').at_selector('p')
-        document.should have_styling('color' => 'green').at_selector('a')
-      end
-    end
-
-    it "keeps !important properties" do
-      use_css "a { text-decoration: underline !important; }
-               a.hard-to-spot { text-decoration: none; }"
-      rendering('<a class="hard-to-spot"></a>').should have_styling('text-decoration' => 'underline !important')
-    end
-
-    it "combines with already present inline styles" do
-      use_css "p { color: green }"
-      rendering('<p style="font-size: 1.1em"></p>').should have_styling([['color', 'green'], ['font-size', '1.1em']])
-    end
-
-    it "does not touch already present inline styles" do
-      use_css "p { color: red }"
-      rendering('<p style="color: green"></p>').should have_styling([['color', 'red'], ['color', 'green']])
-    end
-
-    it "does not apply link and dynamic pseudo selectors" do
-      use_css "
-        p:active { color: red }
-        p:focus { color: red }
-        p:hover { color: red }
-        p:link { color: red }
-        p:target { color: red }
-        p:visited { color: red }
-
-        p.active { width: 100%; }
-      "
-      rendering('<p class="active"></p>').should have_styling('width' => '100%')
-    end
-
-    it "does not crash on any pseudo element selectors" do
-      use_css "
-        p.some-element { width: 100%; }
-        p::some-element { color: red; }
-      "
-      rendering('<p class="some-element"></p>').should have_styling('width' => '100%')
-    end
-
-    it "works with nth-child" do
-      use_css "
-        p { color: red; }
-        p:nth-child(2n) { color: green; }
-      "
-      rendering("
-        <p class='one'></p>
-        <p class='two'></p>
-      ").should have_styling('color' => 'green').at_selector('.two')
-    end
-
-    it "ignores selectors with @" do
-      use_css '@keyframes progress-bar-stripes {
-        from {
-          background-position: 40px 0;
-        }
-        to {
-          background-position: 0 0;
-        }
-      }'
-      expect { rendering('<p></p>') }.not_to raise_error
-    end
-
-    it 'ignores HTML comments and CDATA sections' do
-      # TinyMCE posts invalid CSS. We support that just to be pragmatic.
-      use_css %(<![CDATA[
-        <!--
-        p { color: green }
-        -->
-      ]]>)
-      expect { rendering '<p></p>' }.not_to raise_error
-
-      use_css %(
-        <!--
-        <![CDATA[
-            <![CDATA[
-        span { color: red }
-        ]]>
-        -->
-      )
-      expect { rendering '<p></p>' }.not_to raise_error
-    end
-
-    it "does not pick up scripts generating styles" do
-      expect {
-        rendering <<-HTML
-          <script>
-            var color = "red";
-            document.write("<style type='text/css'>p { color: " + color + "; }</style>");
-          </script>
-        HTML
-      }.not_to raise_error
-    end
-
-    describe "inline <style> element" do
-      it "is used for inlined styles" do
-        rendering(<<-HTML).should have_styling([['color', 'green'], ['font-size', '1.1em']])
-          <html>
-            <head>
-              <style type="text/css">p { color: green; }</style>
-            </head>
-            <body>
-              <p>Hello World</p>
-              <style type="text/css">p { font-size: 1.1em; }</style>
-            </body>
-          </html>
-        HTML
+    describe "inlining styles" do
+      it "inlines simple attributes" do
+        use_css 'p { color: green }'
+        rendering('<p></p>').should have_styling('color' => 'green')
       end
 
-      it "is removed" do
-        rendering(<<-HTML).should_not have_selector('style')
-          <html>
-            <head>
-              <style type="text/css">p { color: green; }</style>
-            </head>
-            <body>
-              <style type="text/css">p { font-size: 1.1em; }</style>
-            </body>
-          </html>
-        HTML
+      it "inlines browser-prefixed attributes" do
+        use_css 'p { -vendor-color: green }'
+        rendering('<p></p>').should have_styling('-vendor-color' => 'green')
       end
 
-      it "is not touched when data-immutable is set" do
-        document = rendering <<-HTML
-          <style type="text/css" data-immutable>p { color: red; }</style>
-          <p></p>
-        HTML
-        document.should have_selector('style[data-immutable]')
-        document.should_not have_styling('color' => 'red')
+      it "inlines CSS3 attributes" do
+        use_css 'p { border-radius: 2px; }'
+        rendering('<p></p>').should have_styling('border-radius' => '2px')
       end
 
-      it "is not touched when for print media" do
-        document = rendering <<-HTML
-          <style type="text/css" media="print">p { color: red; }</style>
-          <p></p>
-        HTML
-        document.should have_selector('style[media=print]')
-        document.should_not have_styling('color' => 'red').at_selector('p')
+      it "keeps the order of the styles that are inlined" do
+        use_css 'h1 { padding: 2px; margin: 5px; }'
+        rendering('<h1></h1>').should have_styling([['padding', '2px'], ['margin', '5px']])
       end
 
-      it "is still inlined when no external css rules are defined" do
-        # This is just testing that the main code paths are still active even
-        # when css is set to nil
-        use_css nil
-        rendering(<<-HTML).should have_styling('color' => 'green').at_selector('p')
-          <style type="text/css">p { color: green; }</style>
-          <p>Hello World</p>
-        HTML
+      it "combines multiple selectors into one" do
+        use_css 'p { color: green; }
+                .tip { float: right; }'
+        rendering('<p class="tip"></p>').should have_styling([['color', 'green'], ['float', 'right']])
       end
 
-      it "is not touched when inside a SVG element" do
-        expect {
-          rendering <<-HTML
-            <p>Hello World</p>
-            <svg>
-              <style>This is not parseable by the CSS parser!</style>
-            </svg>
-          HTML
-        }.to_not raise_error
-      end
-    end
-  end
-
-  describe "linked stylesheets" do
-    def fake_file(name, contents)
-      provider.should_receive(:find).with(name).and_return(contents)
-    end
-
-    it "inlines styles from the linked stylesheet" do
-      fake_file('/assets/green_paragraphs.css', 'p { color: green; }')
-
-      rendering(<<-HTML).should have_styling('color' => 'green').at_selector('p')
-        <html>
-          <head>
-            <link rel="stylesheet" href="/assets/green_paragraphs.css">
-          </head>
-          <body>
-            <p></p>
-          </body>
-        </html>
-      HTML
-    end
-
-    it "inlines styles from the linked stylesheet in subdirectory" do
-      fake_file('/assets/subdirectory/red_paragraphs.css', 'p { color: red; }')
-
-      rendering(<<-HTML).should have_styling('color' => 'red').at_selector('p')
-        <html>
-          <head>
-            <link rel="stylesheet" href="/assets/subdirectory/red_paragraphs.css">
-          </head>
-          <body>
-            <p></p>
-          </body>
-        </html>
-      HTML
-    end
-
-    it "inlines styles from more than one linked stylesheet" do
-      fake_file('/assets/large_purple_paragraphs.css', 'p { font-size: 18px; color: purple; }')
-      fake_file('/assets/green_paragraphs.css', 'p { color: green; }')
-
-      html = <<-HTML
-        <html>
-          <head>
-            <link rel="stylesheet" href="/assets/large_purple_paragraphs.css">
-            <link rel="stylesheet" href="/assets/green_paragraphs.css">
-          </head>
-          <body>
-            <p></p>
-          </body>
-        </html>
-      HTML
-
-      rendering(html).should have_styling([
-        ['font-size', '18px'],
-        ['color', 'green'],
-      ]).at_selector('p')
-    end
-
-    it "removes the stylesheet links from the DOM" do
-      provider.stub(:find => '')
-      rendering(<<-HTML).should_not have_selector('link')
-        <html>
-          <head>
-            <link rel="stylesheet" href="/assets/green_paragraphs.css">
-            <link rel="stylesheet" href="/assets/large_purple_paragraphs.css">
-          </head>
-          <body>
-          </body>
-        </html>
-      HTML
-    end
-
-    context "when stylesheet is for print media" do
-      it "does not inline the stylesheet" do
-        rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
-          <html>
-            <head>
-              <link rel="stylesheet" href="/assets/green_paragraphs.css" media="print">
-            </head>
-            <body>
-              <p></p>
-            </body>
-          </html>
-        HTML
+      it "uses the attributes with the highest specificity when conflicts arises" do
+        use_css ".safe { color: green; }
+                p { color: red; }"
+        rendering('<p class="safe"></p>').should have_styling([['color', 'red'], ['color', 'green']])
       end
 
-      it "does not remove the links" do
-        rendering(<<-HTML).should have_selector('link')
-          <html>
-            <head>
-              <link rel="stylesheet" href="/assets/green_paragraphs.css" media="print">
-            </head>
-            <body>
-            </body>
-          </html>
-        HTML
-      end
-    end
+      it "sorts styles by specificity order" do
+        use_css 'p          { important: no; }
+                 #important { important: very; }
+                 .important { important: yes; }'
 
-    context "when stylesheet is marked as immutable" do
-      it "does not inline the stylesheet" do
-        rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
-          <html>
-            <head>
-              <link rel="stylesheet" href="/assets/green_paragraphs.css" data-immutable="true">
-            </head>
-            <body>
-              <p></p>
-            </body>
-          </html>
-        HTML
+        rendering('<p class="important"></p>').should have_styling([
+          %w[important no], %w[important yes]
+        ])
+
+        rendering('<p class="important" id="important"></p>').should have_styling([
+          %w[important no], %w[important yes], %w[important very]
+        ])
       end
 
-      it "does not remove link" do
-        rendering(<<-HTML).should have_selector('link')
-          <html>
-            <head>
-              <link rel="stylesheet" href="/assets/green_paragraphs.css" data-immutable="true">
-            </head>
-            <body>
-            </body>
-          </html>
-        HTML
-      end
-    end
-
-    context "when stylesheet link uses an absolute URL" do
-      it "does not inline the stylesheet" do
-        rendering(<<-HTML).should_not have_styling('color' => 'green').at_selector('p')
-          <html>
-            <head>
-              <link rel="stylesheet" href="http://www.example.com/green_paragraphs.css">
-            </head>
-            <body>
-              <p></p>
-            </body>
-          </html>
-        HTML
-      end
-
-      it "does not remove link" do
-        rendering(<<-HTML).should have_selector('link')
-          <html>
-            <head>
-              <link rel="stylesheet" href="http://www.example.com/green_paragraphs.css">
-            </head>
-            <body>
-            </body>
-          </html>
-        HTML
-      end
-    end
-
-    context "stylesheet cannot be found on disk" do
-      it "raises an error" do
-        html = <<-HTML
-          <html>
-            <head>
-              <link rel="stylesheet" href="/assets/not_found.css">
-            </head>
-            <body>
-            </body>
-          </html>
-        HTML
-
-        expect { rendering(html) }.to raise_error do |error|
-          error.should be_a(Roadie::CSSFileNotFound)
-          error.filename.should == Roadie.app.assets['not_found.css']
-          error.guess.should == '/assets/not_found.css'
+      it "supports multiple selectors for the same rules" do
+        use_css 'p, a { color: green; }'
+        rendering('<p></p><a></a>').tap do |document|
+          document.should have_styling('color' => 'green').at_selector('p')
+          document.should have_styling('color' => 'green').at_selector('a')
         end
       end
-    end
 
-    context "link element is not for a stylesheet" do
-      it "is ignored" do
-        html = <<-HTML
-          <html>
-            <head>
-              <link rel="not_stylesheet" href="/assets/green_paragraphs.css">
-            </head>
-            <body>
-              <p></p>
-            </body>
-          </html>
-        HTML
-        rendering(html).tap do |document|
-          document.should_not have_styling('color' => 'green').at_selector('p')
-          document.should have_selector('link')
-        end
+      it "keeps !important properties" do
+        use_css "a { text-decoration: underline !important; }
+                 a.hard-to-spot { text-decoration: none; }"
+        rendering('<a class="hard-to-spot"></a>').should have_styling([
+          ['text-decoration', 'none'], ['text-decoration', 'underline !important']
+        ])
       end
-    end
-  end
 
-  describe "making urls absolute" do
-    it "works on image sources" do
-      rendering('<img src="/images/foo.jpg" />').should have_attribute('src' => 'http://example.com/images/foo.jpg')
-      rendering('<img src="../images/foo.jpg" />').should have_attribute('src' => 'http://example.com/images/foo.jpg')
-      rendering('<img src="foo.jpg" />').should have_attribute('src' => 'http://example.com/foo.jpg')
-    end
-
-    it "does not touch image sources that are already absolute" do
-      rendering('<img src="http://other.example.org/images/foo.jpg" />').should have_attribute('src' => 'http://other.example.org/images/foo.jpg')
-    end
-
-    it "works on inlined style attributes" do
-      rendering('<p style="background: url(/paper.png)"></p>').should have_styling('background' => 'url(http://example.com/paper.png)')
-      rendering('<p style="background: url(&quot;/paper.png&quot;)"></p>').should have_styling('background' => 'url("http://example.com/paper.png")')
-    end
-
-    it "works on external style declarations" do
-      use_css "p { background-image: url(/paper.png); }
-               table { background-image: url('/paper.png'); }
-               div { background-image: url(\"/paper.png\"); }"
-      rendering('<p></p>').should have_styling('background-image' => 'url(http://example.com/paper.png)')
-      rendering('<table></table>').should have_styling('background-image' => "url('http://example.com/paper.png')")
-      rendering('<div></div>').should have_styling('background-image' => 'url("http://example.com/paper.png")')
-    end
-
-    it "does not touch style urls that are already absolute" do
-      external_url = 'url(http://other.example.org/paper.png)'
-      use_css "p { background-image: #{external_url}; }"
-      rendering('<p></p>').should have_styling('background-image' => external_url)
-      rendering(%(<div style="background-image: #{external_url}"></div>)).should have_styling('background-image' => external_url)
-    end
-
-    it "does not touch the urls when no url options are defined" do
-      use_css "img { background: url(/a.jpg); }"
-      rendering('<img src="/b.jpg" />', :url_options => nil).tap do |document|
-        document.should have_attribute('src' => '/b.jpg').at_selector('img')
-        document.should have_styling('background' => 'url(/a.jpg)')
+      it "combines with already present inline styles" do
+        use_css "p { color: green }"
+        rendering('<p style="font-size: 1.1em"></p>').should have_styling([['color', 'green'], ['font-size', '1.1em']])
       end
-    end
 
-    it "supports port and protocol settings" do
-      use_css "img { background: url(/a.jpg); }"
-      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https', :port => '8080'}).tap do |document|
-        document.should have_attribute('src' => 'https://example.com:8080/b.jpg').at_selector('img')
-        document.should have_styling('background' => 'url(https://example.com:8080/a.jpg)')
+      it "does not override inline styles" do
+        use_css "p { text-transform: uppercase; color: red }"
+        # The two color properties are kept to make css fallbacks work correctly
+        rendering('<p style="color: green"></p>').should have_styling([
+          ['text-transform', 'uppercase'],
+          ['color', 'red'],
+          ['color', 'green'],
+        ])
       end
-    end
 
-    # This case was happening for some users when emails were rendered as part
-    # of the request cycle. I do not know it we *really* should accept these
-    # values, but it looks like Rails do accept it so we might as well do it
-    # too.
-    it "supports protocol settings with additional tokens" do
-      use_css "img { background: url(/a.jpg); }"
-      rendering('<img src="/b.jpg" />', :url_options => {:host => 'example.com', :protocol => 'https://'}).tap do |document|
-        document.should have_attribute('src' => 'https://example.com/b.jpg').at_selector('img')
-        document.should have_styling('background' => 'url(https://example.com/a.jpg)')
+      it "does not apply link and dynamic pseudo selectors" do
+        use_css "
+          p:active { color: red }
+          p:focus { color: red }
+          p:hover { color: red }
+          p:link { color: red }
+          p:target { color: red }
+          p:visited { color: red }
+
+          p.active { width: 100%; }
+        "
+        rendering('<p class="active"></p>').should have_styling('width' => '100%')
       end
-    end
 
-    it "does not touch data: URIs" do
-      use_css "div { background: url(data:abcdef); }"
-      rendering('<div></div>').should have_styling('background' => 'url(data:abcdef)')
-    end
-  end
-
-  describe "custom converter" do
-    let(:html) { '<div id="foo"></div>' }
-
-    it "is invoked" do
-      after_inlining_handler = double("converter")
-      after_inlining_handler.should_receive(:call).with(anything)
-      rendering(html, :after_inlining_handler => after_inlining_handler)
-    end
-
-    it "modifies the document using lambda" do
-      after_inlining_handler = lambda {|d| d.css("#foo").first["class"] = "bar"}
-      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
-    end
-
-    it "modifies the document using object" do
-      klass = Class.new do
-        def call(d)
-          d.css("#foo").first["class"] = "bar"
-        end
+      it "does not crash on any pseudo element selectors" do
+        use_css "
+          p.some-element { width: 100%; }
+          p::some-element { color: red; }
+        "
+        rendering('<p class="some-element"></p>').should have_styling('width' => '100%')
       end
-      after_inlining_handler = klass.new
-      rendering(html, :after_inlining_handler => after_inlining_handler).css("#foo").first["class"].should == "bar"
-    end
-  end
 
-  describe "inserting tags" do
-    it "inserts a doctype if not present" do
-      rendering('<html><body></body></html>').to_xml.should include('<!DOCTYPE ')
-      rendering('<!DOCTYPE html><html><body></body></html>').to_xml.should_not match(/(DOCTYPE.*?){2}/)
-    end
+      it "warns on selectors that crash Nokogiri" do
+        dom = Nokogiri::HTML.parse "<p></p>"
 
-    it "sets xmlns of <html> to that of XHTML" do
-      rendering('<html><body></body></html>').should have_node('html').with_attributes("xmlns" => "http://www.w3.org/1999/xhtml")
-    end
-
-    it "inserts basic html structure if not present" do
-      rendering('<h1>Hey!</h1>').should have_selector('html > head + body > h1')
-    end
-
-    it "inserts <head> if not present" do
-      rendering('<html><body></body></html>').should have_selector('html > head + body')
-    end
-
-    it "inserts meta tag describing content-type" do
-      rendering('<html><head></head><body></body></html>').tap do |document|
-        document.should have_selector('head meta[http-equiv="Content-Type"]')
-        document.css('head meta[http-equiv="Content-Type"]').first['content'].should == 'text/html; charset=UTF-8'
+        stylesheet = Stylesheet.new "foo.css", "p[%^=foo] { color: red; }"
+        inliner = Inliner.new([stylesheet])
+        inliner.should_receive(:warn).with(
+          %{Roadie cannot use "p[%^=foo]" (from "foo.css" stylesheet) when inlining stylesheets}
+        )
+        inliner.inline(dom)
       end
-    end
 
-    it "does not insert duplicate meta tags describing content-type" do
-      rendering(<<-HTML).to_html.scan('meta').should have(1).item
-      <html>
-        <head>
-          <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-        </head>
-      </html>
-      HTML
-    end
-  end
+      it "works with nth-child" do
+        use_css "
+          p { color: red; }
+          p:nth-child(2n) { color: green; }
+        "
+        result = rendering("<p></p> <p></p>")
 
-  describe "css url regex" do
-    it "parses css urls" do
-      {
-        %{url(/foo.jpg)}                   => '/foo.jpg',
-        %{url("/foo.jpg")}                 => '/foo.jpg',
-        %{url('/foo.jpg')}                 => '/foo.jpg',
-        %{url(http://localhost/foo.jpg)}   => 'http://localhost/foo.jpg',
-        %{url("http://localhost/foo.jpg")} => 'http://localhost/foo.jpg',
-        %{url('http://localhost/foo.jpg')} => 'http://localhost/foo.jpg',
-        %{url(/andromeda_(galaxy).jpg)}    => '/andromeda_(galaxy).jpg',
-      }.each do |raw, expected|
-        raw =~ Roadie::Inliner::CSS_URL_REGEXP
-        $2.should == expected
+        result.should have_styling([['color', 'red']]).at_selector('p:first')
+        result.should have_styling([['color', 'red'], ['color', 'green']]).at_selector('p:last')
+      end
+
+      it "ignores selectors with @" do
+        use_css '@keyframes progress-bar-stripes {
+          from {
+            background-position: 40px 0;
+          }
+          to {
+            background-position: 0 0;
+          }
+        }'
+        expect { rendering('<p></p>') }.not_to raise_error
       end
     end
   end

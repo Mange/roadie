@@ -1,7 +1,8 @@
 module Roadie
   class Selector
-    def initialize(selector)
+    def initialize(selector, specificity = nil)
       @selector = selector.to_s.strip
+      @specificity = specificity
     end
 
     def specificity

@@ -1,6 +1,5 @@
 # encoding: utf-8
 require 'bundler/setup'
-require 'appraisal'
 
 Bundler::GemHelper.install_tasks
 
@@ -22,8 +21,3 @@ end
 
 desc "Default: Run specs"
 task :default => :spec
-
-namespace :spec do
-  desc 'Run specs against all supported versions of Rails'
-  task :all => ["appraisal:install", "appraisal", "spec"]
-end
