@@ -1,4 +1,12 @@
-guard 'rspec', cli: '--format nested' do
+rspec_options = {
+  cmd: 'rspec -f nested',
+  keep_failed: true,
+  all_after_pass: true,
+  all_on_start: true,
+  run_all: {cmd: 'rspec -f progress'}
+}
+
+guard 'rspec', rspec_options do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
 
