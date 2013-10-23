@@ -1,7 +1,7 @@
-**Note: This is a pre-release version. It is not yet suitable for use anywhere.**
-
 Roadie
 ======
+
+**Note: This README details the 3.0 version of Roadie. You might be using 2.0, which is much older.**
 
 > Making HTML emails comfortable for the Ruby rockstars
 
