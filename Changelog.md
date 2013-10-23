@@ -2,7 +2,26 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.4.2...master)
 
-* Nothing yet
+Complete rewrite of most of the code and a new direction for the gem.
+
+* Breaking changes:
+  * Removed Rails support into a separate Gem (`roadie-rails`).
+  * Removed Sprockets dependency and AssetPipelineProvider.
+  * Changed the entire public API.
+  * Changed the API of custom providers.
+  * Dropped support for Ruby 1.8.7.
+  * Change `data-immutable` to `data-roadie-ignore`.
+* New features:
+  * Rewriting the URLs of `img[src]`.
+  * A way to inject stylesheets without having to adjust template.
+  * A before callback to compliment the after callback.
+* Enhancements:
+  * Better support for stylesheets using CSS fallbacks.
+    This means that styles like this is now inlined: `width: 5em; width: 3rem;`, while Roadie would previously remove the first of the two.
+    This sadly means that the HTML file will be much larger than before if you're using a non-optimized stylesheet (for example including your application stylesheet to the email). This was a bad idea even before this change, and this might get you to change.
+  * Using HTML5 doctype instead of XHTML
+  * Full support for JRuby
+  * Experimental support for Rubinius
 
 ### 2.4.2
 
