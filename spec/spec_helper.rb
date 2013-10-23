@@ -1,5 +1,7 @@
-$: << File.dirname(__FILE__) + '/../lib'
+require 'coveralls'
+Coveralls.wear!
 
+$: << File.dirname(__FILE__) + '/../lib'
 require 'roadie'
 
 RSpec.configure do |config|
