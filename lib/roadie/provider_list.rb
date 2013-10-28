@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Roadie
   class ProviderList
     extend Forwardable
