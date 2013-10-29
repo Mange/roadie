@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.summary     = %q{Making HTML emails comfortable for the Ruby rockstars}
   s.description = %q{Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewriting relative URLs for you.}
 
-  s.required_ruby_version = "1.9"
+  s.required_ruby_version = ">= 1.9"
 
   s.add_dependency 'nokogiri', '~> 1.6.0'
   s.add_dependency 'css_parser', '~> 1.3.4'

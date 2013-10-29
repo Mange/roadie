@@ -1,3 +1,5 @@
+require 'forwardable'
+
 module Roadie
   # A style block is the combination of a selector and a list of properties.
   class StyleBlock
