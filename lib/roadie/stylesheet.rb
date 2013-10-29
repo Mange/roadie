@@ -21,26 +21,35 @@ module Roadie
     # @yieldparam [Selector] selector
     # @yieldparam [Array<StyleProperty>] properties
     def each_inlinable_block(&block)
-      # How unfortunate that Ruby "block" and CSS "block" are colliding here. Pay attention! :-)
-      blocks.select(&:inlinable?).map { |style_block|
+      # #map and then #each in order to support chained enumerations, etc. if
+      # no block is provided
+      inlinable_blocks.map { |style_block|
         [style_block.selector, style_block.properties]
       }.each(&block)
     end
 
     def to_s
-      blocks.map(&:to_s).join("\n")
+      blocks.join("\n")
     end
 
     private
+    def inlinable_blocks
+      blocks.select(&:inlinable?)
+    end
+
     def parse_blocks(css)
       blocks = []
       setup_parser(css).each_selector do |selector_string, declarations, specificity|
-        blocks << StyleBlock.new(
-          Selector.new(selector_string, specificity),
-          parse_declarations(declarations, specificity)
-        )
+        blocks << create_style_block(selector_string, declarations, specificity)
       end
       blocks
+    end
+
+    def create_style_block(selector_string, declarations, specificity)
+      StyleBlock.new(
+        Selector.new(selector_string, specificity),
+        parse_declarations(declarations, specificity)
+      )
     end
 
     def setup_parser(css)
