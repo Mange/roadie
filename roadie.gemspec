@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/Mange/roadie'
   s.summary     = %q{Making HTML emails comfortable for the Ruby rockstars}
   s.description = %q{Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewriting relative URLs for you.}
+  s.license     = "MIT"
 
   s.required_ruby_version = ">= 1.9"
 
