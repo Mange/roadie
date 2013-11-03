@@ -1,9 +1,22 @@
 module Roadie
-  Error = Class.new(RuntimeError)
+  # Base class for all Roadie errors. Rescue this if you want to catch errors
+  # from Roadie.
+  #
+  # If Roadie raises an error that does not inherit this class, please report
+  # it as a bug.
+  class Error < RuntimeError; end
 
-  UnparseableDeclaration = Class.new(Error)
+  # Raised when a declaration which cannot be parsed is encountered.
+  #
+  # A declaration is something like "font-size: 12pt;".
+  class UnparseableDeclaration < Error; end
 
+  # Raised when Roadie encounters an invalid URL which cannot be parsed by
+  # Ruby's +URI+ class.
+  #
+  # This could be a hint that something in your HTML or CSS is broken.
   class InvalidUrlPath < Error
+    # The original error, raised from +URI+.
     attr_reader :cause
 
     def initialize(given_path, cause = nil)
@@ -17,7 +30,14 @@ module Roadie
     end
   end
 
+  # Raised when an asset provider cannot find a stylesheet.
+  #
+  # If you are writing your own asset provider, make sure to raise this in the
+  # +#find_stylesheet!+ method.
+  #
+  # @see AssetProvider
   class CssNotFound < Error
+    # The name of the stylesheet that cannot be found
     attr_reader :css_name
 
     def initialize(css_name, extra_message = nil)

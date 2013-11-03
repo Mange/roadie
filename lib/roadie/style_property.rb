@@ -1,8 +1,26 @@
 module Roadie
+  # @api private
+  # Domain object for a CSS property such as "color: red !important".
+  #
+  # @attr_reader [String] property name of the property (such as "font-size").
+  # @attr_reader [String] value value of the property (such as "5px solid green").
+  # @attr_reader [Boolean] important if the property is "!important".
+  # @attr_reader [Integer] specificity specificity of parent {Selector}. Used to compare/sort.
   class StyleProperty
     include Comparable
-    attr_reader :property, :value, :important, :specificity
 
+    attr_reader :value, :important, :specificity
+
+    # @todo Rename #property to #name
+    attr_reader :property
+
+    # Parse a property string.
+    #
+    # @example
+    #   property = Roadie::StyleProperty.parse("color: green")
+    #   property.property # => "color"
+    #   property.value # => "green"
+    #   property.important? # => false
     def self.parse(declaration, specificity)
       allocate.send :read_declaration!, declaration, specificity
     end
@@ -18,6 +36,8 @@ module Roadie
       @important
     end
 
+    # Compare another {StyleProperty}. Important styles are "greater than"
+    # non-important ones; otherwise the specificity declares order.
     def <=>(other)
       if important == other.important
         specificity <=> other.specificity

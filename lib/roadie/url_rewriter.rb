@@ -1,5 +1,7 @@
 module Roadie
-  # Class that rewrites URLs in source material.
+  # @api private
+  #
+  # Class that rewrites URLs in the DOM.
   class UrlRewriter
     # @param [UrlGenerator] generator
     def initialize(generator)

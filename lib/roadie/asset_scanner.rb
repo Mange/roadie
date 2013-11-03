@@ -1,16 +1,42 @@
 module Roadie
+  # @api private
+  #
+  # The asset scanner's main usage is finding and/or extracting styles from a
+  # DOM tree. Referenced styles will be found using the provided asset
+  # provider.
+  #
+  # Any style declaration tagged with +data-roadie-ignore+ will be ignored.
   class AssetScanner
     attr_reader :dom, :asset_provider
 
+    # @param [Nokogiri::HTML::Document] dom
+    # @param [#find_stylesheet!] asset_provider
     def initialize(dom, asset_provider)
       @dom = dom
       @asset_provider = asset_provider
     end
 
+    # Looks for all non-ignored stylesheets and returns them.
+    #
+    # This method will *not* mutate the DOM and is safe to call multiple times.
+    #
+    # The order of the array corresponds with the document order in the DOM.
+    #
+    # @see #extract_css
+    # @return [Enumerable<Stylesheet>] every found stylesheet
     def find_css
       @dom.css(STYLE_ELEMENT_QUERY).map { |element| read_stylesheet(element) }.compact
     end
 
+    # Looks for all non-ignored stylesheets, removes their references from the
+    # DOM and then returns them.
+    #
+    # This will mutate the DOM tree.
+    #
+    # The order of the array corresponds with the document order in the DOM.
+    #
+    # @see #find_css
+    # @return [Enumerable<Stylesheet>] every extracted stylesheet
     def extract_css
       @dom.css(STYLE_ELEMENT_QUERY).map { |element|
         stylesheet = read_stylesheet(element)

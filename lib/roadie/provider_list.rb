@@ -1,11 +1,28 @@
 require 'forwardable'
 
 module Roadie
+  # An asset provider that just composes a list of other asset providers.
+  #
+  # Give it a list of providers and they will all be tried in order.
+  #
+  # {ProviderList} behaves like an Array, *and* an asset provider, and can be coerced into an array.
   class ProviderList
     extend Forwardable
     include Enumerable
     include AssetProvider
 
+    # Wrap a single provider, or a list of providers into a {ProviderList}.
+    #
+    # @overload wrap(provider_list)
+    #   @param [ProviderList] provider_list An actual instance of {ProviderList}.
+    #   @return The passed in provider_list
+    #
+    # @overload wrap(provider)
+    #   @param [asset provider] provider
+    #   @return a new {ProviderList} with just the passed provider in it
+    #
+    # @overload wrap(provider1, provider2, ...)
+    #   @return a new {ProviderList} with all the passed providers in it.
     def self.wrap(*providers)
       if providers.size == 1 && providers.first.class == self
         providers.first
@@ -18,6 +35,7 @@ module Roadie
       @providers = providers
     end
 
+    # @return [Stylesheet, nil]
     def find_stylesheet(name)
       @providers.each do |provider|
         css = provider.find_stylesheet(name)
@@ -30,6 +48,20 @@ module Roadie
     # with it, among other things.
     def to_ary() to_a end
 
+    # @!method each
+    #   @see Array#each
+    # @!method size
+    #   @see Array#size
+    # @!method push
+    #   @see Array#push
+    # @!method <<
+    #   @see Array#<<
+    # @!method pop
+    #   @see Array#pop
+    # @!method unshift
+    #   @see Array#unshift
+    # @!method shift
+    #   @see Array#shift
     def_delegators :@providers, :each, :size, :push, :<<, :pop, :unshift, :shift
   end
 end

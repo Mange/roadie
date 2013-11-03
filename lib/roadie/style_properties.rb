@@ -1,4 +1,7 @@
 module Roadie
+  # @api private
+  # Stores orphan style properties as they are being merged into specific
+  # element's "style" attribute.
   class StyleProperties
     attr_reader :properties
 

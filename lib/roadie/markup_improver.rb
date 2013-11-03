@@ -1,19 +1,22 @@
 module Roadie
+  # @api private
   # Class that improves the markup of a HTML DOM tree
   #
   # This class will improve the following aspects of the DOM:
-  #   * A HTML5 doctype will be added if missing, other doctypes will be left as-is
-  #   * Basic HTML elements will be added if missing
-  #     * <html>
-  #     * <head>
-  #     * <body>
-  #     * <meta> declaring charset and content-type (text/html)
+  # * A HTML5 doctype will be added if missing, other doctypes will be left as-is.
+  # * Basic HTML elements will be added if missing.
+  #   * +<html>+
+  #   * +<head>+
+  #   * +<body>+
+  #   * +<meta>+ declaring charset and content-type (text/html)
   #
-  # The original HTML must also be passed in in order to handle the doctypes
-  # since a Nokogiri::HTML::Document will always have a doctype, no matter if
-  # the original source had it or not. Reading the raw HTML is the only way to
-  # determine if we want to add a HTML5 doctype or not.
+  # @note Due to a Nokogiri bug, the HTML5 doctype cannot be added under JRuby. No doctype is outputted under JRuby.
+  #   See https://github.com/sparklemotion/nokogiri/issues/984
   class MarkupImprover
+    # The original HTML must also be passed in in order to handle the doctypes
+    # since a +Nokogiri::HTML::Document+ will always have a doctype, no matter if
+    # the original source had it or not. Reading the raw HTML is the only way to
+    # determine if we want to add a HTML5 doctype or not.
     def initialize(dom, original_html)
       @dom = dom
       @html = original_html

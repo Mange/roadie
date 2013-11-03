@@ -4,8 +4,18 @@ require 'uri'
 require 'css_parser'
 
 module Roadie
+  # @api private
+  # The Inliner inlines stylesheets to the elements of the DOM.
+  #
+  # Inlining means that {StyleBlock}s and a DOM tree are combined:
+  #   a { color: red; } # StyleBlock
+  #   <a href="/"></a>  # DOM
+  #
+  # becomes
+  #
+  #   <a href="/" style="color:red"></a>
   class Inliner
-    # @param [Array<Stylesheet>] stylesheets
+    # @param [Array<Stylesheet>] stylesheets the stylesheets to use in the inlining
     def initialize(stylesheets)
       @stylesheets = stylesheets
     end
@@ -66,6 +76,9 @@ module Roadie
       []
     end
 
+    # @api private
+    # StyleMap is a map between a DOM element and {StyleProperties}. Basically,
+    # it's an accumulator for properties, scoped on specific elements.
     class StyleMap
       def initialize
         @map = Hash.new { |hash, key|

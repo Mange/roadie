@@ -1,12 +1,25 @@
 module Roadie
+  # Domain object that represents a stylesheet (from disc, perhaps).
+  #
+  # It has a name and a list of {StyleBlock}s.
+  #
+  # @attr_reader [String] name the name of the stylesheet ("stylesheets/main.css", "Admin user styles", etc.). The name of the stylesheet will be visible if any errors occur.
+  # @attr_reader [Array<StyleBlock>] blocks
   class Stylesheet
     attr_reader :name, :blocks
 
+    # Parses the CSS string into a {StyleBlock}s and stores it.
+    #
+    # @param [String] name
+    # @param [String] css
     def initialize(name, css)
       @name = name
       @blocks = parse_blocks(css)
     end
 
+    # @yield [selector, properties]
+    # @yieldparam [Selector] selector
+    # @yieldparam [Array<StyleProperty>] properties
     def each_inlinable_block(&block)
       # How unfortunate that Ruby "block" and CSS "block" are colliding here. Pay attention! :-)
       blocks.select(&:inlinable?).map { |style_block|

@@ -1,6 +1,12 @@
 module Roadie
+  # Asset provider that looks for files on your local filesystem.
+  #
+  # It will be locked to a specific path and it will not access files above
+  # that directory.
   class FilesystemProvider
-    InsecurePathError = Class.new(Error)
+    # Raised when FilesystemProvider is asked to access a file that lies above
+    # the base path.
+    class InsecurePathError < Error; end
 
     include AssetProvider
     attr_reader :path
@@ -9,6 +15,8 @@ module Roadie
       @path = path
     end
 
+    # @raise InsecurePathError
+    # @return [Stylesheet, nil]
     def find_stylesheet(name)
       file_path = build_file_path(name)
       if File.exist? file_path

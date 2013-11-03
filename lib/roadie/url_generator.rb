@@ -1,10 +1,12 @@
 require 'set'
 
 module Roadie
+  # @api private
   # Class that handles URL generation
   #
   # URL generation is all about converting relative URLs into absolute URLS
-  # according to the given options.
+  # according to the given options. It is written such as absolute URLs will
+  # get passed right through, so all URLs could be passed through here.
   class UrlGenerator
     attr_reader :url_options
 
@@ -30,17 +32,27 @@ module Roadie
     # Generate an absolute URL from a relative URL.
     #
     # If the passed path is already an absolute URL, it will be returned as-is.
-    # If passed an blank path, the "root URL" will be returned. The root URL is
+    # If passed a blank path, the "root URL" will be returned. The root URL is
     # the URL that the {#url_options} would generate by themselves.
     #
-    # An optional base can be specified for the URL generation. The base is
-    # another relative path from the root that specifies an "offset" from which
-    # the path was found in. A common usecase is to convert a relative path
-    # found in a stylesheet which resides in a subdirectory. In that case
-    # {base} could be "/stylesheets".
+    # An optional base can be specified. The base is another relative path from
+    # the root that specifies an "offset" from which the path was found in. A
+    # common use-case is to convert a relative path found in a stylesheet which
+    # resides in a subdirectory.
+    #
+    # @example Normal conversions
+    #   generator = Roadie::UrlGenerator.new host: "foo.com", scheme: "https"
+    #   generator.generate_url("bar.html") # => "https://foo.com/bar.html"
+    #   generator.generate_url("/bar.html") # => "https://foo.com/bar.html"
+    #   generator.generate_url("") # => "https://foo.com"
+    #
+    # @example Conversions with a base
+    #   generator = Roadie::UrlGenerator.new host: "foo.com", scheme: "https"
+    #   generator.generate_url("../images/logo.png", "/css") # => "https://foo.com/images/logo.png"
+    #   generator.generate_url("../images/logo.png", "/assets/css") # => "https://foo.com/assets/images/logo.png"
     #
     # @param [String] base The base which the relative path comes from
-    # @returns [String] an absolute URL
+    # @return [String] an absolute URL
     def generate_url(path, base = "/")
       return root_uri.to_s if path.nil? or path.empty?
       return path if path_is_absolute?(path)
