@@ -1,5 +1,7 @@
-require 'coveralls'
-Coveralls.wear!
+if ENV['CI']
+  require 'coveralls'
+  Coveralls.wear!
+end
 
 $: << File.dirname(__FILE__) + '/../lib'
 require 'roadie'
