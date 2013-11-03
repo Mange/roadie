@@ -280,7 +280,7 @@ Running specs
 
 ```bash
 bundle install
-bundle exec rspec spec
+rake
 ```
 
 History and contributors
