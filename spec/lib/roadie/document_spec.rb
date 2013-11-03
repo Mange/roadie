@@ -41,11 +41,11 @@ module Roadie
     it "can store callbacks for inlining" do
       callable = double "Callable"
 
-      document.before_inlining = callable
-      document.after_inlining = callable
+      document.before_transformation = callable
+      document.after_transformation = callable
 
-      document.before_inlining.should == callable
-      document.after_inlining.should == callable
+      document.before_transformation.should == callable
+      document.after_transformation.should == callable
     end
 
     describe "transforming" do
@@ -53,8 +53,8 @@ module Roadie
         document = Document.new "<body></body>"
         before = double call: nil
         after = double call: nil
-        document.before_inlining = before
-        document.after_inlining = after
+        document.before_transformation = before
+        document.after_transformation = after
 
         before.should_receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
         Inliner.should_receive(:new).ordered.and_return double.as_null_object

@@ -130,8 +130,8 @@ describe "Roadie functionality" do
       </html>
     HTML
 
-    document.before_inlining = proc { |dom| dom.at_css("body")["class"] = "roadie" }
-    document.after_inlining = proc { |dom| dom.at_css("span").remove }
+    document.before_transformation = proc { |dom| dom.at_css("body")["class"] = "roadie" }
+    document.after_transformation = proc { |dom| dom.at_css("span").remove }
 
     result = parse_html document.transform
     result.at_css("body")["class"].should == "roadie"

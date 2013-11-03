@@ -62,8 +62,8 @@ Your document instance can be configured several options:
 
 * `url_options` - Dictates how absolute URLs should be built.
 * `asset_providers` - A single (or list of) asset providers that are invoked when external CSS is referenced. See below.
-* `before_inlining` - A callback run before inlining starts.
-* `after_inlining` - A callback run after inlining is completed.
+* `before_transformation` - A callback run before inlining starts.
+* `after_transformation` - A callback run after inlining is completed.
 
 ### Making URLs absolute ###
 
@@ -224,8 +224,8 @@ class TrackNewsletterLinks
   end
 end
 
-document.before_inlining = { |document| logger.debug "Inlining document with title #{document.at_css('head > title').try(:text)}" }
-document.after_inlining = TrackNewsletterLinks.new
+document.before_transformation = { |document| logger.debug "Inlining document with title #{document.at_css('head > title').try(:text)}" }
+document.after_transformation = TrackNewsletterLinks.new
 ```
 
 Build Status

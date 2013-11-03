@@ -13,8 +13,8 @@ module Roadie
   # The internal stylesheet is used last and gets the highest priority. The
   # rest is used in the same order as browsers are supposed to use them.
   #
-  # @attr [#call] before_inlining Callback to call just before {#transform}ation is begun. Will be called with the parsed DOM tree.
-  # @attr [#call] after_inlining Callback to call just before {#transform}ation is completed. Will be called with the current DOM tree.
+  # @attr [#call] before_transformation Callback to call just before {#transform}ation is begun. Will be called with the parsed DOM tree.
+  # @attr [#call] after_transformation Callback to call just before {#transform}ation is completed. Will be called with the current DOM tree.
   class Document
     attr_reader :html, :asset_providers
 
@@ -22,7 +22,7 @@ module Roadie
     # @see UrlGenerator#initialize
     attr_accessor :url_options
 
-    attr_accessor :before_inlining, :after_inlining
+    attr_accessor :before_transformation, :after_transformation
 
     # @param [String] html the input HTML
     def initialize(html)
@@ -39,9 +39,9 @@ module Roadie
 
     # Transform the input HTML and returns the processed HTML.
     #
-    # Before the transformation begins, the {#before_inlining} callback will be
+    # Before the transformation begins, the {#before_transformation} callback will be
     # called with the parsed HTML tree, and after all work is complete the
-    # {#after_inlining} callback will be invoked.
+    # {#after_transformation} callback will be invoked.
     #
     # Most of the work is delegated to other classes. A list of them can be seen below.
     #
@@ -53,13 +53,13 @@ module Roadie
     def transform
       dom = Nokogiri::HTML.parse html
 
-      callback before_inlining, dom
+      callback before_transformation, dom
 
       improve dom
       inline dom
       rewrite_urls dom
 
-      callback after_inlining, dom
+      callback after_transformation, dom
 
       # #dup is called since it fixed a few segfaults in certain versions of Nokogiri
       dom.dup.to_html
