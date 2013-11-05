@@ -52,6 +52,8 @@ module Roadie
     #   @see Array#each
     # @!method size
     #   @see Array#size
+    # @!method empty?
+    #   @see Array#empty?
     # @!method push
     #   @see Array#push
     # @!method <<
@@ -62,6 +64,8 @@ module Roadie
     #   @see Array#unshift
     # @!method shift
     #   @see Array#shift
-    def_delegators :@providers, :each, :size, :push, :<<, :pop, :unshift, :shift
+    # @!method last
+    #   @see Array#last
+    def_delegators :@providers, :each, :size, :empty?, :push, :<<, :pop, :unshift, :shift, :last
   end
 end

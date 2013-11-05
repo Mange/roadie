@@ -29,6 +29,14 @@ module Roadie
 
     it "has a size" do
       provider.size.should == 1
+      provider.should_not be_empty
+    end
+
+    it "has a first and a last element" do
+      providers = [double("1"), double("2"), double("3")]
+      list = ProviderList.new(providers)
+      list.first.should == providers.first
+      list.last.should == providers.last
     end
 
     it "can have providers pushed and popped" do

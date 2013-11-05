@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.0.pre1...master)
 
-* Nothing yet
+* Enhancements:
+  * `Roadie::ProviderList` responds to `#empty?` and `#last`
 
 ### 3.0.0.pre1
 
