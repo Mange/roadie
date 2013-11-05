@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.4.2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.0.pre1...master)
+
+* Nothing yet
+
+### 3.0.0.pre1
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.2...v3.0.0.pre1)
 
 Complete rewrite of most of the code and a new direction for the gem.
 
