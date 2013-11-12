@@ -4,6 +4,10 @@
 
 * Enhancements:
   * `Roadie::ProviderList` responds to `#empty?` and `#last`
+  *   `Roadie::FilesystemProvider` ignores query string in filename.
+
+      Older versions of Rails generated `<link>` tags with query strings in their URLs, like such:
+       `/stylesheets/email.css?1380694096`
 
 ### 3.0.0.pre1
 

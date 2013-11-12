@@ -15,7 +15,6 @@ module Roadie
       @path = path
     end
 
-    # @raise InsecurePathError
     # @return [Stylesheet, nil]
     def find_stylesheet(name)
       file_path = build_file_path(name)
@@ -24,10 +23,22 @@ module Roadie
       end
     end
 
+    # @raise InsecurePathError
+    # @return [Stylesheet]
+    def find_stylesheet!(name)
+      file_path = build_file_path(name)
+      if File.exist? file_path
+        Stylesheet.new file_path, File.read(file_path)
+      else
+        clean_name = File.basename file_path
+        raise CssNotFound.new(clean_name, %{#{file_path} does not exist. (Original name was "#{name}")})
+      end
+    end
+
     private
     def build_file_path(name)
       raise InsecurePathError, name if name.include?("..")
-      File.join(@path, name)
+      File.join(@path, name[/^([^?]+)/])
     end
   end
 end

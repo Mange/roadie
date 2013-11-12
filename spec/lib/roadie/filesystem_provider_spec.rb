@@ -24,6 +24,7 @@ module Roadie
         file_contents = File.read full_path
 
         stylesheet = provider.find_stylesheet("stylesheets/green.css")
+        stylesheet.should_not be_nil
         stylesheet.name.should == full_path
         stylesheet.to_s.should == Stylesheet.new("", file_contents).to_s
       end
@@ -41,6 +42,28 @@ module Roadie
         expect {
           provider.find_stylesheet("../#{File.basename(__FILE__)}")
         }.to raise_error FilesystemProvider::InsecurePathError
+      end
+    end
+
+    describe "finding stylesheets with query strings" do
+      it "ignores the query string" do
+        full_path = File.join(fixtures_path, "stylesheets", "green.css")
+        file_contents = File.read full_path
+
+        stylesheet = provider.find_stylesheet("/stylesheets/green.css?time=111")
+        stylesheet.should_not be_nil
+        stylesheet.name.should == full_path
+        stylesheet.to_s.should == Stylesheet.new("", file_contents).to_s
+      end
+
+      it "shows that the query string is ignored inside raised errors" do
+        begin
+          provider.find_stylesheet!("/foo.css?query-string")
+          fail "No error was raised"
+        rescue CssNotFound => error
+          error.css_name.should == "foo.css"
+          error.to_s.should include("/foo.css?query-string")
+        end
       end
     end
   end
