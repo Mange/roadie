@@ -33,7 +33,7 @@ module Roadie
     private
       BAD_PSEUDO_FUNCTIONS = %w[:active :focus :hover :link :target :visited
                                 :-ms-input-placeholder :-moz-placeholder
-                                :before :after].freeze
+                                :before :after :enabled :disabled :checked].freeze
 
       def pseudo_element?
         selector.include? '::'
