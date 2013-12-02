@@ -1,8 +1,15 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v2.4.2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.3...master)
 
 * Nothing yet
+
+### 2.4.3
+
+[full changelog](https://github.com/Mange/roadie/compare/v2.4.2...v2.4.3)
+
+* Bug fixes:
+  * Blacklist `:enabled`, `:disabled` and `:checked` pseudo functions - [Tyler Hunt (tylerhunt)](https://github.com/tylerhunt).
 
 ### 2.4.2
 
