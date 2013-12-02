@@ -19,10 +19,13 @@ module Roadie
         p:link
         p:target
         p:visited
-        p:before
-        p:after
         p:-ms-input-placeholder
         p:-moz-placeholder
+        p:before
+        p:after
+        p:enabled
+        p:disabled
+        p:checked
       ].each do |bad_selector|
         Selector.new(bad_selector).should_not be_inlinable
       end

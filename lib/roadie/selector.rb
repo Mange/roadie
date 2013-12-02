@@ -57,6 +57,7 @@ module Roadie
       :active :focus :hover :link :target :visited
       :-ms-input-placeholder :-moz-placeholder
       :before :after
+      :enabled :disabled :checked
     ].freeze
 
     def pseudo_element?
