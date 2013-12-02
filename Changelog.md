@@ -8,6 +8,7 @@
 
       Older versions of Rails generated `<link>` tags with query strings in their URLs, like such:
        `/stylesheets/email.css?1380694096`
+  * Blacklist `:enabled`, `:disabled` and `:checked` pseudo functions - [Tyler Hunt (tylerhunt)](https://github.com/tylerhunt).
 
 ### 3.0.0.pre1
 
