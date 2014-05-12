@@ -74,7 +74,7 @@ module Roadie
 
     def content_type_meta_element_missing?
       dom.xpath('html/head/meta').none? do |meta|
-        meta['http-equiv'].downcase == 'content-type'
+        meta['http-equiv'].to_s.downcase == 'content-type'
       end
     end
 
