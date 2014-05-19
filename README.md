@@ -70,11 +70,11 @@ Your document instance can be configured several options:
 In order to make URLs absolute you need to first configure the URL options of the document.
 
 ```ruby
-html = "... <a href="/about-us">Read more!</a> ..."
+html = '... <a href="/about-us">Read more!</a> ...'
 document = Roadie::Document.new html
 document.url_options = {host: "myapp.com", protocol: "https"}
 document.transform
-  # => "... <a href="https://myapp.com/about-us">Read more!</a> ..."
+  # => "... <a href=\"https://myapp.com/about-us\">Read more!</a> ..."
 ```
 
 The following URLs will be rewritten for you:
