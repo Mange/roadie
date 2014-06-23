@@ -1,3 +1,5 @@
+require 'rspec/collection_matchers'
+
 if ENV['CI']
   require 'coveralls'
   Coveralls.wear!
