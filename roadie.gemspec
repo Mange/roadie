@@ -20,7 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'nokogiri', '~> 1.6.0'
   s.add_dependency 'css_parser', '~> 1.3.4'
 
-  s.add_development_dependency 'rspec'
+  s.add_development_dependency 'rspec', '~> 2.14.0'
 
   s.extra_rdoc_files = %w[README.md Changelog.md]
   s.require_paths = %w[lib]
