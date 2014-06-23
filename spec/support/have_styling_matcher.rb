@@ -18,7 +18,7 @@ RSpec::Matchers.define :have_styling do |rules|
   }
 
   def styles_at_selector(document)
-    document.should have_selector(@selector)
+    expect(document).to have_selector(@selector)
     StylingExpectation.new document.at_css(@selector)['style']
   end
 end

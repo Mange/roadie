@@ -13,9 +13,9 @@ describe TestProvider do
       "foo.css" => "a { color: red; }",
       "bar.css" => "body { color: green; }",
     })
-    provider.find_stylesheet("foo.css").to_s.should_not include("body")
-    provider.find_stylesheet("bar.css").to_s.should include("body")
-    provider.find_stylesheet("baz.css").should be_nil
+    expect(provider.find_stylesheet("foo.css").to_s).not_to include("body")
+    expect(provider.find_stylesheet("bar.css").to_s).to include("body")
+    expect(provider.find_stylesheet("baz.css")).to be_nil
   end
 
   it "can have a default for missing entries" do
@@ -23,7 +23,7 @@ describe TestProvider do
       "foo.css" => "a { color: red; }",
       :default  => "body { color: green; }",
     })
-    provider.find_stylesheet("foo.css").to_s.should_not include("body")
-    provider.find_stylesheet("bar.css").to_s.should include("body")
+    expect(provider.find_stylesheet("foo.css").to_s).not_to include("body")
+    expect(provider.find_stylesheet("bar.css").to_s).to include("body")
   end
 end

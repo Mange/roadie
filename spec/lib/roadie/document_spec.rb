@@ -8,22 +8,22 @@ module Roadie
 
     it "is initialized with HTML" do
       doc = Document.new "<html></html>"
-      doc.html.should == "<html></html>"
+      expect(doc.html).to eq("<html></html>")
     end
 
     it "has an accessor for URL options" do
       document.url_options = {host: "foo.bar"}
-      document.url_options.should == {host: "foo.bar"}
+      expect(document.url_options).to eq({host: "foo.bar"})
     end
 
     it "has a ProviderList" do
-      document.asset_providers.should be_instance_of(ProviderList)
+      expect(document.asset_providers).to be_instance_of(ProviderList)
     end
 
     it "defaults to having just a FilesystemProvider in the provider list" do
-      document.should have(1).asset_providers
+      expect(document).to have(1).asset_providers
       provider = document.asset_providers.first
-      provider.should be_instance_of(FilesystemProvider)
+      expect(provider).to be_instance_of(FilesystemProvider)
     end
 
     it "allows changes to the asset providers" do
@@ -31,11 +31,11 @@ module Roadie
       old_list = document.asset_providers
 
       document.asset_providers = [other_provider]
-      document.asset_providers.should be_instance_of(ProviderList)
-      document.asset_providers.each.to_a.should == [other_provider]
+      expect(document.asset_providers).to be_instance_of(ProviderList)
+      expect(document.asset_providers.each.to_a).to eq([other_provider])
 
       document.asset_providers = old_list
-      document.asset_providers.should == old_list
+      expect(document.asset_providers).to eq(old_list)
     end
 
     it "can store callbacks for inlining" do
@@ -44,8 +44,8 @@ module Roadie
       document.before_transformation = callable
       document.after_transformation = callable
 
-      document.before_transformation.should == callable
-      document.after_transformation.should == callable
+      expect(document.before_transformation).to eq(callable)
+      expect(document.after_transformation).to eq(callable)
     end
 
     describe "transforming" do
@@ -56,9 +56,9 @@ module Roadie
         document.before_transformation = before
         document.after_transformation = after
 
-        before.should_receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
-        Inliner.should_receive(:new).ordered.and_return double.as_null_object
-        after.should_receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
+        expect(before).to receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
+        expect(Inliner).to receive(:new).ordered.and_return double.as_null_object
+        expect(after).to receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
 
         document.transform
       end
@@ -82,13 +82,13 @@ module Roadie
 
       result = Nokogiri::HTML.parse document.transform
 
-      result.should have_selector('html > head > title')
-      result.at_css('title').text.should == "Greetings"
+      expect(result).to have_selector('html > head > title')
+      expect(result.at_css('title').text).to eq("Greetings")
 
-      result.should have_selector('html > body > p')
+      expect(result).to have_selector('html > body > p')
       paragraph = result.at_css('p')
-      paragraph.text.should == "Hello, world!"
-      paragraph.to_xml.should == '<p style="color:green">Hello, world!</p>'
+      expect(paragraph.text).to eq("Hello, world!")
+      expect(paragraph.to_xml).to eq('<p style="color:green">Hello, world!</p>')
     end
 
     it "extracts styles from the HTML" do
@@ -112,7 +112,7 @@ module Roadie
 
       result = Nokogiri::HTML.parse document.transform
 
-      result.should have_styling([
+      expect(result).to have_styling([
         %w[color red],
         %w[text-align right],
         %w[color green],

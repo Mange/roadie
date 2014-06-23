@@ -15,15 +15,15 @@ describe "Roadie functionality" do
       # See Nokogiri bugs #984 and #985
       # https://github.com/sparklemotion/nokogiri/issues/984
       # https://github.com/sparklemotion/nokogiri/issues/985
-      result.should include("<!DOCTYPE html>")
+      expect(result).to include("<!DOCTYPE html>")
     end
 
-    result.should include("<html>")
-    result.should include("<head>")
-    result.should include("<body>")
+    expect(result).to include("<html>")
+    expect(result).to include("<head>")
+    expect(result).to include("<body>")
 
-    result.should include("<meta")
-    result.should include("text/html; charset=Shift_JIS")
+    expect(result).to include("<meta")
+    expect(result).to include("text/html; charset=Shift_JIS")
   end
 
   it "inlines given css" do
@@ -44,8 +44,8 @@ describe "Roadie functionality" do
     CSS
 
     result = parse_html document.transform
-    result.should have_styling('text-align' => 'center').at_selector('h1')
-    result.should have_styling('color' => 'red').at_selector('p > em')
+    expect(result).to have_styling('text-align' => 'center').at_selector('h1')
+    expect(result).to have_styling('color' => 'red').at_selector('p > em')
   end
 
   it "inlines css from disk" do
@@ -64,7 +64,7 @@ describe "Roadie functionality" do
     HTML
 
     result = parse_html document.transform
-    result.should have_styling('font-size' => '200%').at_selector('p > em')
+    expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
   end
 
   it "crashes when stylesheets cannot be found, unless using NullProvider" do
@@ -107,15 +107,15 @@ describe "Roadie functionality" do
     document.url_options = {host: "myapp.com", scheme: "https", path: "rails/app/"}
     result = parse_html document.transform
 
-    result.at_css("a")["href"].should == "https://myapp.com/rails/app/about_us"
+    expect(result.at_css("a")["href"]).to eq("https://myapp.com/rails/app/about_us")
 
-    result.at_css("img")["src"].should == "https://myapp.com/rails/app/assets/about_us-abcdef1234567890.png"
+    expect(result.at_css("img")["src"]).to eq("https://myapp.com/rails/app/assets/about_us-abcdef1234567890.png")
 
-    result.should have_styling(
+    expect(result).to have_styling(
       "background" => 'url("https://myapp.com/rails/app/assets/bg-abcdef1234567890.png")'
     ).at_selector("body")
 
-    result.should have_styling(
+    expect(result).to have_styling(
       "background" => 'url(https://myapp.com/rails/app/assets/link-abcdef1234567890.png)'
     ).at_selector("a")
   end
@@ -134,7 +134,7 @@ describe "Roadie functionality" do
     document.after_transformation = proc { |dom| dom.at_css("span").remove }
 
     result = parse_html document.transform
-    result.at_css("body")["class"].should == "roadie"
-    result.at_css("span").should be_nil
+    expect(result.at_css("body")["class"]).to eq("roadie")
+    expect(result.at_css("span")).to be_nil
   end
 end

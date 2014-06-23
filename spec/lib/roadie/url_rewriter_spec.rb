@@ -12,7 +12,7 @@ module Roadie
       def dom_document(html); Nokogiri::HTML.parse html; end
 
       it "rewrites all a[href]" do
-        generator.should_receive(:generate_url).with("some/path").and_return "http://foo.com/"
+        expect(generator).to receive(:generate_url).with("some/path").and_return "http://foo.com/"
         dom = dom_document <<-HTML
           <body>
             <a href="some/path">Some path</a>
@@ -25,7 +25,7 @@ module Roadie
       end
 
       it "rewrites relative img[src]" do
-        generator.should_receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
+        expect(generator).to receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
         dom = dom_document <<-HTML
           <body>
             <img src="some/path.jpg">
@@ -38,7 +38,7 @@ module Roadie
       end
 
       it "rewrites url() directives inside style attributes" do
-        generator.should_receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
+        expect(generator).to receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
         dom = dom_document <<-HTML
           <body>
             <div style="background-image: url(&quot;some/path.jpg&quot;);">
@@ -53,7 +53,7 @@ module Roadie
 
     describe "transforming css" do
       it "rewrites all url() directives" do
-        generator.should_receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
+        expect(generator).to receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
         css = "body { background: top url(some/path.jpg) #eee; }"
         expect {
           rewriter.transform_css css
@@ -61,17 +61,17 @@ module Roadie
       end
 
       it "correctly identifies URLs with single quotes" do
-        generator.should_receive(:generate_url).with("images/foo.png").and_return "x"
+        expect(generator).to receive(:generate_url).with("images/foo.png").and_return "x"
         rewriter.transform_css "url('images/foo.png')"
       end
 
       it "correctly identifies URLs with double quotes" do
-        generator.should_receive(:generate_url).with("images/foo.png").and_return "x"
+        expect(generator).to receive(:generate_url).with("images/foo.png").and_return "x"
         rewriter.transform_css 'url("images/foo.png")'
       end
 
       it "correctly identifies URLs with parenthesis inside them" do
-        generator.should_receive(:generate_url).with("images/map_(large_(extra)).png").and_return "x"
+        expect(generator).to receive(:generate_url).with("images/map_(large_(extra)).png").and_return "x"
         rewriter.transform_css 'url(images/map_(large_(extra)).png)'
       end
     end

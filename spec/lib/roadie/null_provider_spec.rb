@@ -7,10 +7,10 @@ module Roadie
     it_behaves_like "asset provider role"
 
     def expect_empty_stylesheet(stylesheet)
-      stylesheet.should_not be_nil
-      stylesheet.name.should == "(null)"
-      stylesheet.should have(0).blocks
-      stylesheet.to_s.should be_empty
+      expect(stylesheet).not_to be_nil
+      expect(stylesheet.name).to eq("(null)")
+      expect(stylesheet).to have(0).blocks
+      expect(stylesheet.to_s).to be_empty
     end
 
     it "finds an empty stylesheet for every name" do

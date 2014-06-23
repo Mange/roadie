@@ -7,17 +7,17 @@ shared_examples_for "url rewriter" do
   end
 
   it "has a #transform_dom(dom) method that returns nil" do
-    subject.should respond_to(:transform_dom)
-    subject.method(:transform_dom).arity.should == 1
+    expect(subject).to respond_to(:transform_dom)
+    expect(subject.method(:transform_dom).arity).to eq(1)
 
     dom = Nokogiri::HTML.parse "<body></body>"
-    subject.transform_dom(dom).should be_nil
+    expect(subject.transform_dom(dom)).to be_nil
   end
 
   it "has a #transform_css(css) method that returns nil" do
-    subject.should respond_to(:transform_css)
-    subject.method(:transform_css).arity.should == 1
+    expect(subject).to respond_to(:transform_css)
+    expect(subject.method(:transform_css).arity).to eq(1)
 
-    subject.transform_css("").should be_nil
+    expect(subject.transform_css("")).to be_nil
   end
 end

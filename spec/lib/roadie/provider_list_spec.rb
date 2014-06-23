@@ -16,27 +16,27 @@ module Roadie
       second = TestProvider.new "bar.css" => "bar { color: green; }"
       provider = ProviderList.new [first, second]
 
-      provider.find_stylesheet("foo.css").to_s.should include "foo"
-      provider.find_stylesheet("bar.css").to_s.should include "bar"
-      provider.find_stylesheet("baz.css").should be_nil
+      expect(provider.find_stylesheet("foo.css").to_s).to include "foo"
+      expect(provider.find_stylesheet("bar.css").to_s).to include "bar"
+      expect(provider.find_stylesheet("baz.css")).to be_nil
     end
 
     it "is enumerable" do
-      provider.should be_kind_of(Enumerable)
-      provider.should respond_to(:each)
-      provider.each.to_a.should == [test_provider]
+      expect(provider).to be_kind_of(Enumerable)
+      expect(provider).to respond_to(:each)
+      expect(provider.each.to_a).to eq([test_provider])
     end
 
     it "has a size" do
-      provider.size.should == 1
-      provider.should_not be_empty
+      expect(provider.size).to eq(1)
+      expect(provider).not_to be_empty
     end
 
     it "has a first and a last element" do
       providers = [double("1"), double("2"), double("3")]
       list = ProviderList.new(providers)
-      list.first.should == providers.first
-      list.last.should == providers.last
+      expect(list.first).to eq(providers.first)
+      expect(list.last).to eq(providers.last)
     end
 
     it "can have providers pushed and popped" do
@@ -48,7 +48,7 @@ module Roadie
       }.to change(provider, :size).by(2)
 
       expect {
-        provider.pop.should == other
+        expect(provider.pop).to eq(other)
       }.to change(provider, :size).by(-1)
     end
 
@@ -60,29 +60,29 @@ module Roadie
       }.to change(provider, :size).by(1)
 
       expect {
-        provider.shift.should == other
+        expect(provider.shift).to eq(other)
       }.to change(provider, :size).by(-1)
     end
 
     describe "wrapping" do
       it "creates provider lists with the arguments" do
-        ProviderList.wrap(test_provider).should be_instance_of(ProviderList)
-        ProviderList.wrap(test_provider, test_provider).size.should == 2
+        expect(ProviderList.wrap(test_provider)).to be_instance_of(ProviderList)
+        expect(ProviderList.wrap(test_provider, test_provider).size).to eq(2)
       end
 
       it "flattens arrays" do
-        ProviderList.wrap([test_provider, test_provider], test_provider).size.should == 3
-        ProviderList.wrap([test_provider, test_provider]).size.should == 2
+        expect(ProviderList.wrap([test_provider, test_provider], test_provider).size).to eq(3)
+        expect(ProviderList.wrap([test_provider, test_provider]).size).to eq(2)
       end
 
       it "combines with providers from other lists" do
         other_list = ProviderList.new([test_provider, test_provider])
-        ProviderList.wrap(test_provider, other_list).size.should == 3
+        expect(ProviderList.wrap(test_provider, other_list).size).to eq(3)
       end
 
       it "returns the passed list if only a single ProviderList is passed" do
         other_list = ProviderList.new([test_provider])
-        ProviderList.wrap(other_list).should eql other_list
+        expect(ProviderList.wrap(other_list)).to eql other_list
       end
     end
   end

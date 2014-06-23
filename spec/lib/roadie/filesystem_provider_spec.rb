@@ -11,11 +11,11 @@ module Roadie
     it_behaves_like "roadie asset provider", valid_name: "stylesheets/green.css", invalid_name: "foo"
 
     it "takes a path" do
-      FilesystemProvider.new("/tmp").path.should == "/tmp"
+      expect(FilesystemProvider.new("/tmp").path).to eq("/tmp")
     end
 
     it "defaults to the current working directory" do
-      FilesystemProvider.new.path.should == Dir.pwd
+      expect(FilesystemProvider.new.path).to eq(Dir.pwd)
     end
 
     describe "finding stylesheets" do
@@ -24,18 +24,18 @@ module Roadie
         file_contents = File.read full_path
 
         stylesheet = provider.find_stylesheet("stylesheets/green.css")
-        stylesheet.should_not be_nil
-        stylesheet.name.should == full_path
-        stylesheet.to_s.should == Stylesheet.new("", file_contents).to_s
+        expect(stylesheet).not_to be_nil
+        expect(stylesheet.name).to eq(full_path)
+        expect(stylesheet.to_s).to eq(Stylesheet.new("", file_contents).to_s)
       end
 
       it "returns nil on non-existant files" do
-        provider.find_stylesheet("non/existant.css").should be_nil
+        expect(provider.find_stylesheet("non/existant.css")).to be_nil
       end
 
       it "finds files inside the base path when using absolute paths" do
         full_path = File.join(fixtures_path, "stylesheets", "green.css")
-        provider.find_stylesheet("/stylesheets/green.css").name.should == full_path
+        expect(provider.find_stylesheet("/stylesheets/green.css").name).to eq(full_path)
       end
 
       it "does not read files above the base directory" do
@@ -51,9 +51,9 @@ module Roadie
         file_contents = File.read full_path
 
         stylesheet = provider.find_stylesheet("/stylesheets/green.css?time=111")
-        stylesheet.should_not be_nil
-        stylesheet.name.should == full_path
-        stylesheet.to_s.should == Stylesheet.new("", file_contents).to_s
+        expect(stylesheet).not_to be_nil
+        expect(stylesheet.name).to eq(full_path)
+        expect(stylesheet.to_s).to eq(Stylesheet.new("", file_contents).to_s)
       end
 
       it "shows that the query string is ignored inside raised errors" do
@@ -61,8 +61,8 @@ module Roadie
           provider.find_stylesheet!("/foo.css?query-string")
           fail "No error was raised"
         rescue CssNotFound => error
-          error.css_name.should == "foo.css"
-          error.to_s.should include("/foo.css?query-string")
+          expect(error.css_name).to eq("foo.css")
+          expect(error.to_s).to include("/foo.css?query-string")
         end
       end
     end

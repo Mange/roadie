@@ -1,5 +1,5 @@
 rspec_options = {
-  cmd: 'rspec -f nested',
+  cmd: 'rspec -f documentation',
   keep_failed: true,
   all_after_pass: true,
   all_on_start: true,

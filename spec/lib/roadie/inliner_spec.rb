@@ -15,34 +15,34 @@ module Roadie
     describe "inlining styles" do
       it "inlines simple attributes" do
         use_css 'p { color: green }'
-        rendering('<p></p>').should have_styling('color' => 'green')
+        expect(rendering('<p></p>')).to have_styling('color' => 'green')
       end
 
       it "inlines browser-prefixed attributes" do
         use_css 'p { -vendor-color: green }'
-        rendering('<p></p>').should have_styling('-vendor-color' => 'green')
+        expect(rendering('<p></p>')).to have_styling('-vendor-color' => 'green')
       end
 
       it "inlines CSS3 attributes" do
         use_css 'p { border-radius: 2px; }'
-        rendering('<p></p>').should have_styling('border-radius' => '2px')
+        expect(rendering('<p></p>')).to have_styling('border-radius' => '2px')
       end
 
       it "keeps the order of the styles that are inlined" do
         use_css 'h1 { padding: 2px; margin: 5px; }'
-        rendering('<h1></h1>').should have_styling([['padding', '2px'], ['margin', '5px']])
+        expect(rendering('<h1></h1>')).to have_styling([['padding', '2px'], ['margin', '5px']])
       end
 
       it "combines multiple selectors into one" do
         use_css 'p { color: green; }
                 .tip { float: right; }'
-        rendering('<p class="tip"></p>').should have_styling([['color', 'green'], ['float', 'right']])
+        expect(rendering('<p class="tip"></p>')).to have_styling([['color', 'green'], ['float', 'right']])
       end
 
       it "uses the attributes with the highest specificity when conflicts arises" do
         use_css ".safe { color: green; }
                 p { color: red; }"
-        rendering('<p class="safe"></p>').should have_styling([['color', 'red'], ['color', 'green']])
+        expect(rendering('<p class="safe"></p>')).to have_styling([['color', 'red'], ['color', 'green']])
       end
 
       it "sorts styles by specificity order" do
@@ -50,11 +50,11 @@ module Roadie
                  #important { important: very; }
                  .important { important: yes; }'
 
-        rendering('<p class="important"></p>').should have_styling([
+        expect(rendering('<p class="important"></p>')).to have_styling([
           %w[important no], %w[important yes]
         ])
 
-        rendering('<p class="important" id="important"></p>').should have_styling([
+        expect(rendering('<p class="important" id="important"></p>')).to have_styling([
           %w[important no], %w[important yes], %w[important very]
         ])
       end
@@ -62,28 +62,28 @@ module Roadie
       it "supports multiple selectors for the same rules" do
         use_css 'p, a { color: green; }'
         rendering('<p></p><a></a>').tap do |document|
-          document.should have_styling('color' => 'green').at_selector('p')
-          document.should have_styling('color' => 'green').at_selector('a')
+          expect(document).to have_styling('color' => 'green').at_selector('p')
+          expect(document).to have_styling('color' => 'green').at_selector('a')
         end
       end
 
       it "keeps !important properties" do
         use_css "a { text-decoration: underline !important; }
                  a.hard-to-spot { text-decoration: none; }"
-        rendering('<a class="hard-to-spot"></a>').should have_styling([
+        expect(rendering('<a class="hard-to-spot"></a>')).to have_styling([
           ['text-decoration', 'none'], ['text-decoration', 'underline !important']
         ])
       end
 
       it "combines with already present inline styles" do
         use_css "p { color: green }"
-        rendering('<p style="font-size: 1.1em"></p>').should have_styling([['color', 'green'], ['font-size', '1.1em']])
+        expect(rendering('<p style="font-size: 1.1em"></p>')).to have_styling([['color', 'green'], ['font-size', '1.1em']])
       end
 
       it "does not override inline styles" do
         use_css "p { text-transform: uppercase; color: red }"
         # The two color properties are kept to make css fallbacks work correctly
-        rendering('<p style="color: green"></p>').should have_styling([
+        expect(rendering('<p style="color: green"></p>')).to have_styling([
           ['text-transform', 'uppercase'],
           ['color', 'red'],
           ['color', 'green'],
@@ -101,7 +101,7 @@ module Roadie
 
           p.active { width: 100%; }
         "
-        rendering('<p class="active"></p>').should have_styling('width' => '100%')
+        expect(rendering('<p class="active"></p>')).to have_styling('width' => '100%')
       end
 
       it "does not crash on any pseudo element selectors" do
@@ -109,7 +109,7 @@ module Roadie
           p.some-element { width: 100%; }
           p::some-element { color: red; }
         "
-        rendering('<p class="some-element"></p>').should have_styling('width' => '100%')
+        expect(rendering('<p class="some-element"></p>')).to have_styling('width' => '100%')
       end
 
       it "warns on selectors that crash Nokogiri" do
@@ -117,7 +117,7 @@ module Roadie
 
         stylesheet = Stylesheet.new "foo.css", "p[%^=foo] { color: red; }"
         inliner = Inliner.new([stylesheet])
-        inliner.should_receive(:warn).with(
+        expect(inliner).to receive(:warn).with(
           %{Roadie cannot use "p[%^=foo]" (from "foo.css" stylesheet) when inlining stylesheets}
         )
         inliner.inline(dom)
@@ -130,8 +130,8 @@ module Roadie
         "
         result = rendering("<p></p> <p></p>")
 
-        result.should have_styling([['color', 'red']]).at_selector('p:first')
-        result.should have_styling([['color', 'red'], ['color', 'green']]).at_selector('p:last')
+        expect(result).to have_styling([['color', 'red']]).at_selector('p:first')
+        expect(result).to have_styling([['color', 'red'], ['color', 'green']]).at_selector('p:last')
       end
 
       it "ignores selectors with @" do

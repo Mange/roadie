@@ -5,7 +5,7 @@ module Roadie
   describe StyleProperties do
     it "has a list of properties" do
       property = StyleProperty.new("color", "green", false, 1)
-      StyleProperties.new([property]).properties.should == [property]
+      expect(StyleProperties.new([property]).properties).to eq([property])
     end
 
     it "can be merged with other properties" do
@@ -13,11 +13,11 @@ module Roadie
       new = StyleProperty.new("color", "green", false, 5)
       instance = StyleProperties.new([old])
 
-      instance.merge(StyleProperties.new([new])).properties.should == [old, new]
-      instance.merge([new]).properties.should == [old, new]
+      expect(instance.merge(StyleProperties.new([new])).properties).to eq([old, new])
+      expect(instance.merge([new]).properties).to eq([old, new])
 
       # Original is not mutated
-      instance.properties.should == [old]
+      expect(instance.properties).to eq([old])
     end
 
     it "can be destructively merged with other properties" do
@@ -26,7 +26,7 @@ module Roadie
       instance = StyleProperties.new([old])
 
       instance.merge!([new])
-      instance.properties.should == [old, new]
+      expect(instance.properties).to eq([old, new])
     end
 
     describe "string representation" do
@@ -44,7 +44,7 @@ module Roadie
 
       it "joins properties together with semicolons" do
         property = MockProperty.new("foo:bar")
-        StyleProperties.new([property, property]).to_s.should == "foo:bar;foo:bar"
+        expect(StyleProperties.new([property, property]).to_s).to eq("foo:bar;foo:bar")
       end
 
       it "sorts properties" do
@@ -52,9 +52,9 @@ module Roadie
         insignificant = MockProperty.new("insignificant", 2)
         common = MockProperty.new("common", 20)
 
-        StyleProperties.new(
+        expect(StyleProperties.new(
           [important, insignificant, common]
-        ).to_s.should == "insignificant;common;super important"
+        ).to_s).to eq("insignificant;common;super important")
       end
     end
   end

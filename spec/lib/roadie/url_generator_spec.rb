@@ -4,7 +4,7 @@ require 'spec_helper'
 module Roadie
   describe UrlGenerator do
     it "is initialized with URL options" do
-      UrlGenerator.new(host: "foo.com").url_options.should == {host: "foo.com"}
+      expect(UrlGenerator.new(host: "foo.com").url_options).to eq({host: "foo.com"})
     end
 
     it "raises an argument error if no URL options are specified" do
@@ -31,37 +31,38 @@ module Roadie
       end
 
       it "uses the given host" do
-        url("/hello.jpg", host: "goats.com").should == "http://goats.com/hello.jpg"
+        expect(url("/hello.jpg", host: "goats.com")).to eq("http://goats.com/hello.jpg")
       end
 
       it "uses the given port" do
-        url("/", host: "example.com", port: 1337).should == "http://example.com:1337/"
+        expect(url("/", host: "example.com", port: 1337)).to eq("http://example.com:1337/")
       end
 
       it "uses the given scheme" do
-        url("/", host: "example.com", scheme: "https").should == "https://example.com/"
+        expect(url("/", host: "example.com", scheme: "https")).to eq("https://example.com/")
       end
 
       it "regards :protocol as an alias for scheme" do
-        url("/", host: "example.com", protocol: "https").should == "https://example.com/"
+        expect(url("/", host: "example.com", protocol: "https")).to eq("https://example.com/")
       end
 
       it "strips extra characters from the scheme" do
-        url("/", host: "example.com", scheme: "https://").should == "https://example.com/"
+        expect(url("/", host: "example.com", scheme: "https://")).to eq("https://example.com/")
       end
 
       it "uses the given path as a prefix" do
-        url("/my_file", host: "example.com", path: "/my_app").should ==
+        expect(url("/my_file", host: "example.com", path: "/my_app")).to eq(
           "http://example.com/my_app/my_file"
+        )
       end
 
       it "returns the original URL if it is absolute" do
-        url("http://foo.com/", host: "bar.com").should == "http://foo.com/"
+        expect(url("http://foo.com/", host: "bar.com")).to eq("http://foo.com/")
       end
 
       it "returns the base URL for blank paths" do
-        url("", host: "foo.com").should == "http://foo.com"
-        url(nil, host: "foo.com").should == "http://foo.com"
+        expect(url("", host: "foo.com")).to eq("http://foo.com")
+        expect(url(nil, host: "foo.com")).to eq("http://foo.com")
       end
 
       it "raises an error on invalid path" do
@@ -71,17 +72,17 @@ module Roadie
       end
 
       it "accepts base paths without a slash in the beginning" do
-        url("/bar", host: "example.com", path: "foo").should == "http://example.com/foo/bar"
-        url("/bar/", host: "example.com", path: "foo/").should == "http://example.com/foo/bar/"
+        expect(url("/bar", host: "example.com", path: "foo")).to eq("http://example.com/foo/bar")
+        expect(url("/bar/", host: "example.com", path: "foo/")).to eq("http://example.com/foo/bar/")
       end
 
       it "accepts input paths without a slash in the beginning" do
-        url("bar", host: "example.com", path: "/foo").should == "http://example.com/foo/bar"
-        url("bar", host: "example.com", path: "/foo/").should == "http://example.com/foo/bar"
+        expect(url("bar", host: "example.com", path: "/foo")).to eq("http://example.com/foo/bar")
+        expect(url("bar", host: "example.com", path: "/foo/")).to eq("http://example.com/foo/bar")
       end
 
       it "does not touch data: URIs" do
-        url("data:deadbeef", host: "example.com").should == "data:deadbeef"
+        expect(url("data:deadbeef", host: "example.com")).to eq("data:deadbeef")
       end
     end
 
@@ -105,15 +106,15 @@ module Roadie
     describe "generating URLs with custom base" do
       it "resolves relative paths" do
         generator = UrlGenerator.new(host: "foo.com")
-        generator.generate_url("../images/bg.png", "/stylesheets").should == "http://foo.com/images/bg.png"
-        generator.generate_url("../images/bg.png", "email/stylesheets").should == "http://foo.com/email/images/bg.png"
-        generator.generate_url("images/bg.png", "email/").should == "http://foo.com/email/images/bg.png"
+        expect(generator.generate_url("../images/bg.png", "/stylesheets")).to eq("http://foo.com/images/bg.png")
+        expect(generator.generate_url("../images/bg.png", "email/stylesheets")).to eq("http://foo.com/email/images/bg.png")
+        expect(generator.generate_url("images/bg.png", "email/")).to eq("http://foo.com/email/images/bg.png")
       end
 
       it "does not use the base when presented with a root-based path" do
         generator = UrlGenerator.new(host: "foo.com")
-        generator.generate_url("/images/bg.png", "/stylesheets").should == "http://foo.com/images/bg.png"
-        generator.generate_url("/images/bg.png", "email/stylesheets").should == "http://foo.com/images/bg.png"
+        expect(generator.generate_url("/images/bg.png", "/stylesheets")).to eq("http://foo.com/images/bg.png")
+        expect(generator.generate_url("/images/bg.png", "email/stylesheets")).to eq("http://foo.com/images/bg.png")
       end
     end
   end

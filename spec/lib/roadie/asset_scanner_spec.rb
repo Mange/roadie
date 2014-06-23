@@ -11,14 +11,14 @@ module Roadie
 
     it "is initialized with a DOM tree and a asset provider set" do
       scanner = AssetScanner.new dom, provider
-      scanner.dom.should == dom
-      scanner.asset_provider.should == provider
+      expect(scanner.dom).to eq(dom)
+      expect(scanner.asset_provider).to eq(provider)
     end
 
     describe "finding" do
       it "returns nothing when no stylesheets are referenced" do
         scanner = AssetScanner.new dom, provider
-        scanner.find_css.should == []
+        expect(scanner.find_css).to eq([])
       end
 
       it "finds all embedded stylesheets" do
@@ -38,11 +38,11 @@ module Roadie
 
         stylesheets = scanner.find_css
 
-        stylesheets.should have(2).stylesheets
-        stylesheets[0].to_s.should include("green")
-        stylesheets[1].to_s.should include("red")
+        expect(stylesheets).to have(2).stylesheets
+        expect(stylesheets[0].to_s).to include("green")
+        expect(stylesheets[1].to_s).to include("red")
 
-        stylesheets.first.name.should == "(inline)"
+        expect(stylesheets.first.name).to eq("(inline)")
       end
 
       it "does not find any embedded stylesheets marked for ignoring" do
@@ -55,35 +55,35 @@ module Roadie
           </html>
         HTML
         scanner = AssetScanner.new dom, provider
-        scanner.find_css.should have(1).stylesheet
+        expect(scanner.find_css).to have(1).stylesheet
       end
 
       it "finds referenced stylesheets through the provider" do
         stylesheet = double "A stylesheet"
-        provider.should_receive(:find_stylesheet!).with("/some/url.css").and_return stylesheet
+        expect(provider).to receive(:find_stylesheet!).with("/some/url.css").and_return stylesheet
 
         dom = dom_fragment %(<link rel="stylesheet" href="/some/url.css">)
         scanner = AssetScanner.new dom, provider
 
-        scanner.find_css.should == [stylesheet]
+        expect(scanner.find_css).to eq([stylesheet])
       end
 
       it "ignores referenced print stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" media="print">)
-        provider.should_not_receive(:find_stylesheet!)
+        expect(provider).not_to receive(:find_stylesheet!)
 
         scanner = AssetScanner.new dom, provider
 
-        scanner.find_css.should == []
+        expect(scanner.find_css).to eq([])
       end
 
       it "does not look for ignored referenced stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" data-roadie-ignore>)
-        provider.should_not_receive(:find_stylesheet!)
+        expect(provider).not_to receive(:find_stylesheet!)
 
         scanner = AssetScanner.new dom, provider
 
-        scanner.find_css.should == []
+        expect(scanner.find_css).to eq([])
       end
 
       it 'ignores HTML comments and CDATA sections' do
@@ -97,9 +97,9 @@ module Roadie
         scanner = AssetScanner.new dom, provider
         stylesheet = scanner.find_css.first
 
-        stylesheet.to_s.should include("green")
-        stylesheet.to_s.should_not include("!--")
-        stylesheet.to_s.should_not include("CDATA")
+        expect(stylesheet.to_s).to include("green")
+        expect(stylesheet.to_s).not_to include("!--")
+        expect(stylesheet.to_s).not_to include("CDATA")
       end
 
       it "does not pick up scripts generating styles" do
@@ -111,7 +111,7 @@ module Roadie
         HTML
 
         scanner = AssetScanner.new dom, provider
-        scanner.find_css.should == []
+        expect(scanner.find_css).to eq([])
       end
     end
 
@@ -136,17 +136,17 @@ module Roadie
 
         stylesheets = scanner.extract_css
 
-        stylesheets.should have(2).stylesheets
-        stylesheets[0].to_s.should include("span")
-        stylesheets[1].to_s.should include("body")
+        expect(stylesheets).to have(2).stylesheets
+        expect(stylesheets[0].to_s).to include("span")
+        expect(stylesheets[1].to_s).to include("body")
 
-        dom.should have_selector("html > head > title")
-        dom.should have_selector("html > body > style[data-roadie-ignore]")
-        dom.should have_selector("link[data-roadie-ignore]")
-        dom.should have_selector("link[media=print]")
+        expect(dom).to have_selector("html > head > title")
+        expect(dom).to have_selector("html > body > style[data-roadie-ignore]")
+        expect(dom).to have_selector("link[data-roadie-ignore]")
+        expect(dom).to have_selector("link[media=print]")
 
-        dom.should_not have_selector("html > head > style")
-        dom.should_not have_selector("html > head > link[href='/some/url.css']")
+        expect(dom).not_to have_selector("html > head > style")
+        expect(dom).not_to have_selector("html > head > link[href='/some/url.css']")
       end
     end
   end
