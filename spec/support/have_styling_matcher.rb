@@ -1,9 +1,11 @@
 RSpec::Matchers.define :have_styling do |rules|
-  @selector = 'body > *:first'
   normalized_rules = StylingExpectation.new(rules)
 
   chain(:at_selector) { |selector| @selector = selector }
-  match { |document| normalized_rules == styles_at_selector(document) }
+  match { |document|
+    @selector ||= 'body > *:first'
+    normalized_rules == styles_at_selector(document)
+  }
 
   description {
     "have styles #{normalized_rules.inspect} at selector #{@selector.inspect}"

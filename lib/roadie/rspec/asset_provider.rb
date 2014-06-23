@@ -3,26 +3,26 @@ shared_examples_for "roadie asset provider" do |options|
   invalid_name = options[:invalid_name] or raise "You must provide an :invalid_name option to the shared examples"
 
   def verify_stylesheet(stylesheet)
-    stylesheet.should_not be_nil
+    expect(stylesheet).to_not be_nil
 
     # Name
-    stylesheet.name.should be_a(String)
-    stylesheet.name.should_not be_empty
+    expect(stylesheet.name).to be_a(String)
+    expect(stylesheet.name).to_not be_empty
 
     # We do not want to force clients to always return non-empty files.
     # Stylesheet#initialize should crash when given a non-valid CSS (like nil,
     # for example)
-    # stylesheet.blocks.should_not be_empty
+    # expect(stylesheet.blocks).to_not be_empty
   end
 
   it "responds to #find_stylesheet" do
-    subject.should respond_to(:find_stylesheet)
-    subject.method(:find_stylesheet).arity.should == 1
+    expect(subject).to respond_to(:find_stylesheet)
+    expect(subject.method(:find_stylesheet).arity).to eq 1
   end
 
   it "responds to #find_stylesheet!" do
-    subject.should respond_to(:find_stylesheet!)
-    subject.method(:find_stylesheet!).arity.should == 1
+    expect(subject).to respond_to(:find_stylesheet!)
+    expect(subject.method(:find_stylesheet!).arity).to eq 1
   end
 
   describe "#find_stylesheet" do
@@ -31,7 +31,7 @@ shared_examples_for "roadie asset provider" do |options|
     end
 
     it "cannot find an invalid stylesheet" do
-      subject.find_stylesheet(invalid_name).should be_nil
+      expect(subject.find_stylesheet(invalid_name)).to be_nil
     end
   end
 
