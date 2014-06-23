@@ -1,6 +1,6 @@
 rspec_options = {
   cmd: 'rspec -f documentation',
-  keep_failed: true,
+  failed_mode: :keep,
   all_after_pass: true,
   all_on_start: true,
   run_all: {cmd: 'rspec -f progress'}
@@ -9,6 +9,7 @@ rspec_options = {
 guard 'rspec', rspec_options do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
+  watch('lib/roadie.rb')   { "spec" }
 
   watch(%r{lib/roadie/rspec/.*\.rb}) { "spec" }
 
