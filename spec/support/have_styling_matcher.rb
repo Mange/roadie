@@ -9,11 +9,11 @@ RSpec::Matchers.define :have_styling do |rules|
     "have styles #{normalized_rules.inspect} at selector #{@selector.inspect}"
   }
 
-  failure_message_for_should { |document|
+  failure_message { |document|
     "expected styles at #{@selector.inspect} to be:\n#{normalized_rules}\nbut was:\n#{styles_at_selector(document)}"
   }
 
-  failure_message_for_should_not {
+  failure_message_when_negated {
     "expected styles at #{@selector.inspect} to not be:\n#{normalized_rules}"
   }
 

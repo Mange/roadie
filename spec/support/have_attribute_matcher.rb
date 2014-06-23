@@ -11,11 +11,11 @@ RSpec::Matchers.define :have_attribute do |attribute|
   end
 
   description { "have attribute #{attribute.inspect} at selector #{@selector.inspect}" }
-  failure_message_for_should do |document|
+  failure_message do |document|
     name, expected = attribute.first
     "expected #{name} attribute at #{@selector.inspect} to be #{expected.inspect} but was #{attribute(document, name).inspect}"
   end
-  failure_message_for_should_not do |document|
+  failure_message_when_negated do |document|
     name, expected = attribute.first
     "expected #{name} attribute at #{@selector.inspect} to not be #{expected.inspect}"
   end

@@ -26,7 +26,7 @@ module Roadie
       bad = double(inlinable?: false, selector: "bad", properties: "props")
 
       stylesheet = Stylesheet.new("example.css", "")
-      stylesheet.stub blocks: [bad, inlinable, bad]
+      allow(stylesheet).to receive_messages blocks: [bad, inlinable, bad]
 
       expect(stylesheet.each_inlinable_block.to_a).to eq([
         ["good", "props"],

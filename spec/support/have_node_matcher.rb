@@ -9,8 +9,8 @@ RSpec::Matchers.define :have_node do |selector|
     end
   end
 
-  failure_message_for_should { "expected document to #{name_to_sentence}#{expected_to_sentence}"}
-  failure_message_for_should_not { "expected document to not #{name_to_sentence}#{expected_to_sentence}"}
+  failure_message { "expected document to #{name_to_sentence}#{expected_to_sentence}"}
+  failure_message_when_negated { "expected document to not #{name_to_sentence}#{expected_to_sentence}"}
 
   def match_attributes(node_attributes)
     attributes = Hash[node_attributes.map { |name, attribute| [name, attribute.value] }]
