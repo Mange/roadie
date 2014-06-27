@@ -274,7 +274,7 @@ Documentation
 
 * [Online documentation for gem](http://rubydoc.info/gems/roadie/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
-* [Online documentation for Roadie 2.4](http://rubydoc.info/gems/roadie/2.4/frames)
+* [Online documentation for Roadie 2.4.3](http://rubydoc.info/gems/roadie/2.4.3/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
 Running specs
