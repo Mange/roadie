@@ -33,8 +33,8 @@ module Roadie
     attr_reader :stylesheets
 
     def apply(style_map)
-      style_map.each_element do |element, properties|
-        apply_element_style element, properties
+      style_map.each_element do |element, builder|
+        apply_element_style element, builder
       end
     end
 
@@ -57,8 +57,8 @@ module Roadie
       end
     end
 
-    def apply_element_style(element, properties)
-      element["style"] = [properties.to_s, element["style"]].compact.join(";")
+    def apply_element_style(element, builder)
+      element["style"] = [builder.attribute_string, element["style"]].compact.join(";")
     end
 
     def elements_matching_selector(stylesheet, selector, dom)
@@ -77,23 +77,25 @@ module Roadie
     end
 
     # @api private
-    # StyleMap is a map between a DOM element and {StyleProperties}. Basically,
+    # StyleMap is a map between a DOM element and {StyleAttributeBuilder}. Basically,
     # it's an accumulator for properties, scoped on specific elements.
     class StyleMap
       def initialize
         @map = Hash.new { |hash, key|
-          hash[key] = StyleProperties.new([])
+          hash[key] = StyleAttributeBuilder.new
         }
       end
 
       def add(elements, new_properties)
         Array(elements).each do |element|
-          @map[element].merge!(new_properties)
+          new_properties.each do |property|
+            @map[element] << property
+          end
         end
       end
 
       def each_element
-        @map.each_pair { |element, properties| yield element, properties }
+        @map.each_pair { |element, builder| yield element, builder }
       end
     end
   end

@@ -7,7 +7,7 @@ require 'roadie/errors'
 require 'roadie/stylesheet'
 require 'roadie/selector'
 require 'roadie/style_property'
-require 'roadie/style_properties'
+require 'roadie/style_attribute_builder'
 require 'roadie/style_block'
 
 require 'roadie/asset_provider'

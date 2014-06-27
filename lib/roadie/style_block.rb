@@ -11,7 +11,6 @@ module Roadie
     # @param [Array<StyleProperty>] properties
     def initialize(selector, properties)
       @selector = selector
-      # TODO: Should we use {StyleProperties} instead? Why? Why not?
       @properties = properties
     end
 
