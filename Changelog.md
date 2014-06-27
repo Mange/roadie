@@ -11,6 +11,7 @@
   * Blacklist `:enabled`, `:disabled` and `:checked` pseudo functions - [Tyler Hunt (tylerhunt)](https://github.com/tylerhunt).
   * Add MRI 2.1.2 to Travis build matrix - [Grey Baker (greysteil)](https://github.com/greysteil).
   * Try to detect an upgrade from Roadie 2 and mention how to make it work with the new version.
+  * Styles emitted in the `style` attribute should now be ordered as they were in the source CSS.
 
 ### 3.0.0.pre1
 
