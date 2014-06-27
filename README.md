@@ -7,7 +7,7 @@ Roadie
 [![Gem Version](https://badge.fury.io/rb/roadie.png)](http://badge.fury.io/rb/roadie)
 [![Dependency Status](https://gemnasium.com/Mange/roadie.png)](https://gemnasium.com/Mange/roadie)
 
-**Note: This README details the prerelease 3.0 version of Roadie. You might be using 2.0, which is much older and only for Rails.**
+**Note: This README details the 3.x version of Roadie. You might be using 2.x, which is much older and only for Rails.**
 
 > Making HTML emails comfortable for the Ruby rockstars
 
@@ -274,6 +274,7 @@ Documentation
 
 * [Online documentation for gem](http://rubydoc.info/gems/roadie/frames)
 * [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
+* [Online documentation for Roadie 2.4](http://rubydoc.info/gems/roadie/2.4/frames)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
 Running specs
@@ -301,7 +302,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2013
+Copyright (c) 2009-2014
 
 * [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 
