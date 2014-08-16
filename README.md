@@ -107,7 +107,7 @@ Example:
 
 ```ruby
 # /home/user/foo/stylesheets/primary.css
-body { color: blue; }
+body { color: green; }
 
 # /home/user/foo/script.rb
 html = <<-HTML
@@ -243,7 +243,7 @@ Tested with [Travis CI](http://travis-ci.org) using:
 
 Let me know if you want any other VM supported officially.
 
-Rubinius support is experimental since it it currently hindered by a Rubinius bug that will probably be fixed shortly.
+Rubinius support is experimental since it currently hindered by a Rubinius bug that will probably be fixed shortly.
 
 ### Versioning ###
 
