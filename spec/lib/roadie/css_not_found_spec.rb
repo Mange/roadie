@@ -13,5 +13,12 @@ module Roadie
         'Could not find stylesheet "file.css": directory is missing'
       )
     end
+
+    it "shows information about used provider when given" do
+      provider = double("Some cool provider")
+      expect(CssNotFound.new('style.css', nil, provider).message).to eq(
+        %(Could not find stylesheet "style.css"\nUsed provider:\n#{provider})
+      )
+    end
   end
 end

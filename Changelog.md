@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.0...master)
 
-* Nothing yet.
+* Enhancements:
+  * `CssNotFound` can take a provider which will be shown in error messages.
 
 ### 3.0.0
 

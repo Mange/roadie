@@ -44,6 +44,14 @@ module Roadie
       nil
     end
 
+    def to_s
+      list = @providers.map { |provider|
+        # Indent every line one level
+        provider.to_s.split("\n").join("\n\t")
+      }
+      "ProviderList: [\n\t#{list.join(",\n\t")}\n]"
+    end
+
     # ProviderList can be coerced to an array. This makes Array#flatten work
     # with it, among other things.
     def to_ary() to_a end

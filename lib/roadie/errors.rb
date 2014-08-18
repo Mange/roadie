@@ -40,18 +40,22 @@ module Roadie
     # The name of the stylesheet that cannot be found
     attr_reader :css_name
 
-    def initialize(css_name, extra_message = nil)
+    # Provider used when finding
+    attr_reader :provider
+
+    # TODO: Change signature in the next major version of Roadie.
+    def initialize(css_name, extra_message = nil, provider = nil)
       @css_name = css_name
+      @provider = provider
       super build_message(extra_message)
     end
 
     private
     def build_message(extra_message)
-      if extra_message
-        %(Could not find stylesheet "#{css_name}": #{extra_message})
-      else
-        %(Could not find stylesheet "#{css_name}")
-      end
+      message = %(Could not find stylesheet "#{css_name}")
+      message << ": #{extra_message}" if extra_message
+      message << "\nUsed provider:\n#{provider}" if provider
+      message
     end
   end
 end

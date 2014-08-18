@@ -64,6 +64,20 @@ module Roadie
       }.to change(provider, :size).by(-1)
     end
 
+    it "has a readable string represenation" do
+      provider = double("Provider", to_s: "Some provider")
+      sublist = ProviderList.new([provider, provider])
+      list = ProviderList.new([provider, sublist, provider])
+      expect(list.to_s).to eql "ProviderList: [\n" +
+        "\tSome provider,\n" +
+        "\tProviderList: [\n" +
+          "\t\tSome provider,\n" +
+          "\t\tSome provider\n" +
+        "\t],\n" +
+        "\tSome provider\n" +
+      "]"
+    end
+
     describe "wrapping" do
       it "creates provider lists with the arguments" do
         expect(ProviderList.wrap(test_provider)).to be_instance_of(ProviderList)
