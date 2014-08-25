@@ -105,7 +105,9 @@ module Roadie
     end
 
     def path_is_absolute?(path)
-      not parse_path(path).relative?
+      # Ruby's URI is pretty unforgiving, but roadie aims to be. Don't involve
+      # URI for URLs that's easy to determine to be absolute.
+      path =~ %r{^(\w+:)?//} || !parse_path(path).relative?
     end
 
     def parse_path(path)

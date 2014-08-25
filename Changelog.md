@@ -4,6 +4,10 @@
 
 * Enhancements:
   * `CssNotFound` can take a provider which will be shown in error messages.
+* Bug fixes:
+  * URL rewriter no longer raises on absolute URLs that cannot be parsed by `URI`. Absolute URLs are completely ignored.
+  * URL rewriter supports urls without a scheme (like `//assets.myapp.com/foo`).
+  * URL rewriter no longer crashes on absolute URLs without a path (like `myapp://`).
 
 ### 3.0.0
 

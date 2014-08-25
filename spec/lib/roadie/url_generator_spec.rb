@@ -84,6 +84,21 @@ module Roadie
       it "does not touch data: URIs" do
         expect(url("data:deadbeef", host: "example.com")).to eq("data:deadbeef")
       end
+
+      it "does not touch absolute URLs without schemes" do
+        expect(url("//assets.myapp.com/foo.jpg", host: "example.com")).to eq("//assets.myapp.com/foo.jpg")
+      end
+
+      it "does not touch custom schemes" do
+        expect(url("myapp://", host: "example.com")).to eq("myapp://")
+      end
+
+      it "does not care if absolute URLs have parse errors" do
+        # Pipe character is invalid inside URLs, but that does not stop a whole
+        # lot of templating/emailing systems for using them as template
+        # markers.
+        expect(url("https://foo.com/%|MARKETING_TOKEN|%", host: "example.com")).to eq("https://foo.com/%|MARKETING_TOKEN|%")
+      end
     end
 
     # URLs in resources that are not based inside the root requires that we may
