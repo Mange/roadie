@@ -235,7 +235,8 @@ Tested with [Travis CI](http://travis-ci.org) using:
 
 * MRI 1.9.3
 * MRI 2.0.0
-* MRI 2.1.2
+* MRI 2.1.3
+* MRI 2.2.0
 * JRuby (latest)
 * Rubinius >= 2.1 (experimental)
 
