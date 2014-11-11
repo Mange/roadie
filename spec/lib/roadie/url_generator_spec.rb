@@ -82,7 +82,14 @@ module Roadie
       end
 
       it "does not touch data: URIs" do
-        expect(url("data:deadbeef", host: "example.com")).to eq("data:deadbeef")
+        # We've had failures with longer data URIs, but I have not been able to
+        # pinpoint where the problem is. I suspect a specific version of Ruby.
+        # This test might not actually catch the real issues since I couldn't
+        # get it red for the reported cases.
+        # It was solved by being more relaxed when determining if a URI is
+        # absolute or not.
+        data_uri = "data:image/png;dead/beef+/=="
+        expect(url(data_uri, host: "example.com")).to eq(data_uri)
       end
 
       it "does not touch absolute URLs without schemes" do
