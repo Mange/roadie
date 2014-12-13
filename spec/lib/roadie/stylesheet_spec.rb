@@ -37,5 +37,19 @@ module Roadie
       stylesheet = Stylesheet.new("example.css", "body { color: green;}a{ color: red; font-size: small }")
       expect(stylesheet.to_s).to eq("body{color:green}\na{color:red;font-size:small}")
     end
+
+    it "understands data URIs" do
+      # http://css-tricks.com/data-uris/
+      stylesheet = Stylesheet.new("foo.css", <<-CSS)
+      h1 {
+        background-image: url(data:image/gif;base64,R0lGODl)
+      }
+      CSS
+
+      expect(stylesheet).to have(1).blocks
+      expect(stylesheet.blocks.map(&:to_s)).to eq([
+        "h1{background-image:url(data:image/gif;base64,R0lGODl)}"
+      ])
+    end
   end
 end
