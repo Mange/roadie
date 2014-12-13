@@ -14,17 +14,6 @@ module Roadie
     # @todo Rename #property to #name
     attr_reader :property
 
-    # Parse a property string.
-    #
-    # @example
-    #   property = Roadie::StyleProperty.parse("color: green")
-    #   property.property # => "color"
-    #   property.value # => "green"
-    #   property.important? # => false
-    def self.parse(declaration, specificity)
-      allocate.send :read_declaration!, declaration, specificity
-    end
-
     def initialize(property, value, important, specificity)
       @property = property
       @value = value
@@ -54,34 +43,7 @@ module Roadie
       "#{to_s} (#{specificity})"
     end
 
-    protected
-    def read_declaration!(declaration, specificity)
-      if (matches = DECLARATION_MATCHER.match(declaration))
-        initialize matches[:property], matches[:value].strip, !!matches[:important], specificity
-        self
-      else
-        raise UnparseableDeclaration, "Cannot parse declaration #{declaration.inspect}"
-      end
-    end
-
     private
-    DECLARATION_MATCHER = %r{
-      \A\s*
-      (?:
-        # !important declaration
-        (?<property>[^:]+):\s?
-        (?<value>.*?)
-        (?<important>\s!important)
-        ;?
-      |
-        # normal declaration
-        (?<property>[^:]+):\s?
-        (?<value>[^;]+)
-        ;?
-      )
-      \s*\Z
-    }x.freeze
-
     def value_with_important
       if important
         "#{value} !important"
