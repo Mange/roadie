@@ -4,6 +4,7 @@
 
 * Bug fixes:
   * Some `data:` URLs could cause exceptions. (#97)
+  * Correctly parse properties with semicolons in their values - [Aidan Feldman (afeld)](https://github.com/afeld) (#100)
 
 ### 3.0.1
 
