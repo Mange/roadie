@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.0.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.2...master)
+
+* Nothing yet.
+
+### 3.0.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.1...v3.0.2)
 
 * Bug fixes:
   * Some `data:` URLs could cause exceptions. (#97)
