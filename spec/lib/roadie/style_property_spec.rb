@@ -45,38 +45,5 @@ module Roadie
         end
       end
     end
-
-    describe "parsing" do
-      def parsing(declaration, specificity)
-        property = StyleProperty.parse(declaration, specificity)
-        [property.property, property.value, property.important?, property.specificity]
-      end
-
-      it "understands simple declarations" do
-        expect(parsing("color: green", 1)).to eq(["color", "green", false, 1])
-        expect(parsing(" color:green; ", 1)).to eq(["color", "green", false, 1])
-        expect(parsing("color: green  ", 1)).to eq(["color", "green", false, 1])
-        expect(parsing("color: green  ; ", 1)).to eq(["color", "green", false, 1])
-      end
-
-      it "understands more complex values" do
-        expect(parsing("padding:0 1px 5rem 9%;", 89)).to eq(["padding", "0 1px 5rem 9%", false, 89])
-      end
-
-      it "understands more complex names" do
-        expect(parsing("font-size: 50%", 10)).to eq(["font-size", "50%", false, 10])
-      end
-
-      it "correctly reads !important declarations" do
-        expect(parsing("color: green !important", 1)).to eq(["color", "green", true, 1])
-        expect(parsing("color: green !important;", 1)).to eq(["color", "green", true, 1])
-      end
-
-      it "raises an error on unparseable declarations" do
-        expect {
-          parsing("I want a red apple!", 1)
-        }.to raise_error(Roadie::UnparseableDeclaration, /red apple/)
-      end
-    end
   end
 end

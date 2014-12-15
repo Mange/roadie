@@ -6,11 +6,6 @@ module Roadie
   # it as a bug.
   class Error < RuntimeError; end
 
-  # Raised when a declaration which cannot be parsed is encountered.
-  #
-  # A declaration is something like "font-size: 12pt;".
-  class UnparseableDeclaration < Error; end
-
   # Raised when Roadie encounters an invalid URL which cannot be parsed by
   # Ruby's +URI+ class.
   #

@@ -39,27 +39,33 @@ module Roadie
 
     def parse_blocks(css)
       blocks = []
-      setup_parser(css).each_selector do |selector_string, declarations, specificity|
-        blocks << create_style_block(selector_string, declarations, specificity)
+      parser = setup_parser(css)
+
+      parser.each_rule_set do |rule_set, media_types|
+        rule_set.selectors.each do |selector_string|
+          blocks << create_style_block(selector_string, rule_set)
+        end
       end
+
       blocks
     end
 
-    def create_style_block(selector_string, declarations, specificity)
-      StyleBlock.new(
-        Selector.new(selector_string, specificity),
-        parse_declarations(declarations, specificity)
-      )
+    def create_style_block(selector_string, rule_set)
+      specificity = CssParser.calculate_specificity(selector_string)
+      selector = Selector.new(selector_string, specificity)
+      properties = []
+
+      rule_set.each_declaration do |prop, val, important|
+        properties << StyleProperty.new(prop, val, important, specificity)
+      end
+
+      StyleBlock.new(selector, properties)
     end
 
     def setup_parser(css)
       parser = CssParser::Parser.new
       parser.add_block! css
       parser
-    end
-
-    def parse_declarations(declarations, specificity)
-      declarations.split(';').map { |declaration| StyleProperty.parse(declaration, specificity) }
     end
   end
 end
