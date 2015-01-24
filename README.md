@@ -260,15 +260,15 @@ Instructions on how to do this on most platforms, see [Nokogiri's official insta
 
 ### My `:hover` selectors don't work. How can I fix them? ###
 
-Put any styles using `:hover` in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
+Put any styles using `:hover` in a separate stylesheet and make sure it is ignored. (See `data-roadie-ignore` under [Referenced Stylesheets](https://github.com/Mange/roadie/blob/master/README.md#referenced-stylesheets) above)
 
 ### My `@media` queries don't work. How can I fix them? ###
 
-Put any styles using them in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
+Put any styles using them in a separate stylesheet and make sure it is ignored. (See `data-roadie-ignore` under [Referenced Stylesheets](https://github.com/Mange/roadie/blob/master/README.md#referenced-stylesheets) above)
 
 ### My vendor-specific styles don't work. How can I fix them? ###
 
-Put any styles using them in a separate stylesheet and make sure it is ignored. (See "Ignoring stylesheets" above)
+Put any styles using them in a separate stylesheet and make sure it is ignored. (See `data-roadie-ignore` under [Referenced Stylesheets](https://github.com/Mange/roadie/blob/master/README.md#referenced-stylesheets) above)
 
 Documentation
 -------------
