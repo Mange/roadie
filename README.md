@@ -273,9 +273,9 @@ Put any styles using them in a separate stylesheet and make sure it is ignored. 
 Documentation
 -------------
 
-* [Online documentation for gem](http://rubydoc.info/gems/roadie/frames)
-* [Online documentation for master](http://rubydoc.info/github/Mange/roadie/master/frames)
-* [Online documentation for Roadie 2.4.3](http://rubydoc.info/gems/roadie/2.4.3/frames)
+* [Online documentation for gem](https://www.omniref.com/ruby/gems/roadie)
+* [Online documentation for master](https://www.omniref.com/github/Mange/roadie)
+* [Online documentation for Roadie 2.4.3](https://www.omniref.com/ruby/gems/roadie/2.4.3)
 * [Changelog](https://github.com/Mange/roadie/blob/master/Changelog.md)
 
 Running specs
