@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.2...master)
 
-* Nothing yet.
+* Bug fixes:
+  * CSS was mutated when parsed, breaking caches and memoized sources - [Brendan Mulholland (bmulholland)](https://github.com/bmulholland) (Mange/roadie-rails#32)
 
 ### 3.0.1
 

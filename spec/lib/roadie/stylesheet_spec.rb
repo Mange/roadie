@@ -51,5 +51,13 @@ module Roadie
         "h1{background-image:url(data:image/gif;base64,R0lGODl)}"
       ])
     end
+
+    it "does not mutate the input CSS" do
+      input = "/* comment */ body { color: green; }"
+      input_copy = input.dup
+      expect {
+        Stylesheet.new("name", input)
+      }.to_not change { input }.from(input_copy)
+    end
   end
 end

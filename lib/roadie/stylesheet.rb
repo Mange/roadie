@@ -64,7 +64,8 @@ module Roadie
 
     def setup_parser(css)
       parser = CssParser::Parser.new
-      parser.add_block! css
+      # CssParser::Parser#add_block! mutates input parameter
+      parser.add_block! css.dup
       parser
     end
   end
