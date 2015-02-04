@@ -1,11 +1,17 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.0.2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.3...master)
+
+* Nothing yet.
+
+### 3.0.3
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.2...v3.0.3)
 
 * Bug fixes:
   * CSS was mutated when parsed, breaking caches and memoized sources - [Brendan Mulholland (bmulholland)](https://github.com/bmulholland) (Mange/roadie-rails#32)
 
-### 3.0.1
+### 3.0.2
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.1...v3.0.2)
 
