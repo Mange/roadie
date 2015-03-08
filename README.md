@@ -311,7 +311,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2014
+Copyright (c) 2009-2015
 
 * [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 
