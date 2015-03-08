@@ -92,10 +92,6 @@ module Roadie
         expect(url(data_uri, host: "example.com")).to eq(data_uri)
       end
 
-      it "does not touch absolute URLs without schemes" do
-        expect(url("//assets.myapp.com/foo.jpg", host: "example.com")).to eq("//assets.myapp.com/foo.jpg")
-      end
-
       it "does not touch custom schemes" do
         expect(url("myapp://", host: "example.com")).to eq("myapp://")
       end
@@ -105,6 +101,30 @@ module Roadie
         # lot of templating/emailing systems for using them as template
         # markers.
         expect(url("https://foo.com/%|MARKETING_TOKEN|%", host: "example.com")).to eq("https://foo.com/%|MARKETING_TOKEN|%")
+      end
+
+      # A lot of email clients do not support schemeless URLs (it's a HTML5
+      # feature) so we should add a scheme to them.
+      context "on schemeless urls" do
+        # Checking for host matches would be too complex, and it's not too hard
+        # to assume that schemeless URLs to assets comes from a shared
+        # configuration with a web page which uses HTTP and HTTPS in different
+        # cases. That also means that we'd like to match the assets URLs with
+        # whatever we want to link to, most likely.
+        it "adds given scheme, even when host does not match" do
+          result = url("//assets.myapp.com/foo.jpg", host: "example.com", scheme: "https")
+          expect(result).to eq("https://assets.myapp.com/foo.jpg")
+        end
+
+        it "adds standard http: scheme when no scheme given" do
+          result = url("//assets.myapp.com/foo.jpg", host: "example.com")
+          expect(result).to eq("http://assets.myapp.com/foo.jpg")
+        end
+
+        it "adds scheme to invalid URLs" do
+          result = url("//foo.com/%|TOKEN|%", scheme: "ftp", host: "example.com")
+          expect(result).to eq("ftp://foo.com/%|TOKEN|%")
+        end
       end
     end
 

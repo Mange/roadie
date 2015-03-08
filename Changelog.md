@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.3...master)
 
-* Nothing yet.
+* Bug fixes:
+  * Schemeless URLs was accepted as-is, which isn't supported in a lot of email clients. (#104)
 
 ### 3.0.3
 

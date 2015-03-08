@@ -26,6 +26,7 @@ module Roadie
       validate_options url_options
 
       @url_options = url_options
+      @scheme = normalize_scheme(url_options[:scheme] || url_options[:protocol])
       @root_uri = build_root_uri
     end
 
@@ -55,19 +56,23 @@ module Roadie
     # @return [String] an absolute URL
     def generate_url(path, base = "/")
       return root_uri.to_s if path.nil? or path.empty?
+      return add_scheme(path) if path_is_schemeless?(path)
       return path if path_is_absolute?(path)
 
       combine_segments(root_uri, base, path).to_s
     end
 
     private
-    attr_reader :root_uri
+    attr_reader :root_uri, :scheme
 
     def build_root_uri
       path = make_absolute url_options[:path]
       port = parse_port url_options[:port]
-      scheme = normalize_scheme(url_options[:scheme] || url_options[:protocol])
       URI::Generic.build(scheme: scheme, host: url_options[:host], port: port, path: path)
+    end
+
+    def add_scheme(path)
+      [scheme, path].join(":")
     end
 
     def combine_segments(root, base, path)
@@ -104,12 +109,18 @@ module Roadie
       end
     end
 
+    def path_is_schemeless?(path)
+      path =~ %r{^//\w}
+    end
+
     def path_is_absolute?(path)
       # Ruby's URI is pretty unforgiving, but roadie aims to be. Don't involve
       # URI for URLs that's easy to determine to be absolute.
-      # URLs starting with a scheme (http:, data:) are absolute, as is URLs
-      # start start with double slashes (//css/app.css).
-      path =~ %r{^(\w+:|//)} || !parse_path(path).relative?
+      # URLs starting with a scheme (http:, data:) are absolute.
+      #
+      # URLs that start with double slashes (//css/app.css) are also absolute
+      # in modern browsers, but most email clients do not understand them it.
+      path =~ %r{^\w+:} || !parse_path(path).relative?
     end
 
     def parse_path(path)
