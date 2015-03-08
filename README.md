@@ -253,6 +253,14 @@ This project follows [Semantic Versioning](http://semver.org/) and has been sinc
 FAQ
 ---
 
+### Why is my markup changed in subtle ways?
+
+Roadie uses Nokogiri to parse and regenerate the HTML of your email, which means that some unintentional changes might show up.
+
+One example would be that Nokogiri might remove your `&nbsp;`s in some cases.
+
+Another example is Nokogiri's lack of HTML5 support, so certain new element might have spaces removed. I recommend you don't use HTML5 in emails anyway because of bad email client support (that includes web mail!).
+
 ### I'm getting segmentation faults (or other C-like problems)! What should I do? ###
 
 Roadie uses Nokogiri to parse the HTML of your email, so any C-like problems like segfaults are likely in that end. The best way to fix this is to first upgrade libxml2 on your system and then reinstall Nokogiri.
