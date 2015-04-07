@@ -77,6 +77,15 @@ module Roadie
         expect(scanner.find_css).to eq([])
       end
 
+      it "does not look for externally referenced stylesheets" do
+        dom = dom_fragment %(<link rel="stylesheet" href="//example.com/assets/style.css">)
+        expect(provider).not_to receive(:find_stylesheet!)
+
+        scanner = AssetScanner.new dom, provider
+
+        expect(scanner.find_css).to eq([])
+      end
+
       it "does not look for ignored referenced stylesheets" do
         dom = dom_fragment %(<link rel="stylesheet" href="/error.css" data-roadie-ignore>)
         expect(provider).not_to receive(:find_stylesheet!)

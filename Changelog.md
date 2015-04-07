@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.4...master)
 
-* Nothing yet.
+* Bug fixes:
+  * Don't try to inline external stylesheets. (#106)
 
 ### 3.0.4
 
