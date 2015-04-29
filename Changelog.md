@@ -4,6 +4,7 @@
 
 * Bug fixes:
   * Don't try to inline external stylesheets. (#106)
+  * Don't generate absolute URLs for anchor links. (Mange/roadie-rails#40)
 
 ### 3.0.4
 

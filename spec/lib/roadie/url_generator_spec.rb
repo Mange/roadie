@@ -60,6 +60,10 @@ module Roadie
         expect(url("http://foo.com/", host: "bar.com")).to eq("http://foo.com/")
       end
 
+      it "returns the original URL if it is just an anchor" do
+        expect(url("#top", host: "bar.com")).to eq("#top")
+      end
+
       it "returns the base URL for blank paths" do
         expect(url("", host: "foo.com")).to eq("http://foo.com")
         expect(url(nil, host: "foo.com")).to eq("http://foo.com")

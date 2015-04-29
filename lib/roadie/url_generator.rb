@@ -32,7 +32,8 @@ module Roadie
 
     # Generate an absolute URL from a relative URL.
     #
-    # If the passed path is already an absolute URL, it will be returned as-is.
+    # If the passed path is already an absolute URL or just an anchor
+    # reference, it will be returned as-is.
     # If passed a blank path, the "root URL" will be returned. The root URL is
     # the URL that the {#url_options} would generate by themselves.
     #
@@ -56,6 +57,7 @@ module Roadie
     # @return [String] an absolute URL
     def generate_url(path, base = "/")
       return root_uri.to_s if path.nil? or path.empty?
+      return path if path_is_anchor?(path)
       return add_scheme(path) if path_is_schemeless?(path)
       return path if Utils.path_is_absolute?(path)
 
@@ -111,6 +113,10 @@ module Roadie
 
     def path_is_schemeless?(path)
       path =~ %r{^//\w}
+    end
+
+    def path_is_anchor?(path)
+      path.start_with? '#'
     end
 
     VALID_OPTIONS = Set[:host, :port, :path, :protocol, :scheme].freeze
