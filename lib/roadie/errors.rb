@@ -38,19 +38,61 @@ module Roadie
     # Provider used when finding
     attr_reader :provider
 
+    # Extra message
+    attr_reader :extra_message
+
     # TODO: Change signature in the next major version of Roadie.
     def initialize(css_name, extra_message = nil, provider = nil)
       @css_name = css_name
       @provider = provider
+      @extra_message = extra_message
       super build_message(extra_message)
     end
 
+    protected
+    def error_row
+      "#{provider || "Unknown provider"}: #{extra_message || message}"
+    end
+
     private
-    def build_message(extra_message)
+    # Redundant method argument is to keep API compatability without major version bump.
+    # TODO: Remove argument on version 4.0.
+    def build_message(extra_message = @extra_message)
       message = %(Could not find stylesheet "#{css_name}")
       message << ": #{extra_message}" if extra_message
       message << "\nUsed provider:\n#{provider}" if provider
       message
+    end
+  end
+
+  class ProvidersFailed < CssNotFound
+    attr_reader :errors
+
+    def initialize(css_name, provider_list, errors)
+      @errors = errors
+      super(css_name, "All providers failed", provider_list)
+    end
+
+    private
+    def build_message(extra_message)
+      message = %(Could not find stylesheet "#{css_name}": #{extra_message}\nUsed providers:\n)
+      each_error_row(errors) do |row|
+        message << "\t" << row << "\n"
+      end
+      message
+    end
+
+    def each_error_row(errors)
+      errors.each do |error|
+        case error
+        when ProvidersFailed
+          each_error_row(error.errors) { |row| yield row }
+        when CssNotFound
+          yield error.error_row
+        else
+          yield "Unknown provider (#{error.class}): #{error}"
+        end
+      end
     end
   end
 end

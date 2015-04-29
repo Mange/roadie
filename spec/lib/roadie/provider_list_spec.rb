@@ -68,14 +68,37 @@ module Roadie
       provider = double("Provider", to_s: "Some provider")
       sublist = ProviderList.new([provider, provider])
       list = ProviderList.new([provider, sublist, provider])
-      expect(list.to_s).to eql "ProviderList: [\n" +
-        "\tSome provider,\n" +
-        "\tProviderList: [\n" +
-          "\t\tSome provider,\n" +
-          "\t\tSome provider\n" +
-        "\t],\n" +
-        "\tSome provider\n" +
-      "]"
+      expect(list.to_s).to eql(
+        "ProviderList: [\n" +
+          "\tSome provider,\n" +
+          "\tProviderList: [\n" +
+            "\t\tSome provider,\n" +
+            "\t\tSome provider\n" +
+          "\t],\n" +
+          "\tSome provider\n" +
+        "]"
+      )
+    end
+
+    it "raises a readable error message" do
+      provider = double("Provider", to_s: "Some provider")
+      allow(provider).to receive(:find_stylesheet!).and_raise(
+        CssNotFound.new("style.css", "I tripped", provider)
+      )
+
+      sublist = ProviderList.new([provider, provider])
+      list = ProviderList.new([provider, sublist, provider])
+
+      expect { list.find_stylesheet!("style.css") }.to raise_error { |error|
+        expect(error.message).to eq(
+          "Could not find stylesheet \"style.css\": All providers failed\n" +
+          "Used providers:\n" +
+            "\tSome provider: I tripped\n" +
+            "\tSome provider: I tripped\n" +
+            "\tSome provider: I tripped\n" +
+            "\tSome provider: I tripped\n"
+        )
+      }
     end
 
     describe "wrapping" do

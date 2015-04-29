@@ -9,7 +9,6 @@ module Roadie
   class ProviderList
     extend Forwardable
     include Enumerable
-    include AssetProvider
 
     # Wrap a single provider, or a list of providers into a {ProviderList}.
     #
@@ -42,6 +41,22 @@ module Roadie
         return css if css
       end
       nil
+    end
+
+    # Tries to find the given stylesheet and raises an {ProvidersFailed} error
+    # if no provider could find the asset.
+    #
+    # @return [Stylesheet]
+    def find_stylesheet!(name)
+      errors = []
+      @providers.each do |provider|
+        begin
+          return provider.find_stylesheet!(name)
+        rescue CssNotFound => error
+          errors << error
+        end
+      end
+      raise ProvidersFailed.new(name, self, errors)
     end
 
     def to_s
