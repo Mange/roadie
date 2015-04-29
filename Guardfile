@@ -9,7 +9,8 @@ rspec_options = {
 guard 'rspec', rspec_options do
   watch(%r{^spec/.+_spec\.rb$})
   watch(%r{^lib/(.+)\.rb$})     { |m| "spec/lib/#{m[1]}_spec.rb" }
-  watch('lib/roadie.rb')   { "spec" }
+  watch('lib/roadie.rb')        { "spec" }
+  watch('lib/roadie/errors.rb') { "spec" }
 
   watch(%r{lib/roadie/rspec/.*\.rb}) { "spec" }
 
