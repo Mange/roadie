@@ -13,8 +13,8 @@ module Roadie
   # The internal stylesheet is used last and gets the highest priority. The
   # rest is used in the same order as browsers are supposed to use them.
   #
-  # @attr [#call] before_transformation Callback to call just before {#transform}ation is begun. Will be called with the parsed DOM tree.
-  # @attr [#call] after_transformation Callback to call just before {#transform}ation is completed. Will be called with the current DOM tree.
+  # @attr [#call] before_transformation Callback to call just before {#transform}ation begins. Will be called with the parsed DOM tree and the {Document} instance.
+  # @attr [#call] after_transformation Callback to call just before {#transform}ation is completed. Will be called with the current DOM tree and the {Document} instance.
   class Document
     attr_reader :html, :asset_providers
 
@@ -39,9 +39,10 @@ module Roadie
 
     # Transform the input HTML and returns the processed HTML.
     #
-    # Before the transformation begins, the {#before_transformation} callback will be
-    # called with the parsed HTML tree, and after all work is complete the
-    # {#after_transformation} callback will be invoked.
+    # Before the transformation begins, the {#before_transformation} callback
+    # will be called with the parsed HTML tree and the {Document} instance, and
+    # after all work is complete the {#after_transformation} callback will be
+    # invoked in the same way.
     #
     # Most of the work is delegated to other classes. A list of them can be seen below.
     #
@@ -97,7 +98,15 @@ module Roadie
     end
 
     def callback(callable, dom)
-      callable.(dom) if callable.respond_to?(:call)
+      if callable.respond_to?(:call)
+        # Arity checking is to support the API without bumping a major version.
+        # TODO: Remove on next major version (v4.0)
+        if !callable.respond_to?(:parameters) || callable.parameters.size == 1
+          callable.(dom)
+        else
+          callable.(dom, self)
+        end
+      end
     end
   end
 end

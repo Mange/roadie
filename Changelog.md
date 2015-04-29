@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.5...master)
 
-* Nothing yet.
+* Enhancements:
+  * Pass `Document` instance to transformation callbacks (#86)
 
 ### 3.0.5
 

@@ -51,16 +51,31 @@ module Roadie
     describe "transforming" do
       it "runs the before and after callbacks" do
         document = Document.new "<body></body>"
-        before = double call: nil
-        after = double call: nil
+        before = ->{}
+        after = ->{}
         document.before_transformation = before
         document.after_transformation = after
 
-        expect(before).to receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
+        expect(before).to receive(:call).with(instance_of(Nokogiri::HTML::Document), document).ordered
         expect(Inliner).to receive(:new).ordered.and_return double.as_null_object
-        expect(after).to receive(:call).with(instance_of(Nokogiri::HTML::Document)).ordered
+        expect(after).to receive(:call).with(instance_of(Nokogiri::HTML::Document), document).ordered
 
         document.transform
+      end
+
+      # TODO: Remove on next major version.
+      it "works on callables that don't expect more than one argument" do
+        document = Document.new "<body></body>"
+        document.before_transformation = ->(first) { }
+        document.after_transformation = ->(first = nil) { }
+
+        expect { document.transform }.to_not raise_error
+
+        # It still supplies the second argument, if possible.
+        document.after_transformation = ->(first, second = nil) {
+          raise "Oops" unless second
+        }
+        expect { document.transform }.to_not raise_error
       end
     end
   end
