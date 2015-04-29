@@ -8,7 +8,6 @@ module Roadie
     # the base path.
     class InsecurePathError < Error; end
 
-    include AssetProvider
     attr_reader :path
 
     def initialize(path = Dir.pwd)

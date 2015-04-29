@@ -31,6 +31,5 @@ can remove this warning by setting a constant:
 
 Thank you for your attention.
 WARNING
-    raise
   end
 end
