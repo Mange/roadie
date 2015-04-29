@@ -26,6 +26,7 @@ module Roadie
     # @return [nil]
     def inline(dom)
       apply style_map(dom)
+      add_uninlinable_styles_to_head dom
       nil
     end
 
@@ -74,6 +75,23 @@ module Roadie
       warn "Roadie got error when looking for #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet): #{error}"
       raise unless error.message.include?('XPath')
       []
+    end
+
+    def add_uninlinable_styles_to_head(dom)
+      uninlinable_styles = stylesheets.flat_map { |stylesheet| stylesheet.blocks.reject(&:inlinable?) }
+      unless uninlinable_styles.empty?
+        create_style_element(uninlinable_styles, find_or_create_head(dom))
+      end
+    end
+
+    def find_or_create_head(dom)
+      dom.at_css("head") || dom.root.prepend_child(Nokogiri::XML::Node.new("head", dom))
+    end
+
+    def create_style_element(style_blocks, head)
+      element = Nokogiri::XML::Node.new("style", head.document)
+      element.content = style_blocks.join("\n")
+      head.add_child(element)
     end
 
     # @api private

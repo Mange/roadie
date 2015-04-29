@@ -145,6 +145,15 @@ module Roadie
         }'
         expect { rendering('<p></p>') }.not_to raise_error
       end
+
+      context "with styles that cannot be inlined" do
+        it "puts them in a new <style> element in the <head>" do
+          use_css 'a:hover { color: red; }'
+          result = rendering("<a></a>")
+          expect(result).to have_selector("head > style")
+          expect(result.at_css("head > style").text).to eq "a:hover{color:red}"
+        end
+      end
     end
   end
 end

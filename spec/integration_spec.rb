@@ -48,6 +48,29 @@ describe "Roadie functionality" do
     expect(result).to have_styling('color' => 'red').at_selector('p > em')
   end
 
+  it "stores styles that cannot be inlined in the <head>" do
+    document = Roadie::Document.new <<-HTML
+      <html>
+        <head>
+          <title>Hello world!</title>
+        </head>
+        <body>
+          <h1>Hello world!</h1>
+          <p>Check out these <em>awesome</em> prices!</p>
+        </body>
+      </html>
+    HTML
+    document.add_css <<-CSS
+      em:hover { color: red; }
+    CSS
+
+    result = parse_html document.transform
+    expect(result).to have_selector("head > style")
+
+    styles = result.at_css("head > style").text
+    expect(styles).to include Roadie::Stylesheet.new("", "em:hover { color: red; }").to_s
+  end
+
   it "inlines css from disk" do
     document = Roadie::Document.new <<-HTML
       <!DOCTYPE html>
