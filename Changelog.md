@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.0.4...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.5...master)
+
+* Nothing yet.
+
+### 3.0.5
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.4...v3.0.5)
 
 * Bug fixes:
   * Don't try to inline external stylesheets. (#106)
