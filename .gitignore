@@ -1,15 +1,10 @@
 .DS_Store
-pkg
-.*~
 .yardoc
 
 .rspec
-.idea/*
-.rvmrc
+.ruby-version
 
 Gemfile.lock
 doc
 tmp
-
-spec/railsapps/*/log
-spec/railsapps/*/tmp
+pkg
