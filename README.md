@@ -299,6 +299,10 @@ Another example is Nokogiri's lack of HTML5 support, so certain new element migh
 Roadie uses Nokogiri to parse the HTML of your email, so any C-like problems like segfaults are likely in that end. The best way to fix this is to first upgrade libxml2 on your system and then reinstall Nokogiri.
 Instructions on how to do this on most platforms, see [Nokogiri's official install guide](http://nokogiri.org/tutorials/installing_nokogiri.html).
 
+### What happened to my `@keyframes`?
+
+The CSS Parser used in Roadie does not handle keyframes. I don't think any email clients do either, but if you want to keep on trying you can add them manually to a `<style>` element (or a separate referenced stylesheet) and [tell Roadie not to touch them](#referenced-stylesheets).
+
 Documentation
 -------------
 

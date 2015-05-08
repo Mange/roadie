@@ -134,19 +134,11 @@ module Roadie
         expect(result).to have_styling([['color', 'red'], ['color', 'green']]).at_selector('p:last')
       end
 
-      it "ignores selectors with @" do
-        use_css '@keyframes progress-bar-stripes {
-          from {
-            background-position: 40px 0;
-          }
-          to {
-            background-position: 0 0;
-          }
-        }'
-        expect { rendering('<p></p>') }.not_to raise_error
-      end
+      context "with uninlinable selectors" do
+        before do
+          allow(Roadie::Utils).to receive(:warn)
+        end
 
-      context "with styles that cannot be inlined" do
         it "puts them in a new <style> element in the <head>" do
           use_css 'a:hover { color: red; }'
           result = rendering("
@@ -160,7 +152,6 @@ module Roadie
         end
 
         it "puts them in <head> on unexpected inlining problems" do
-          allow(Roadie::Utils).to receive(:warn)
           use_css 'p:some-future-thing { color: red; }'
           result = rendering("
             <html>
@@ -170,6 +161,25 @@ module Roadie
           ")
           expect(result).to have_selector("head > style")
           expect(result.at_css("head > style").text).to eq "p:some-future-thing{color:red}"
+        end
+
+        # This is not really wanted behavior, but there's nothing we can do
+        # about it because of limitations on CSS Parser.
+        it "puts does not put keyframes in <head>" do
+          css = '@keyframes progress-bar-stripes {
+            from {
+              background-position: 40px 0;
+            }
+            to {
+              background-position: 0 0;
+            }
+          }'
+
+          use_css css
+          result = rendering('<p></p>')
+
+          expect(result).to have_styling([]).at_selector("p")
+          expect(result).to_not have_selector("head > style")
         end
 
         it "ignores them if told not to keep them" do
@@ -183,7 +193,6 @@ module Roadie
               <body><p></p></body>
             </html>
           "
-          allow(Roadie::Utils).to receive(:warn)
           Inliner.new([stylesheet], dom).inline(false)
           expect(dom).to_not have_selector("head > style")
         end
