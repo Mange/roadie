@@ -17,28 +17,27 @@ Roadie tries to make sending HTML emails a little less painful by inlining style
 How does it work?
 -----------------
 
-Email clients have bad support for stylesheets, and some of them blocks stylesheets from downloading. The easiest way to handle this is to work with all styles inline, but that is error prone and hard to work with as you cannot use classes and/or reuse styling.
+Email clients have bad support for stylesheets, and some of them blocks stylesheets from downloading. The easiest way to handle this is to work with inline styles (`style="..."`), but that is error prone and hard to work with as you cannot use classes and/or reuse styling over your HTML.
 
-This gem helps making this easier by automatically inlining stylesheet rules into the document before sending it. You just give it a list of stylesheets and it will go though all of the selectors assigning the styles to the maching elements. Careful attention has been put into rules being applied in the correct order, so it should behave just like in the browser¹.
+This gem makes this easier by automatically inlining stylesheets into the document. You give Roadie your CSS, or let it find it by itself from the `<link>` and `<style>` tags in the markup, and it will go though all of the selectors assigning the styles to the maching elements. Careful attention has been put into selectors being applied in the correct order, so it should behave just like in the browser.
 
-Roadie also rewrites all relative URLs in the email to a absolute counterpart, making images you insert and those referenced in your stylesheets work. No more headaches about how to write the stylesheets while still having them work with emails from your acceptance environments.
+"Dynamic" selectors (`:hover`, `:visited`, `:focus`, etc.), or selectors not understood by Nokogiri will be inlined into a single `<style>` element for those email clients that support it. This changes specificity a great deal for these rules, so it might not work 100% out of the box. (See more about this below)
 
-¹: Of course, rules like `:hover` will not work by definition. Only static styles can be added.
+Roadie also rewrites all relative URLs in the email to an absolute counterpart, making images you insert and those referenced in your stylesheets work. No more headaches about how to write the stylesheets while still having them work with emails from your acceptance environments.
 
 Features
 --------
 
-* Writes CSS styles inline
-  * Respects `!important` styles
-  * Does not overwrite styles already present in the `style` attribute of tags
-  * Supports the same CSS selectors as [Nokogiri](http://nokogiri.org/) (use CSS3 selectors in your emails!)
-* Makes image urls absolute
-  * Hostname and port configurable on a per-environment basis
-* Makes link `href`s and `img` `src`s absolute
-* Automatically adds proper html skeleton when missing (you don't have to create a layout for emails)²
-* Allows you to inject stylesheets in a number of ways, at runtime
-
-²: This might be removed in a future version, though. You really ought to create a good layout and not let Roadie guess how you want to have it structured.
+* Writes CSS styles inline.
+  * Respects `!important` styles.
+  * Does not overwrite styles already present in the `style` attribute of tags.
+  * Supports the same CSS selectors as [Nokogiri](http://nokogiri.org/); use CSS3 selectors in your emails!
+  * Keeps `:hover` and friends around in a separate `<style>` element.
+* Makes image urls absolute.
+  * Hostname and port configurable on a per-environment basis.
+* Makes link `href`s and `img` `src`s absolute.
+* Automatically adds proper HTML skeleton when missing; you don't have to create a layout for emails.
+* Allows you to inject stylesheets in a number of ways, at runtime.
 
 Install & Usage
 ---------------
@@ -49,7 +48,7 @@ Install & Usage
 gem 'roadie', '~> x.y.0'
 ```
 
-You may then create a new instance of a Roadie document:
+You can then create a new instance of a Roadie document:
 
 ```ruby
 document = Roadie::Document.new "<html><body></body></html>"
@@ -58,12 +57,12 @@ document.transform
     # => "<html><body style=\"color:green;\"></body></html>"
 ```
 
-Your document instance can be configured several options:
+Your document instance can be configured with several options:
 
 * `url_options` - Dictates how absolute URLs should be built.
 * `asset_providers` - A single (or list of) asset providers that are invoked when external CSS is referenced. See below.
-* `before_transformation` - A callback run before inlining starts.
-* `after_transformation` - A callback run after inlining is completed.
+* `before_transformation` - A callback run before transformation starts.
+* `after_transformation` - A callback run after transformation is completed.
 
 ### Making URLs absolute ###
 
@@ -141,7 +140,7 @@ Included providers:
 * `ProviderList` – Wraps a list of other providers and searches them in order. The `asset_providers` setting is an instance of this. It behaves a lot like an array, so you can push, pop, shift and unshift to it.
 * `NullProvider` - Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers.
 
-If you want to search several locations on the filesystem, just declare that:
+If you want to search several locations on the filesystem, you can declare that:
 
 ```ruby
 document.asset_providers = [
@@ -158,7 +157,7 @@ document.asset_providers << Roadie::NullProvider.new
 
 ### Writing your own provider ###
 
-Writing your own provider is also easy. You just need to provide:
+Writing your own provider is also easy. You need to provide:
  * `#find_stylesheet(name)`, returning either a `Roadie::Stylesheet` or nil.
  * `#find_stylesheet!(name)`, returning either a `Roadie::Stylesheet` or raising `Roadie::CssNotFound`.
 
@@ -180,7 +179,11 @@ class UserAssetsProvider
   end
 
   # Instead of implementing #find_stylesheet!, you could also:
-  # include Roadie::AssetProvider
+  #     include Roadie::AssetProvider
+  # That will give you a default implementation without any error message. If
+  # you have multiple error cases, it's recommended that you implement
+  # #find_stylesheet! without #find_stylesheet and raise with an explanatory
+  # error message.
 end
 
 # Try to look for a user stylesheet first, then fall back to normal filesystem lookup.
@@ -203,19 +206,40 @@ describe MyOwnProvider do
   # Extra setup just for these tests:
   it_behaves_like "roadie asset provider", valid_name: "found.css", invalid_name: "does_not_exist.css" do
     subject { MyOwnProvider.new(...) }
-    before { Whatever.stub ... }
+    before { stub_dependencies }
   end
 end
 ```
 
+### Keeping CSS that is impossible to inline
+
+Some CSS is impossible to inline properly. `:hover` and `::after` comes to mind. Roadie tries its best to keep these around by injecting them inside a new `<style>` element in the `<head>`.
+
+The problem here is that Roadie cannot possible adjust the specificity for you, so they will not apply the same way as they did before the styles were inlined.
+
+Another caveat is that a lot of email clients does not support this (which is the entire point of inlining in the first place), so don't put anything important in here. Always handle the case of these selectors not being part of the email.
+
+#### Specificity problems ####
+
+Inlined styles will have much higher specificity than styles in a `<style>`. Here's an example:
+
+```html
+<style>p:hover { color: blue; }</style>
+<p style="color: green;">Hello world</p>
+```
+
+When hovering over this `<p>`, the color will not change as the `color: green` rule takes precedence. You can get it to work by adding `!important` to the `:hover` rule.
+
+It would be foolish to try to automatically inject `!important` on every rule automatically, so this is a manual process.
+
 ### Callbacks ###
 
-Callbacks allow you to do custom work on documents before they are inlined. The Nokogiri document tree is passed to the callable:
+Callbacks allow you to do custom work on documents before they are transformed. The Nokogiri document tree is passed to the callable along with the `Roadie::Document` instance:
 
 ```ruby
 class TrackNewsletterLinks
-  def call(document)
-    document.css("a").each { |link| fix_link(link) }
+  def call(dom, document)
+    dom.css("a").each { |link| fix_link(link) }
   end
 
   def fix_link(link)
@@ -224,7 +248,7 @@ class TrackNewsletterLinks
   end
 end
 
-document.before_transformation = { |document| logger.debug "Inlining document with title #{document.at_css('head > title').try(:text)}" }
+document.before_transformation = { |dom, document| logger.debug "Inlining document with title #{dom.at_css('head > title').try(:text)}" }
 document.after_transformation = TrackNewsletterLinks.new
 ```
 
@@ -265,18 +289,6 @@ Another example is Nokogiri's lack of HTML5 support, so certain new element migh
 
 Roadie uses Nokogiri to parse the HTML of your email, so any C-like problems like segfaults are likely in that end. The best way to fix this is to first upgrade libxml2 on your system and then reinstall Nokogiri.
 Instructions on how to do this on most platforms, see [Nokogiri's official install guide](http://nokogiri.org/tutorials/installing_nokogiri.html).
-
-### My `:hover` selectors don't work. How can I fix them? ###
-
-Put any styles using `:hover` in a separate stylesheet and make sure it is ignored. (See `data-roadie-ignore` under [Referenced Stylesheets](https://github.com/Mange/roadie/blob/master/README.md#referenced-stylesheets) above)
-
-### My `@media` queries don't work. How can I fix them? ###
-
-Put any styles using them in a separate stylesheet and make sure it is ignored. (See `data-roadie-ignore` under [Referenced Stylesheets](https://github.com/Mange/roadie/blob/master/README.md#referenced-stylesheets) above)
-
-### My vendor-specific styles don't work. How can I fix them? ###
-
-Put any styles using them in a separate stylesheet and make sure it is ignored. (See `data-roadie-ignore` under [Referenced Stylesheets](https://github.com/Mange/roadie/blob/master/README.md#referenced-stylesheets) above)
 
 Documentation
 -------------
