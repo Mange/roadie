@@ -8,7 +8,7 @@ module Roadie
 
     def rendering(html, stylesheet = @stylesheet)
       dom = Nokogiri::HTML.parse html
-      Inliner.new([stylesheet]).inline(dom)
+      Inliner.new([stylesheet], dom).inline
       dom
     end
 
@@ -116,11 +116,11 @@ module Roadie
         dom = Nokogiri::HTML.parse "<p></p>"
 
         stylesheet = Stylesheet.new "foo.css", "p[%^=foo] { color: red; }"
-        inliner = Inliner.new([stylesheet])
+        inliner = Inliner.new([stylesheet], dom)
         expect(inliner).to receive(:warn).with(
           %{Roadie cannot use "p[%^=foo]" (from "foo.css" stylesheet) when inlining stylesheets}
         )
-        inliner.inline(dom)
+        inliner.inline
       end
 
       it "works with nth-child" do

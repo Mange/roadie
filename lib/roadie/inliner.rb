@@ -16,22 +16,23 @@ module Roadie
   #   <a href="/" style="color:red"></a>
   class Inliner
     # @param [Array<Stylesheet>] stylesheets the stylesheets to use in the inlining
-    def initialize(stylesheets)
+    # @param [Nokogiri::HTML::Document] dom
+    def initialize(stylesheets, dom)
       @stylesheets = stylesheets
+      @dom = dom
     end
 
     # Start the inlining, mutating the DOM tree.
     #
-    # @param [Nokogiri::HTML::Document] dom
     # @return [nil]
-    def inline(dom)
-      apply style_map(dom)
-      add_uninlinable_styles_to_head dom
+    def inline
+      apply style_map
+      add_uninlinable_styles_to_head
       nil
     end
 
     private
-    attr_reader :stylesheets
+    attr_reader :stylesheets, :dom
 
     def apply(style_map)
       style_map.each_element do |element, builder|
@@ -39,11 +40,11 @@ module Roadie
       end
     end
 
-    def style_map(dom)
+    def style_map
       style_map = StyleMap.new
 
       each_inlinable_block do |stylesheet, selector, properties|
-        elements = elements_matching_selector(stylesheet, selector, dom)
+        elements = elements_matching_selector(stylesheet, selector)
         style_map.add elements, properties
       end
 
@@ -62,7 +63,7 @@ module Roadie
       element["style"] = [builder.attribute_string, element["style"]].compact.join(";")
     end
 
-    def elements_matching_selector(stylesheet, selector, dom)
+    def elements_matching_selector(stylesheet, selector)
       dom.css(selector.to_s)
     # There's no way to get a list of supported pseudo selectors, so we're left
     # with having to rescue errors.
@@ -77,14 +78,14 @@ module Roadie
       []
     end
 
-    def add_uninlinable_styles_to_head(dom)
+    def add_uninlinable_styles_to_head
       uninlinable_styles = stylesheets.flat_map { |stylesheet| stylesheet.blocks.reject(&:inlinable?) }
       unless uninlinable_styles.empty?
-        create_style_element(uninlinable_styles, find_or_create_head(dom))
+        create_style_element(uninlinable_styles, find_or_create_head)
       end
     end
 
-    def find_or_create_head(dom)
+    def find_or_create_head
       dom.at_css("head") || dom.root.prepend_child(Nokogiri::XML::Node.new("head", dom))
     end
 

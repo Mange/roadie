@@ -82,7 +82,7 @@ module Roadie
 
     def inline(dom)
       dom_stylesheets = AssetScanner.new(dom, asset_providers).extract_css
-      Inliner.new(dom_stylesheets + [stylesheet]).inline(dom)
+      Inliner.new(dom_stylesheets + [stylesheet], dom).inline
     end
 
     def rewrite_urls(dom)
