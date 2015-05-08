@@ -26,36 +26,44 @@ module Roadie
     #
     # @return [nil]
     def inline
-      apply style_map
-      add_uninlinable_styles_to_head
+      style_map, extra_blocks = consume_stylesheets
+
+      apply_style_map(style_map)
+      add_styles_to_head(extra_blocks)
+
       nil
     end
 
     private
     attr_reader :stylesheets, :dom
 
-    def apply(style_map)
+    def consume_stylesheets
+      style_map = StyleMap.new
+      extra_blocks = []
+
+      each_style_block do |stylesheet, block|
+        if block.inlinable?
+          elements = elements_matching_selector(stylesheet, block.selector)
+          style_map.add elements, block.properties
+        else
+          extra_blocks << block
+        end
+      end
+
+      [style_map, extra_blocks]
+    end
+
+    def each_style_block
+      stylesheets.each do |stylesheet|
+        stylesheet.blocks.each do |block|
+          yield stylesheet, block
+        end
+      end
+    end
+
+    def apply_style_map(style_map)
       style_map.each_element do |element, builder|
         apply_element_style element, builder
-      end
-    end
-
-    def style_map
-      style_map = StyleMap.new
-
-      each_inlinable_block do |stylesheet, selector, properties|
-        elements = elements_matching_selector(stylesheet, selector)
-        style_map.add elements, properties
-      end
-
-      style_map
-    end
-
-    def each_inlinable_block
-      stylesheets.each do |stylesheet|
-        stylesheet.each_inlinable_block do |selector, properties|
-          yield stylesheet, selector, properties
-        end
       end
     end
 
@@ -78,10 +86,9 @@ module Roadie
       []
     end
 
-    def add_uninlinable_styles_to_head
-      uninlinable_styles = stylesheets.flat_map { |stylesheet| stylesheet.blocks.reject(&:inlinable?) }
-      unless uninlinable_styles.empty?
-        create_style_element(uninlinable_styles, find_or_create_head)
+    def add_styles_to_head(blocks)
+      unless blocks.empty?
+        create_style_element(blocks, find_or_create_head)
       end
     end
 
