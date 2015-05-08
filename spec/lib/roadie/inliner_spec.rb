@@ -153,6 +153,13 @@ module Roadie
           expect(result).to have_selector("head > style")
           expect(result.at_css("head > style").text).to eq "a:hover{color:red}"
         end
+
+        it "puts them in <head> on unexpected inlining problems" do
+          use_css 'p:some-future-thing { color: red; }'
+          result = rendering("<p></p>")
+          expect(result).to have_selector("head > style")
+          expect(result.at_css("head > style").text).to eq "p:some-future-thing{color:red}"
+        end
       end
     end
   end

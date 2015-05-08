@@ -42,8 +42,7 @@ module Roadie
       extra_blocks = []
 
       each_style_block do |stylesheet, block|
-        if block.inlinable?
-          elements = elements_matching_selector(stylesheet, block.selector)
+        if block.inlinable? && (elements = elements_matching_selector(stylesheet, block.selector))
           style_map.add elements, block.properties
         else
           extra_blocks << block
@@ -79,11 +78,11 @@ module Roadie
     # this will catch the rest.
     rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
       warn "Roadie cannot use #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet) when inlining stylesheets"
-      []
+      nil
     rescue => error
       warn "Roadie got error when looking for #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet): #{error}"
       raise unless error.message.include?('XPath')
-      []
+      nil
     end
 
     def add_styles_to_head(blocks)
