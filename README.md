@@ -327,6 +327,7 @@ Major contributors to Roadie:
 
 * [Arttu Tervo (arttu)](https://github.com/arttu) - Original Asset pipeline support
 * [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes) - Initial Rails 4 support
+* [Leung Ho Kuen (PikachuEXE)](https://github.com/PikachuEXE) - A lot of bug reporting and triaging.
 
 You can [see all contributors](https://github.com/Mange/roadie/contributors) on GitHub.
 
