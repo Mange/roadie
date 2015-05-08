@@ -89,15 +89,16 @@ module Roadie
 
     def add_styles_to_head(blocks)
       unless blocks.empty?
-        create_style_element(blocks, find_or_create_head)
+        create_style_element(blocks, find_head)
       end
     end
 
-    def find_or_create_head
-      dom.at_css("head") || dom.root.prepend_child(Nokogiri::XML::Node.new("head", dom))
+    def find_head
+      dom.at_xpath('html/head')
     end
 
     def create_style_element(style_blocks, head)
+      return unless head
       element = Nokogiri::XML::Node.new("style", head.document)
       element.content = style_blocks.join("\n")
       head.add_child(element)

@@ -51,24 +51,23 @@ describe "Roadie functionality" do
   it "stores styles that cannot be inlined in the <head>" do
     document = Roadie::Document.new <<-HTML
       <html>
-        <head>
-          <title>Hello world!</title>
-        </head>
         <body>
           <h1>Hello world!</h1>
           <p>Check out these <em>awesome</em> prices!</p>
         </body>
       </html>
     HTML
-    document.add_css <<-CSS
+    css = <<-CSS
       em:hover { color: red; }
+      p:fung-shuei { color: spirit; }
     CSS
+    document.add_css css
 
     result = parse_html document.transform
-    expect(result).to have_selector("head > style")
+    expect(result).to have_selector("html > head > style")
 
-    styles = result.at_css("head > style").text
-    expect(styles).to include Roadie::Stylesheet.new("", "em:hover { color: red; }").to_s
+    styles = result.at_css("html > head > style").text
+    expect(styles).to include Roadie::Stylesheet.new("", css).to_s
   end
 
   it "inlines css from disk" do
