@@ -34,9 +34,10 @@ module Roadie
       nil
     end
 
-    private
+    protected
     attr_reader :stylesheets, :dom
 
+    private
     def consume_stylesheets
       style_map = StyleMap.new
       extra_blocks = []

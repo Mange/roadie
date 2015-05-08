@@ -64,9 +64,10 @@ module Roadie
       combine_segments(root_uri, base, path).to_s
     end
 
-    private
+    protected
     attr_reader :root_uri, :scheme
 
+    private
     def build_root_uri
       path = make_absolute url_options[:path]
       port = parse_port url_options[:port]
