@@ -79,10 +79,10 @@ module Roadie
     # Pseudo selectors that are known to be bad are skipped automatically but
     # this will catch the rest.
     rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
-      warn "Roadie cannot use #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet) when inlining stylesheets"
+      Utils.warn "Cannot inline #{selector.inspect} from \"#{stylesheet.name}\" stylesheet. If this is valid CSS, please report a bug."
       nil
     rescue => error
-      warn "Roadie got error when looking for #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet): #{error}"
+      Utils.warn "Got error when looking for #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet): #{error}"
       raise unless error.message.include?('XPath')
       nil
     end

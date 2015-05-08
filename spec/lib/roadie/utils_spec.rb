@@ -24,4 +24,11 @@ module Roadie
       expect("/").not_to be_absolute
     end
   end
+
+  describe Utils, "warn" do
+    it "passes the message on to Kernel.warn" do
+      expect(Kernel).to receive(:warn).with("Roadie: Hello from specs")
+      Utils.warn "Hello from specs"
+    end
+  end
 end

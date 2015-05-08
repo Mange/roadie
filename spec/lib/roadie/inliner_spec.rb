@@ -117,8 +117,8 @@ module Roadie
 
         stylesheet = Stylesheet.new "foo.css", "p[%^=foo] { color: red; }"
         inliner = Inliner.new([stylesheet], dom)
-        expect(inliner).to receive(:warn).with(
-          %{Roadie cannot use "p[%^=foo]" (from "foo.css" stylesheet) when inlining stylesheets}
+        expect(Utils).to receive(:warn).with(
+          %{Cannot inline "p[%^=foo]" from "foo.css" stylesheet. If this is valid CSS, please report a bug.}
         )
         inliner.inline
       end
@@ -160,6 +160,7 @@ module Roadie
         end
 
         it "puts them in <head> on unexpected inlining problems" do
+          allow(Roadie::Utils).to receive(:warn)
           use_css 'p:some-future-thing { color: red; }'
           result = rendering("
             <html>

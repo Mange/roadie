@@ -62,6 +62,7 @@ describe "Roadie functionality" do
       p:fung-shuei { color: spirit; }
     CSS
     document.add_css css
+    expect(Roadie::Utils).to receive(:warn).with(/fung-shuei/)
 
     result = parse_html document.transform
     expect(result).to have_selector("html > head > style")

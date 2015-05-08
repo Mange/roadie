@@ -8,7 +8,7 @@ if defined?(Rails) && !defined?(ROADIE_I_KNOW_ABOUT_VERSION_3)
   begin
     require 'roadie/rails'
   rescue LoadError
-    warn <<-WARNING
+    Utils.warn <<-WARNING
 Hey there! It looks like you might have tried to upgrade to Roadie 3 from Roadie 2.
 
 Roadie 3 is a completely new version that is no longer interfacing with Rails

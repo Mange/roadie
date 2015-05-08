@@ -1,5 +1,6 @@
 module Roadie
   module Utils
+    # @api private
     def path_is_absolute?(path)
       # Ruby's URI is pretty unforgiving, but roadie aims to be. Don't involve
       # URI for URLs that's easy to determine to be absolute.
@@ -15,6 +16,14 @@ module Roadie
         raise InvalidUrlPath.new(path, error)
       end
     end
+    # @api private
     module_function :path_is_absolute?
+
+    # @api private
+    def warn(message)
+      Kernel.warn("Roadie: #{message}")
+    end
+    # @api private
+    module_function :warn
   end
 end
