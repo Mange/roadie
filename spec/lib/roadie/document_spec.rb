@@ -16,6 +16,12 @@ module Roadie
       expect(document.url_options).to eq({host: "foo.bar"})
     end
 
+    it "has a setting for keeping uninlinable styles" do
+      expect(document.keep_uninlinable_css).to be true
+      document.keep_uninlinable_css = false
+      expect(document.keep_uninlinable_css).to be false
+    end
+
     it "has a ProviderList" do
       expect(document.asset_providers).to be_instance_of(ProviderList)
     end

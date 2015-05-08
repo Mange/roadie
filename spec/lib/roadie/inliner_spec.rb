@@ -171,6 +171,22 @@ module Roadie
           expect(result).to have_selector("head > style")
           expect(result.at_css("head > style").text).to eq "p:some-future-thing{color:red}"
         end
+
+        it "ignores them if told not to keep them" do
+          stylesheet = use_css "
+            p:hover { color: red; }
+            p:some-future-thing { color: red; }
+          "
+          dom = Nokogiri::HTML.parse "
+            <html>
+              <head></head>
+              <body><p></p></body>
+            </html>
+          "
+          allow(Roadie::Utils).to receive(:warn)
+          Inliner.new([stylesheet], dom).inline(false)
+          expect(dom).to_not have_selector("head > style")
+        end
       end
     end
   end

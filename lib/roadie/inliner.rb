@@ -24,12 +24,13 @@ module Roadie
 
     # Start the inlining, mutating the DOM tree.
     #
+    # @param [true, false] keep_extra_blocks
     # @return [nil]
-    def inline
+    def inline(keep_extra_blocks = true)
       style_map, extra_blocks = consume_stylesheets
 
       apply_style_map(style_map)
-      add_styles_to_head(extra_blocks)
+      add_styles_to_head(extra_blocks) if keep_extra_blocks
 
       nil
     end

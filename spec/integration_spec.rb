@@ -71,6 +71,28 @@ describe "Roadie functionality" do
     expect(styles).to include Roadie::Stylesheet.new("", css).to_s
   end
 
+  it "can be configured to skip styles that cannot be inlined" do
+    document = Roadie::Document.new <<-HTML
+      <html>
+        <body>
+          <h1>Hello world!</h1>
+          <p>Check out these <em>awesome</em> prices!</p>
+        </body>
+      </html>
+    HTML
+    css = <<-CSS
+      em:hover { color: red; }
+      p:fung-shuei { color: spirit; }
+    CSS
+    document.add_css css
+    document.keep_uninlinable_css = false
+
+    expect(Roadie::Utils).to receive(:warn).with(/fung-shuei/)
+
+    result = parse_html document.transform
+    expect(result).to_not have_selector("html > head > style")
+  end
+
   it "inlines css from disk" do
     document = Roadie::Document.new <<-HTML
       <!DOCTYPE html>

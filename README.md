@@ -60,6 +60,7 @@ document.transform
 Your document instance can be configured with several options:
 
 * `url_options` - Dictates how absolute URLs should be built.
+* `keep_uninlinable_css` - Set to false to skip CSS that cannot be inlined.
 * `asset_providers` - A single (or list of) asset providers that are invoked when external CSS is referenced. See below.
 * `before_transformation` - A callback run before transformation starts.
 * `after_transformation` - A callback run after transformation is completed.
@@ -231,6 +232,14 @@ Inlined styles will have much higher specificity than styles in a `<style>`. Her
 When hovering over this `<p>`, the color will not change as the `color: green` rule takes precedence. You can get it to work by adding `!important` to the `:hover` rule.
 
 It would be foolish to try to automatically inject `!important` on every rule automatically, so this is a manual process.
+
+#### Turning it off ####
+
+If you'd rather skip this and have the styles not possible to inline disappear, you can turn off this feature by setting the `keep_uninlinable_css` option to false.
+
+```ruby
+document.keep_uninlinable_css = false
+```
 
 ### Callbacks ###
 

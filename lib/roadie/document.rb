@@ -24,8 +24,12 @@ module Roadie
 
     attr_accessor :before_transformation, :after_transformation
 
+    # Should CSS that cannot be inlined be kept in a new `<style>` element in `<head>`?
+    attr_accessor :keep_uninlinable_css
+
     # @param [String] html the input HTML
     def initialize(html)
+      @keep_uninlinable_css = true
       @html = html
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @css = ""
@@ -82,7 +86,7 @@ module Roadie
 
     def inline(dom)
       dom_stylesheets = AssetScanner.new(dom, asset_providers).extract_css
-      Inliner.new(dom_stylesheets + [stylesheet], dom).inline
+      Inliner.new(dom_stylesheets + [stylesheet], dom).inline(keep_uninlinable_css)
     end
 
     def rewrite_urls(dom)
