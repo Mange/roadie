@@ -42,7 +42,7 @@ module Roadie
       extra_blocks = []
 
       each_style_block do |stylesheet, block|
-        if block.inlinable? && (elements = elements_matching_selector(stylesheet, block.selector))
+        if (elements = selector_elements(stylesheet, block))
           style_map.add elements, block.properties
         else
           extra_blocks << block
@@ -58,6 +58,10 @@ module Roadie
           yield stylesheet, block
         end
       end
+    end
+
+    def selector_elements(stylesheet, block)
+      block.inlinable? && elements_matching_selector(stylesheet, block.selector)
     end
 
     def apply_style_map(style_map)
