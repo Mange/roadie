@@ -65,9 +65,7 @@ module Roadie
     end
 
     def apply_style_map(style_map)
-      style_map.each_element do |element, builder|
-        apply_element_style element, builder
-      end
+      style_map.each_element(&method(:apply_element_style))
     end
 
     def apply_element_style(element, builder)
@@ -123,8 +121,8 @@ module Roadie
         end
       end
 
-      def each_element
-        @map.each_pair { |element, builder| yield element, builder }
+      def each_element(&block)
+        @map.each_pair(&block)
       end
     end
   end
