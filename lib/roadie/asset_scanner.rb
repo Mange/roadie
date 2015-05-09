@@ -5,7 +5,8 @@ module Roadie
   # DOM tree. Referenced styles will be found using the provided asset
   # provider.
   #
-  # Any style declaration tagged with +data-roadie-ignore+ will be ignored.
+  # Any style declaration tagged with +data-roadie-ignore+ will be ignored,
+  # except for having the attribute itself removed.
   class AssetScanner
     attr_reader :dom, :asset_provider
 
@@ -38,15 +39,16 @@ module Roadie
     # @see #find_css
     # @return [Enumerable<Stylesheet>] every extracted stylesheet
     def extract_css
-      @dom.css(STYLE_ELEMENT_QUERY).map { |element|
+      stylesheets = @dom.css(STYLE_ELEMENT_QUERY).map { |element|
         stylesheet = read_stylesheet(element)
         element.remove if stylesheet
         stylesheet
       }.compact
+      remove_ignore_markers
+      stylesheets
     end
 
     private
-
     STYLE_ELEMENT_QUERY = (
       "style:not([data-roadie-ignore]), " +
       # TODO: When using Nokogiri 1.6.1 and later; we may use a double :not here
@@ -87,6 +89,12 @@ module Roadie
 
     def clean_css(css)
       css.gsub(CLEANING_MATCHER, '')
+    end
+
+    def remove_ignore_markers
+      @dom.css("[data-roadie-ignore]").each do |node|
+        node.remove_attribute "data-roadie-ignore"
+      end
     end
   end
 end

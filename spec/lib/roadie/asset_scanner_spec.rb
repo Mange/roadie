@@ -133,10 +133,10 @@ module Roadie
               <style>span { color: green; }</style>
               <link rel="stylesheet" href="/some/url.css">
               <link rel="stylesheet" href="/error.css" media="print">
-              <link rel="stylesheet" href="/cool.css" data-roadie-ignore>
+              <link rel="stylesheet" href="/cool.css" data-roadie-ignore class="totally-ignored">
             </head>
             <body>
-              <style data-roadie-ignore>a { color: red; }</style>
+              <style data-roadie-ignore class="totally-ignored">a { color: red; }</style>
             </body>
           </html>
         HTML
@@ -150,12 +150,31 @@ module Roadie
         expect(stylesheets[1].to_s).to include("body")
 
         expect(dom).to have_selector("html > head > title")
-        expect(dom).to have_selector("html > body > style[data-roadie-ignore]")
-        expect(dom).to have_selector("link[data-roadie-ignore]")
+        expect(dom).to have_selector("html > body > style.totally-ignored")
+        expect(dom).to have_selector("link.totally-ignored")
         expect(dom).to have_selector("link[media=print]")
 
         expect(dom).not_to have_selector("html > head > style")
         expect(dom).not_to have_selector("html > head > link[href='/some/url.css']")
+      end
+
+      it "removes the data-roadie-ignore markers" do
+        dom = dom_document <<-HTML
+          <html>
+            <head>
+              <link rel="stylesheet" href="/cool.css" data-roadie-ignore id="first">
+            </head>
+            <body>
+              <style data-roadie-ignore id="second">a { color: red; }</style>
+            </body>
+          </html>
+        HTML
+        scanner = AssetScanner.new dom, TestProvider.new
+
+        scanner.extract_css
+
+        expect(dom.at_css("#first").attributes).to_not include("data-roadie-ignore")
+        expect(dom.at_css("#second").attributes).to_not include("data-roadie-ignore")
       end
     end
   end
