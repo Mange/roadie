@@ -18,6 +18,11 @@ module Roadie
       expect(FilesystemProvider.new.path).to eq(Dir.pwd)
     end
 
+    it "shows the given path in string representation" do
+      expect(provider.to_s).to include provider.path.to_s
+      expect(provider.inspect).to include provider.path.to_s
+    end
+
     describe "finding stylesheets" do
       it "finds files in the path" do
         full_path = File.join(fixtures_path, "stylesheets", "green.css")

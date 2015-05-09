@@ -7,6 +7,9 @@ module Roadie
     def find_stylesheet(name) empty_stylesheet end
     def find_stylesheet!(name) empty_stylesheet end
 
+    def to_s() inspect end
+    def inspect() "#<#{self.class}>" end
+
     private
     def empty_stylesheet() Stylesheet.new "(null)", "" end
   end
