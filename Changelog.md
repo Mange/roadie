@@ -3,6 +3,7 @@
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.5...master)
 
 * Enhancements:
+  * Allow user to specify asset providers for referenced assets with full URLs and inline them (#107)
   * Pass `Document` instance to transformation callbacks (#86)
   * Made `nokogiri` dependency more forgiving.
     * Supports `1.5.0`...`1.7.0` now instead of `1.6.0`...`1.7.0`. Some people out there are stuck on this older version of Nokogiri, and I don't want to leave them out.

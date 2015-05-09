@@ -16,7 +16,7 @@ module Roadie
   # @attr [#call] before_transformation Callback to call just before {#transform}ation begins. Will be called with the parsed DOM tree and the {Document} instance.
   # @attr [#call] after_transformation Callback to call just before {#transform}ation is completed. Will be called with the current DOM tree and the {Document} instance.
   class Document
-    attr_reader :html, :asset_providers
+    attr_reader :html, :asset_providers, :external_asset_providers
 
     # URL options. If none are given no URL rewriting will take place.
     # @see UrlGenerator#initialize
@@ -32,6 +32,7 @@ module Roadie
       @keep_uninlinable_css = true
       @html = html
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
+      @external_asset_providers = ProviderList.empty
       @css = ""
     end
 
@@ -70,9 +71,14 @@ module Roadie
       dom.dup.to_html
     end
 
-    # Assign new asset providers. The supplied list will be wrapped in a {ProviderList} using {ProviderList.wrap}.
+    # Assign new normal asset providers. The supplied list will be wrapped in a {ProviderList} using {ProviderList.wrap}.
     def asset_providers=(list)
       @asset_providers = ProviderList.wrap(list)
+    end
+
+    # Assign new external asset providers. The supplied list will be wrapped in a {ProviderList} using {ProviderList.wrap}.
+    def external_asset_providers=(list)
+      @external_asset_providers = ProviderList.wrap(list)
     end
 
     private
@@ -85,7 +91,7 @@ module Roadie
     end
 
     def inline(dom)
-      dom_stylesheets = AssetScanner.new(dom, asset_providers).extract_css
+      dom_stylesheets = AssetScanner.new(dom, asset_providers, external_asset_providers).extract_css
       Inliner.new(dom_stylesheets + [stylesheet], dom).inline(keep_uninlinable_css)
     end
 

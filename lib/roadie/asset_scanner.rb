@@ -8,13 +8,15 @@ module Roadie
   # Any style declaration tagged with +data-roadie-ignore+ will be ignored,
   # except for having the attribute itself removed.
   class AssetScanner
-    attr_reader :dom, :asset_provider
+    attr_reader :dom, :normal_asset_provider, :external_asset_provider
 
     # @param [Nokogiri::HTML::Document] dom
-    # @param [#find_stylesheet!] asset_provider
-    def initialize(dom, asset_provider)
+    # @param [#find_stylesheet!] normal_asset_provider
+    # @param [#find_stylesheet!] external_asset_provider
+    def initialize(dom, normal_asset_provider, external_asset_provider)
       @dom = dom
-      @asset_provider = asset_provider
+      @normal_asset_provider = normal_asset_provider
+      @external_asset_provider = external_asset_provider
     end
 
     # Looks for all non-ignored stylesheets and returns them.
@@ -72,7 +74,7 @@ module Roadie
     def read_stylesheet(element)
       if element.name == "style"
         read_style_element element
-      else
+      elsif element.name == "link" && element['media'] != "print" && element["href"]
         read_link_element element
       end
     end
@@ -82,13 +84,23 @@ module Roadie
     end
 
     def read_link_element(element)
-      if element['media'] != "print" && element["href"] && !Utils.path_is_absolute?(element["href"])
-        asset_provider.find_stylesheet! element['href']
+      if Utils.path_is_absolute?(element["href"])
+        external_asset_provider.find_stylesheet! element['href'] if should_find_external?
+      else
+        normal_asset_provider.find_stylesheet! element['href']
       end
     end
 
     def clean_css(css)
       css.gsub(CLEANING_MATCHER, '')
+    end
+
+    def should_find_external?
+      return false unless external_asset_provider
+      # If external_asset_provider is empty list; don't use it.
+      return false if external_asset_provider.respond_to?(:empty?) && external_asset_provider.empty?
+
+      true
     end
 
     def remove_ignore_markers

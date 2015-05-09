@@ -61,7 +61,8 @@ Your document instance can be configured with several options:
 
 * `url_options` - Dictates how absolute URLs should be built.
 * `keep_uninlinable_css` - Set to false to skip CSS that cannot be inlined.
-* `asset_providers` - A single (or list of) asset providers that are invoked when external CSS is referenced. See below.
+* `asset_providers` - A list of asset providers that are invoked when CSS files are referenced. See below.
+* `external_asset_providers` - A list of asset providers that are invoked when absolute CSS URLs are referenced. See below.
 * `before_transformation` - A callback run before transformation starts.
 * `after_transformation` - A callback run after transformation is completed.
 
@@ -92,8 +93,8 @@ Style and link elements with `media="print"` are also ignored.
 
 ```html
 <head>
-  <link rel="stylesheet" type="text/css" href="/assets/emails/rock.css">         <!-- Will be inlined -->
-  <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">  <!-- Will NOT be inlined; absolute URL -->
+  <link rel="stylesheet" type="text/css" href="/assets/emails/rock.css">         <!-- Will be inlined with normal providers -->
+  <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">  <!-- Will be inlined with external providers, *IF* specified; otherwise ignored. -->
   <link rel="stylesheet" type="text/css" href="/assets/jazz.css" media="print">  <!-- Will NOT be inlined; print style -->
   <link rel="stylesheet" type="text/css" href="/ambient.css" data-roadie-ignore> <!-- Will NOT be inlined; ignored -->
   <style></style>                    <!-- Will be inlined -->
@@ -134,12 +135,14 @@ If a referenced stylesheet cannot be found, the `#transform` method will raise a
 
 ### Configuring providers ###
 
-You can write your own providers if you need very specific behavior for your app, or you can use the built-in providers.
+You can write your own providers if you need very specific behavior for your app, or you can use the built-in providers. Providers come in two groups: normal and external. Normal providers handle paths without host information (`/style/foo.css`) while external providers handle URLs with host information (`//example.com/foo.css`, `localhost:3001/bar.css`, and so on).
+
+The default configuration is to not have any external providers configured, which will cause those referenced stylesheets to be ignored. Adding one or more providers for external assets causes all of them to be searched and inlined, so if you only want this to happen to specific stylesheets you need to add ignore markers to every other styleshheet (see above).
 
 Included providers:
 * `FilesystemProvider` - Looks for files on the filesystem, relative to the given directory unless otherwise specified.
 * `ProviderList` – Wraps a list of other providers and searches them in order. The `asset_providers` setting is an instance of this. It behaves a lot like an array, so you can push, pop, shift and unshift to it.
-* `NullProvider` - Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers.
+* `NullProvider` - Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers (or if you want to force the other providers to never run).
 
 If you want to search several locations on the filesystem, you can declare that:
 
@@ -150,11 +153,19 @@ document.asset_providers = [
 ]
 ```
 
+#### `NullProvider` ####
+
 If you want to ignore stylesheets that cannot be found instead of crashing, push the `NullProvider` to the end:
 
 ```ruby
+# Don't crash on missing assets
 document.asset_providers << Roadie::NullProvider.new
+
+# Don't download assets in tests
+document.external_asset_providers.unshift Roadie::NullProvider.new
 ```
+
+**Note:** This will cause the referenced stylesheet to be removed from the source code, so email client will never see it either.
 
 ### Writing your own provider ###
 
