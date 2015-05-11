@@ -140,9 +140,10 @@ You can write your own providers if you need very specific behavior for your app
 The default configuration is to not have any external providers configured, which will cause those referenced stylesheets to be ignored. Adding one or more providers for external assets causes all of them to be searched and inlined, so if you only want this to happen to specific stylesheets you need to add ignore markers to every other styleshheet (see above).
 
 Included providers:
-* `FilesystemProvider` - Looks for files on the filesystem, relative to the given directory unless otherwise specified.
+* `FilesystemProvider` – Looks for files on the filesystem, relative to the given directory unless otherwise specified.
 * `ProviderList` – Wraps a list of other providers and searches them in order. The `asset_providers` setting is an instance of this. It behaves a lot like an array, so you can push, pop, shift and unshift to it.
-* `NullProvider` - Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers (or if you want to force the other providers to never run).
+* `NullProvider` – Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers (or if you want to force the other providers to never run).
+* `NetHttpProvider` – Downloads stylesheets using `Net::HTTP`. Can be given a whitelist of hosts to download from.
 
 If you want to search several locations on the filesystem, you can declare that:
 
@@ -166,6 +167,17 @@ document.external_asset_providers.unshift Roadie::NullProvider.new
 ```
 
 **Note:** This will cause the referenced stylesheet to be removed from the source code, so email client will never see it either.
+
+#### `NetHttpProvider` ####
+
+The `NetHttpProvider` will download the URLs that is is given using Ruby's standard `Net::HTTP` library.
+
+You can give it a whitelist of hosts that downloads are allowed from:
+
+```ruby
+document.external_asset_providers << Roadie::NetHttpProvider.new(whitelist: ["myapp.com", "assets.myapp.com", "cdn.cdnnetwork.co.jp"])
+document.external_asset_providers << Roadie::NetHttpProvider.new # Allows every host
+```
 
 ### Writing your own provider ###
 
