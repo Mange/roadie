@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'set'
 require 'uri'
 require 'net/http'
