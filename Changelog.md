@@ -11,6 +11,7 @@
     * The error will now show which providers were tried and in which order, along with the error message from the specific providers.
     * `Roadie::FilesystemProvider` shows the given path when inspected.
   * `data-roadie-ignore` attributes will now be removed from markup; hiding "development markers" in the final email.
+  * Add a `Roadie::CachedProvider` asset provider that wraps other providers and cache them.
 * **Deprecations:**
   * `Roadie::Stylesheet#each_inlinable_block` is now deprecated. You can iterate and filter the `blocks` at your own discresion.
 

@@ -144,6 +144,7 @@ Included providers:
 * `ProviderList` – Wraps a list of other providers and searches them in order. The `asset_providers` setting is an instance of this. It behaves a lot like an array, so you can push, pop, shift and unshift to it.
 * `NullProvider` – Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers (or if you want to force the other providers to never run).
 * `NetHttpProvider` – Downloads stylesheets using `Net::HTTP`. Can be given a whitelist of hosts to download from.
+* `CachedProvider` – Wraps another provider (or `ProviderList`) and caches responses inside the provided cache store.
 
 If you want to search several locations on the filesystem, you can declare that:
 
@@ -177,6 +178,55 @@ You can give it a whitelist of hosts that downloads are allowed from:
 ```ruby
 document.external_asset_providers << Roadie::NetHttpProvider.new(whitelist: ["myapp.com", "assets.myapp.com", "cdn.cdnnetwork.co.jp"])
 document.external_asset_providers << Roadie::NetHttpProvider.new # Allows every host
+```
+
+#### `CachedProvider` ####
+
+You might want to cache providers from working several times. If you are sending several emails quickly from the same process, this might also save a lot of time on parsing the stylesheets if you use in-memory storage such as a hash.
+
+You can wrap any other kind of providers with it, even a `ProviderList`:
+
+```ruby
+document.external_asset_providers = Roadie::CachedProvider.new(document.external_asset_providers, my_cache)
+```
+
+If you don't pass a cache backend, it will use a normal `Hash`. The cache store must follow this protocol:
+
+```ruby
+my_cache["key"] = some_stylesheet_instance # => #<Roadie::Stylesheet instance>
+my_cache["key"]                            # => #<Roadie::Stylesheet instance>
+my_cache["missing"]                        # => nil
+```
+
+**Warning:** The default `Hash` store will never be cleared, so make sure you don't allow the number of unique asset paths to grow too large in a single run. This is especially important if you run Roadie in a daemon that accepts arbritary documents, and/or if you use hash digests in your filenames. Making a new instance of `CachedProvider` will use a new `Hash` instance.
+
+You can implement your own custom cache store by implementing the `[]` and `[]=` methods.
+
+```ruby
+class MyRoadieMemcacheStore
+  def initialize(memcache)
+    @memcache = memcache
+  end
+
+  def [](path)
+    css = memcache.read("assets/#{path}/css")
+    if css
+      name = memcache.read("assets/#{path}/name") || "cached #{path}"
+      Roadie::Stylesheet.new(name, css)
+    end
+  end
+
+  def []=(path, stylesheet)
+    memcache.write("assets/#{path}/css", stylesheet.to_s)
+    memcache.write("assets/#{path}/name", stylesheet.name)
+    stylesheet # You need to return the set Stylesheet
+  end
+end
+
+document.external_asset_providers = Roadie::CachedProvider.new(
+  document.external_asset_providers,
+  MyRoadieMemcacheStore.new(MemcacheClient.instance)
+)
 ```
 
 ### Writing your own provider ###
