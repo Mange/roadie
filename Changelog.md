@@ -12,6 +12,8 @@
     * `Roadie::FilesystemProvider` shows the given path when inspected.
   * `data-roadie-ignore` attributes will now be removed from markup; hiding "development markers" in the final email.
   * Add a `Roadie::CachedProvider` asset provider that wraps other providers and cache them.
+  * Add a `Roadie::PathRewriterProvider` asset provider that rewrites asset names for other providers.
+    * This saves you from having to create custom providers if you require small tweaks to the lookup in order to use an official provider.
 * **Deprecations:**
   * `Roadie::Stylesheet#each_inlinable_block` is now deprecated. You can iterate and filter the `blocks` at your own discresion.
 

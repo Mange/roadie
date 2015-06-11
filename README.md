@@ -145,6 +145,7 @@ Included providers:
 * `NullProvider` – Does not actually provide anything, it always finds empty stylesheets. Use this in tests or if you want to ignore stylesheets that cannot be found by your other providers (or if you want to force the other providers to never run).
 * `NetHttpProvider` – Downloads stylesheets using `Net::HTTP`. Can be given a whitelist of hosts to download from.
 * `CachedProvider` – Wraps another provider (or `ProviderList`) and caches responses inside the provided cache store.
+* `PathRewriterProvider` – Rewrites the passed path and then passes it on to another provider (or `ProviderList`).
 
 If you want to search several locations on the filesystem, you can declare that:
 
@@ -227,6 +228,34 @@ document.external_asset_providers = Roadie::CachedProvider.new(
   document.external_asset_providers,
   MyRoadieMemcacheStore.new(MemcacheClient.instance)
 )
+```
+
+#### `PathRewriterProvider` ####
+
+With this provider, you can rewrite the paths that are searched in order to more easily support another provider. Examples could include rewriting absolute URLs into something that can be found on the filesystem, or to access internal hosts instead of external ones.
+
+```ruby
+filesystem = Roadie::FilesystemProvider.new("assets")
+document.asset_providers << Roadie::PathRewriterProvider.new(filesystem) do |path|
+  path.sub('stylesheets', 'css').downcase
+end
+
+document.external_asset_providers = Roadie::PathRewriterProvider.new(filesystem) do |url|
+  if url =~ /myapp\.com/
+    URI.parse(url).path.sub(%r{^/assets}, '')
+  else
+    url
+  end
+end
+```
+
+You can also wrap a list, for example to implement `external_asset_providers` by composing the normal `asset_providers`:
+
+```ruby
+document.external_asset_providers =
+  Roadie::PathRewriterProvider.new(document.external_asset_providers) do |url|
+    URI.parse(url).path
+  end
 ```
 
 ### Writing your own provider ###
