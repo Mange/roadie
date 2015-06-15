@@ -4,10 +4,19 @@ require 'uri'
 require 'net/http'
 
 module Roadie
+  # @api public
   # External asset provider that downloads stylesheets from some other server
   # using Ruby's built-in {Net::HTTP} library.
   #
   # You can pass a whitelist of hosts that downloads are allowed on.
+  #
+  # @example Allowing all downloads
+  #   provider = Roadie::NetHttpProvider.new
+  #
+  # @example Only allowing your own app domains
+  #   provider = Roadie::NetHttpProvider.new(
+  #     whitelist: ["myapp.com", "assets.myapp.com", "www.myapp.com"]
+  #   )
   class NetHttpProvider
     attr_reader :whitelist
 
