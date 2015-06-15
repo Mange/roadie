@@ -230,6 +230,21 @@ document.external_asset_providers = Roadie::CachedProvider.new(
 )
 ```
 
+If you are using Rspec, you can test your implementation by using the shared examples for the "roadie cache store" role:
+
+```ruby
+require "roadie/rspec"
+
+describe MyRoadieMemcacheStore do
+  let(:memcache_client) { MemcacheClient.instance }
+  subject { MyRoadieMemcacheStore.new(memcache_client) }
+
+  it_behaves_like "roadie cache store" do
+    before { memcache_client.clear }
+  end
+end
+```
+
 #### `PathRewriterProvider` ####
 
 With this provider, you can rewrite the paths that are searched in order to more easily support another provider. Examples could include rewriting absolute URLs into something that can be found on the filesystem, or to access internal hosts instead of external ones.
