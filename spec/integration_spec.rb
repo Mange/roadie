@@ -48,6 +48,51 @@ describe "Roadie functionality" do
     expect(result).to have_styling('color' => 'red').at_selector('p > em')
   end
 
+  it "stores styles that cannot be inlined in the <head>" do
+    document = Roadie::Document.new <<-HTML
+      <html>
+        <body>
+          <h1>Hello world!</h1>
+          <p>Check out these <em>awesome</em> prices!</p>
+        </body>
+      </html>
+    HTML
+    css = <<-CSS
+      em:hover { color: red; }
+      p:fung-shuei { color: spirit; }
+    CSS
+    document.add_css css
+    expect(Roadie::Utils).to receive(:warn).with(/fung-shuei/)
+
+    result = parse_html document.transform
+    expect(result).to have_selector("html > head > style")
+
+    styles = result.at_css("html > head > style").text
+    expect(styles).to include Roadie::Stylesheet.new("", css).to_s
+  end
+
+  it "can be configured to skip styles that cannot be inlined" do
+    document = Roadie::Document.new <<-HTML
+      <html>
+        <body>
+          <h1>Hello world!</h1>
+          <p>Check out these <em>awesome</em> prices!</p>
+        </body>
+      </html>
+    HTML
+    css = <<-CSS
+      em:hover { color: red; }
+      p:fung-shuei { color: spirit; }
+    CSS
+    document.add_css css
+    document.keep_uninlinable_css = false
+
+    expect(Roadie::Utils).to receive(:warn).with(/fung-shuei/)
+
+    result = parse_html document.transform
+    expect(result).to_not have_selector("html > head > style")
+  end
+
   it "inlines css from disk" do
     document = Roadie::Document.new <<-HTML
       <!DOCTYPE html>
@@ -83,6 +128,52 @@ describe "Roadie functionality" do
 
     document.asset_providers << Roadie::NullProvider.new
     expect { document.transform }.to_not raise_error
+  end
+
+  it "ignores external css if no external providers are added" do
+    document = Roadie::Document.new <<-HTML
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Hello world!</title>
+          <link rel="stylesheet" href="http://example.com/big_em.css">
+        </head>
+        <body>
+          <h1>Hello world!</h1>
+          <p>Check out these <em>awesome</em> prices!</p>
+        </body>
+      </html>
+    HTML
+
+    document.external_asset_providers = []
+
+    result = parse_html document.transform
+    expect(result).to have_selector('head > link')
+    expect(result).to have_styling([]).at_selector('p > em')
+  end
+
+  it "inlines external css if configured" do
+    document = Roadie::Document.new <<-HTML
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Hello world!</title>
+          <link rel="stylesheet" href="http://example.com/big_em.css">
+        </head>
+        <body>
+          <h1>Hello world!</h1>
+          <p>Check out these <em>awesome</em> prices!</p>
+        </body>
+      </html>
+    HTML
+
+    document.external_asset_providers = TestProvider.new(
+      "http://example.com/big_em.css" => "em { font-size: 200%; }"
+    )
+
+    result = parse_html document.transform
+    expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
+    expect(result).to_not have_selector('head > link')
   end
 
   it "makes URLs absolute" do

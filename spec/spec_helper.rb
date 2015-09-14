@@ -1,4 +1,5 @@
 require 'rspec/collection_matchers'
+require 'webmock/rspec'
 
 if ENV['CI']
   require 'coveralls'

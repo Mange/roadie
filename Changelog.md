@@ -3,11 +3,19 @@
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.5...master)
 
 * Enhancements:
+  * Allow user to specify asset providers for referenced assets with full URLs and inline them (#107)
   * Pass `Document` instance to transformation callbacks (#86)
   * Made `nokogiri` dependency more forgiving.
-    * Supports (1.5.0)...(1.7.0) now instead of (1.6.0)...(1.7.0). Some people out there are stuck on this older version of Nokogiri, and I don't want to leave them out.
+    * Supports `1.5.0`...`1.7.0` now instead of `1.6.0`...`1.7.0`. Some people out there are stuck on this older version of Nokogiri, and I don't want to leave them out.
   * Output better errors when no assets can be found.
     * The error will now show which providers were tried and in which order, along with the error message from the specific providers.
+    * `Roadie::FilesystemProvider` shows the given path when inspected.
+  * `data-roadie-ignore` attributes will now be removed from markup; hiding "development markers" in the final email.
+  * Add a `Roadie::CachedProvider` asset provider that wraps other providers and cache them.
+  * Add a `Roadie::PathRewriterProvider` asset provider that rewrites asset names for other providers.
+    * This saves you from having to create custom providers if you require small tweaks to the lookup in order to use an official provider.
+* **Deprecations:**
+  * `Roadie::Stylesheet#each_inlinable_block` is now deprecated. You can iterate and filter the `blocks` at your own discresion.
 
 ### 3.0.5
 

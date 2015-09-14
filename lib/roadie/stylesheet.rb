@@ -20,6 +20,7 @@ module Roadie
     # @yield [selector, properties]
     # @yieldparam [Selector] selector
     # @yieldparam [Array<StyleProperty>] properties
+    # @deprecated Iterate over the #{blocks} instead. Will be removed on version 4.0.
     def each_inlinable_block(&block)
       # #map and then #each in order to support chained enumerations, etc. if
       # no block is provided

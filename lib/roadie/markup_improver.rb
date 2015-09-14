@@ -29,9 +29,10 @@ module Roadie
       ensure_declared_charset head
     end
 
-    private
+    protected
     attr_reader :dom
 
+    private
     def ensure_doctype_present
       return if uses_buggy_jruby?
       return if @html.include?('<!DOCTYPE ')

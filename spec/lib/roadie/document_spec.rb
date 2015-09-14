@@ -16,17 +16,26 @@ module Roadie
       expect(document.url_options).to eq({host: "foo.bar"})
     end
 
-    it "has a ProviderList" do
-      expect(document.asset_providers).to be_instance_of(ProviderList)
+    it "has a setting for keeping uninlinable styles" do
+      expect(document.keep_uninlinable_css).to be true
+      document.keep_uninlinable_css = false
+      expect(document.keep_uninlinable_css).to be false
     end
 
-    it "defaults to having just a FilesystemProvider in the provider list" do
+    it "has a ProviderList for normal and external providers" do
+      expect(document.asset_providers).to be_instance_of(ProviderList)
+      expect(document.external_asset_providers).to be_instance_of(ProviderList)
+    end
+
+    it "defaults to having just a FilesystemProvider in the normal provider list" do
       expect(document).to have(1).asset_providers
+      expect(document).to have(0).external_asset_providers
+
       provider = document.asset_providers.first
       expect(provider).to be_instance_of(FilesystemProvider)
     end
 
-    it "allows changes to the asset providers" do
+    it "allows changes to the normal asset providers" do
       other_provider = double "Other proider"
       old_list = document.asset_providers
 
@@ -36,6 +45,18 @@ module Roadie
 
       document.asset_providers = old_list
       expect(document.asset_providers).to eq(old_list)
+    end
+
+    it "allows changes to the external asset providers" do
+      other_provider = double "Other proider"
+      old_list = document.external_asset_providers
+
+      document.external_asset_providers = [other_provider]
+      expect(document.external_asset_providers).to be_instance_of(ProviderList)
+      expect(document.external_asset_providers.each.to_a).to eq([other_provider])
+
+      document.external_asset_providers = old_list
+      expect(document.external_asset_providers).to eq(old_list)
     end
 
     it "can store callbacks for inlining" do

@@ -31,6 +31,7 @@ class StylingExpectation
     when String then @rules = parse_rules(styling)
     when Array then @rules = styling
     when Hash then @rules = styling.to_a
+    when nil then @rules = []
     else fail "I don't understand #{styling.inspect}!"
     end
   end

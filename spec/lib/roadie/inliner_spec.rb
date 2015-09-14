@@ -8,7 +8,7 @@ module Roadie
 
     def rendering(html, stylesheet = @stylesheet)
       dom = Nokogiri::HTML.parse html
-      Inliner.new([stylesheet]).inline(dom)
+      Inliner.new([stylesheet], dom).inline
       dom
     end
 
@@ -116,11 +116,11 @@ module Roadie
         dom = Nokogiri::HTML.parse "<p></p>"
 
         stylesheet = Stylesheet.new "foo.css", "p[%^=foo] { color: red; }"
-        inliner = Inliner.new([stylesheet])
-        expect(inliner).to receive(:warn).with(
-          %{Roadie cannot use "p[%^=foo]" (from "foo.css" stylesheet) when inlining stylesheets}
+        inliner = Inliner.new([stylesheet], dom)
+        expect(Utils).to receive(:warn).with(
+          %{Cannot inline "p[%^=foo]" from "foo.css" stylesheet. If this is valid CSS, please report a bug.}
         )
-        inliner.inline(dom)
+        inliner.inline
       end
 
       it "works with nth-child" do
@@ -134,16 +134,73 @@ module Roadie
         expect(result).to have_styling([['color', 'red'], ['color', 'green']]).at_selector('p:last')
       end
 
-      it "ignores selectors with @" do
-        use_css '@keyframes progress-bar-stripes {
-          from {
-            background-position: 40px 0;
-          }
-          to {
-            background-position: 0 0;
-          }
-        }'
-        expect { rendering('<p></p>') }.not_to raise_error
+      context "with uninlinable selectors" do
+        before do
+          allow(Roadie::Utils).to receive(:warn)
+        end
+
+        it "puts them in a new <style> element in the <head>" do
+          use_css 'a:hover { color: red; }'
+          result = rendering("
+            <html>
+              <head></head>
+              <body><a></a></body>
+            </html>
+          ")
+          expect(result).to have_selector("head > style")
+          expect(result.at_css("head > style").text).to eq "a:hover{color:red}"
+        end
+
+        it "puts them in <head> on unexpected inlining problems" do
+          use_css 'p:some-future-thing { color: red; }'
+          result = rendering("
+            <html>
+              <head></head>
+              <body><p></p></body>
+            </html>
+          ")
+          expect(result).to have_selector("head > style")
+          expect(result.at_css("head > style").text).to eq "p:some-future-thing{color:red}"
+        end
+
+        # This is not really wanted behavior, but there's nothing we can do
+        # about it because of limitations on CSS Parser.
+        it "puts does not put keyframes in <head>" do
+          css = '@keyframes progress-bar-stripes {
+            from {
+              background-position: 40px 0;
+            }
+            to {
+              background-position: 0 0;
+            }
+          }'
+
+          use_css css
+          result = rendering('<p></p>')
+
+          expect(result).to have_styling([]).at_selector("p")
+
+          # css_parser actually sees an empty @keyframes on JRuby, and nothing
+          # on the others
+          if (style_element = result.at_css("head > style"))
+            expect(style_element.text).to_not include "background-position"
+          end
+        end
+
+        it "ignores them if told not to keep them" do
+          stylesheet = use_css "
+            p:hover { color: red; }
+            p:some-future-thing { color: red; }
+          "
+          dom = Nokogiri::HTML.parse "
+            <html>
+              <head></head>
+              <body><p></p></body>
+            </html>
+          "
+          Inliner.new([stylesheet], dom).inline(false)
+          expect(dom).to_not have_selector("head > style")
+        end
       end
     end
   end

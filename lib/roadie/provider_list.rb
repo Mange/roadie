@@ -30,6 +30,9 @@ module Roadie
       end
     end
 
+    # Returns a new empty list.
+    def self.empty() new([]) end
+
     def initialize(providers)
       @providers = providers
     end
