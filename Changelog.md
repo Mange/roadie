@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.0.5...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.1.0.rc1...master)
+
+* Nothing yet.
+
+### 3.1.0.rc1
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.0.5...v3.1.0.rc1)
 
 * Enhancements:
   * Allow user to specify asset providers for referenced assets with full URLs and inline them (#107)
