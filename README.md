@@ -268,7 +268,7 @@ You can also wrap a list, for example to implement `external_asset_providers` by
 
 ```ruby
 document.external_asset_providers =
-  Roadie::PathRewriterProvider.new(document.external_asset_providers) do |url|
+  Roadie::PathRewriterProvider.new(document.asset_providers) do |url|
     URI.parse(url).path
   end
 ```
@@ -276,7 +276,7 @@ document.external_asset_providers =
 ### Writing your own provider ###
 
 Writing your own provider is also easy. You need to provide:
- * `#find_stylesheet(name)`, returning either a `Roadie::Stylesheet` or nil.
+ * `#find_stylesheet(name)`, returning either a `Roadie::Stylesheet` or `nil`.
  * `#find_stylesheet!(name)`, returning either a `Roadie::Stylesheet` or raising `Roadie::CssNotFound`.
 
 ```ruby
@@ -374,7 +374,7 @@ class TrackNewsletterLinks
   end
 end
 
-document.before_transformation = { |dom, document| logger.debug "Inlining document with title #{dom.at_css('head > title').try(:text)}" }
+document.before_transformation = proc { |dom, document| logger.debug "Inlining document with title #{dom.at_css('head > title').try(:text)}" }
 document.after_transformation = TrackNewsletterLinks.new
 ```
 
@@ -384,17 +384,15 @@ Build Status
 Tested with [Travis CI](http://travis-ci.org) using:
 
 * MRI 1.9.3
-* MRI 2.0.0
-* MRI 2.1.3
-* MRI 2.2.0
+* MRI 2.0
+* MRI 2.1
+* MRI 2.2
 * JRuby (latest)
-* Rubinius >= 2.1 (experimental)
+* Rubinius >= 2.1
 
 [(Build status)](http://travis-ci.org/#!/Mange/roadie)
 
 Let me know if you want any other VM supported officially.
-
-Rubinius support is experimental since it is currently hindered by a Rubinius bug that will probably be fixed shortly.
 
 ### Versioning ###
 
