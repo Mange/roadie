@@ -23,6 +23,13 @@ module Roadie
       end
     end
 
+    it "can download over HTTPS" do
+      stub_request(:get, "https://example.com/style.css").and_return(body: "p { color: green; }")
+      expect {
+        NetHttpProvider.new.find_stylesheet!("https://example.com/style.css")
+      }.to_not raise_error
+    end
+
     describe "error handling" do
       it "handles timeouts" do
         stub_request(:get, url).and_timeout
