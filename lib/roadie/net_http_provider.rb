@@ -2,6 +2,7 @@
 require 'set'
 require 'uri'
 require 'net/http'
+require 'net/https' # For Ruby 1.9.3 support
 
 module Roadie
   # @api public
@@ -60,9 +61,19 @@ module Roadie
       url = "https:#{url}" if url.start_with?("//")
       uri = URI.parse(url)
       if access_granted_to?(uri.host)
-        Net::HTTP.get_response(uri)
+        get_response(uri)
       else
         raise CssNotFound.new(url, "#{uri.host} is not part of whitelist!", self)
+      end
+    end
+
+    def get_response(uri)
+      if RUBY_VERSION >= "2.0.0"
+        Net::HTTP.get_response(uri)
+      else
+        Net::HTTP.start(uri.host, uri.port, use_ssl: (uri.scheme == 'https')) do |http|
+          http.request(Net::HTTP::Get.new(uri.request_uri))
+        end
       end
     end
 
