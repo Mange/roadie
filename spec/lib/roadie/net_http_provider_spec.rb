@@ -30,6 +30,19 @@ module Roadie
       }.to_not raise_error
     end
 
+    it "assumes HTTPS when given a scheme-less URL" do
+      # Some people might re-use the same template as they use on a webpage,
+      # and browsers support URLs without a scheme in them, replacing the
+      # scheme with the current one. There's no "current" scheme when doing
+      # asset inlining, but the scheme-less URL implies that there should exist
+      # both a HTTP and a HTTPS endpoint. Let's take the secure one in that
+      # case!
+      stub_request(:get, "https://example.com/style.css").and_return(body: "p { color: green; }")
+      expect {
+        NetHttpProvider.new.find_stylesheet!("//example.com/style.css")
+      }.to_not raise_error
+    end
+
     describe "error handling" do
       it "handles timeouts" do
         stub_request(:get, url).and_timeout

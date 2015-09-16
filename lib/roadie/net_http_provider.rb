@@ -57,6 +57,7 @@ module Roadie
     end
 
     def download(url)
+      url = "https:#{url}" if url.start_with?("//")
       uri = URI.parse(url)
       if access_granted_to?(uri.host)
         Net::HTTP.get_response(uri)

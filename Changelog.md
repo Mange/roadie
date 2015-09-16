@@ -2,7 +2,9 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.0.rc1...master)
 
-* `NetHttpProvider` validates the whitelist hostnames; passing an invalid hostname will raise `ArgumentError`.
+* Enchancements:
+  * `NetHttpProvider` validates the whitelist hostnames; passing an invalid hostname will raise `ArgumentError`.
+  * `NetHttpProvider` supports scheme-less URLs (`//foo.com/`), defaulting to `https`.
 
 ### 3.1.0.rc1
 
