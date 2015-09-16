@@ -84,6 +84,14 @@ module Roadie
       it "is displayed in the string representation" do
         expect(NetHttpProvider.new(whitelist: ["bar.baz"]).to_s).to include "bar.baz"
       end
+
+      it "raises error when given invalid hostnames" do
+        expect { NetHttpProvider.new(whitelist: [nil]) }.to raise_error(ArgumentError)
+        expect { NetHttpProvider.new(whitelist: [""]) }.to raise_error(ArgumentError)
+        expect { NetHttpProvider.new(whitelist: ["."]) }.to raise_error(ArgumentError)
+        expect { NetHttpProvider.new(whitelist: ["http://foo.bar"]) }.to raise_error(ArgumentError)
+        expect { NetHttpProvider.new(whitelist: ["foo/bar"]) }.to raise_error(ArgumentError)
+      end
     end
   end
 end

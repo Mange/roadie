@@ -22,7 +22,7 @@ module Roadie
 
     # @option options [Array<String>] :whitelist ([]) A list of host names that downloads are allowed from. Empty set means everything is allowed.
     def initialize(options = {})
-      @whitelist = Array(options.fetch(:whitelist, [])).to_set
+      @whitelist = host_set(Array(options.fetch(:whitelist, [])))
     end
 
     def find_stylesheet(url)
@@ -46,6 +46,16 @@ module Roadie
     def inspect() "#<#{self.class} whitelist: #{whitelist.inspect}>" end
 
     private
+    def host_set(hosts)
+      hosts.each { |host| validate_host(host) }.to_set
+    end
+
+    def validate_host(host)
+      if host.nil? || host.empty? || host == "." || host.include?("/")
+        raise ArgumentError, "#{host.inspect} is not a valid hostname"
+      end
+    end
+
     def download(url)
       uri = URI.parse(url)
       if access_granted_to?(uri.host)
