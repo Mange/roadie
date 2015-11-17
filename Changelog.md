@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.1.0.rc1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.1.0...master)
+
+* Nothing yet.
+
+### 3.1.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.1.0.rc1...v3.1.0)
 
 * Enchancements:
   * `NetHttpProvider` validates the whitelist hostnames; passing an invalid hostname will raise `ArgumentError`.
