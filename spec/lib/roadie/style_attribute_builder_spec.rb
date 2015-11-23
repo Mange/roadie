@@ -25,5 +25,15 @@ module Roadie
 
       expect(builder.attribute_string).to eq "background:white;color:pink;color:red;color:green"
     end
+
+    it "removes duplicate properties" do
+      builder = StyleAttributeBuilder.new
+
+      builder << StyleProperty.new("color", "pink",  false, 10)
+      builder << StyleProperty.new("color", "green", false, 20)
+      builder << StyleProperty.new("color", "pink",  false, 50)
+
+      expect(builder.attribute_string).to eq "color:green;color:pink"
+    end
   end
 end

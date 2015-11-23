@@ -9,7 +9,7 @@ module Roadie
     end
 
     def attribute_string
-      stable_sort(@styles).map(&:to_s).join(';')
+      Deduplicator.apply(stable_sort(@styles).map(&:to_s)).join(';')
     end
 
     private

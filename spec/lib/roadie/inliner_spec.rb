@@ -3,7 +3,7 @@ require 'spec_helper'
 
 module Roadie
   describe Inliner do
-    before { @stylesheet = "" }
+    before { @stylesheet = "".freeze }
     def use_css(css) @stylesheet = Stylesheet.new("example", css) end
 
     def rendering(html, stylesheet = @stylesheet)
@@ -16,6 +16,27 @@ module Roadie
       it "inlines simple attributes" do
         use_css 'p { color: green }'
         expect(rendering('<p></p>')).to have_styling('color' => 'green')
+      end
+
+      it "keeps multiple versions of the same property to support progressive enhancement" do
+        # https://github.com/premailer/css_parser/issues/44
+        pending "css_parser issue #44"
+
+        use_css 'p { color: #eee; color: rgba(255, 255, 255, 0.9); }'
+        expect(rendering('<p></p>')).to have_styling(
+          [['color', 'green'], ['color', 'rgba(255, 255, 255, 0.9)']]
+        )
+      end
+
+      it "de-duplicates identical styles" do
+        use_css '
+          p { color: green; }
+          .message { color: blue; }
+          .positive { color: green; }
+        '
+        expect(rendering('<p class="message positive"></p>')).to have_styling(
+          [['color', 'blue'], ['color', 'green']]
+        )
       end
 
       it "inlines browser-prefixed attributes" do

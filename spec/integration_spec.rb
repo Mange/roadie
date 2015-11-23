@@ -176,6 +176,28 @@ describe "Roadie functionality" do
     expect(result).to_not have_selector('head > link')
   end
 
+  it "does not inline the same properties several times" do
+    document = Roadie::Document.new <<-HTML
+      <head>
+        <link rel="stylesheet" href="hello.css">
+      </head>
+      <body>
+        <p class="hello world">Hello world</p>
+      </body>
+    HTML
+
+    document.asset_providers = TestProvider.new("hello.css" => <<-CSS)
+      p { color: red; }
+      .hello { color: red; }
+      .world { color: red; }
+    CSS
+
+    result = parse_html document.transform
+    expect(result).to have_styling([
+      ['color', 'red']
+    ]).at_selector('p')
+  end
+
   it "makes URLs absolute" do
     document = Roadie::Document.new <<-HTML
       <!DOCTYPE html>

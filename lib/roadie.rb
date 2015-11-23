@@ -5,6 +5,7 @@ require 'roadie/version'
 require 'roadie/errors'
 
 require 'roadie/utils'
+require 'roadie/deduplicator'
 
 require 'roadie/stylesheet'
 require 'roadie/selector'
