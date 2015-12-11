@@ -1,3 +1,4 @@
+sudo: false
 language: ruby
 rvm:
   - 1.9.3
@@ -7,6 +8,7 @@ rvm:
   - jruby
   - rbx
 
+cache: bundler
 bundler_args: --without guard
 script: "rake"
 
