@@ -1,10 +1,15 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.1.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.1.1...master)
+
+### 3.1.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.1.0...v3.1.1)
 
 * Enhancements:
   * Duplicate style properties are now removed when inlining.
     * This means that `color: green; color: red; color: green` will now be `color: red; color: green`.
+    * The size of your emails should be the same, or smaller.
 
 ### 3.1.0
 
