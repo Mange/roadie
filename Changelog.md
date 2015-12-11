@@ -2,7 +2,9 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.0...master)
 
-* Nothing yet.
+* Enhancements:
+  * Duplicate style properties are now removed when inlining.
+    * This means that `color: green; color: red; color: green` will now be `color: red; color: green`.
 
 ### 3.1.0
 
