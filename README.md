@@ -38,6 +38,7 @@ Features
 * Makes link `href`s and `img` `src`s absolute.
 * Automatically adds proper HTML skeleton when missing; you don't have to create a layout for emails.
 * Allows you to inject stylesheets in a number of ways, at runtime.
+* Supports HTML fragments
 
 Install & Usage
 ---------------
@@ -376,6 +377,19 @@ end
 
 document.before_transformation = proc { |dom, document| logger.debug "Inlining document with title #{dom.at_css('head > title').try(:text)}" }
 document.after_transformation = TrackNewsletterLinks.new
+```
+
+### HTML Fragments ###
+
+If you don't want to transform an entire document (with `<head>` and `<body>`), you can use `DocumentFragment` instead of `Document`. A `DocumentFragment` represents a contained chunk of markup, without any implications of it being a complete document. Doctype and structure elements will not be inserted.
+
+Example:
+
+```ruby
+fragment = Roadie::DocumentFragment.new "<div><p></p></div>"
+fragment.add_css "p { color: green; }"
+fragment.transform
+    # => "<div><p style=\"color:green;\"></p></div>"
 ```
 
 Build Status
