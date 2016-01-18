@@ -31,7 +31,7 @@ module Roadie
     def initialize(html)
       @keep_uninlinable_css = true
       @html = html
-      @asset_providers = ProviderList.wrap(FilesystemProvider.new)
+      @asset_providers = ProviderList.empty
       @external_asset_providers = ProviderList.empty
       @css = ""
     end

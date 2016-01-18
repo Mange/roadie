@@ -107,6 +107,7 @@ describe "Roadie functionality" do
         </body>
       </html>
     HTML
+    document.asset_providers << Roadie::FilesystemProvider.new
 
     result = parse_html document.transform
     expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
