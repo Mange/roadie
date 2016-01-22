@@ -451,7 +451,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2015
+Copyright (c) 2009-2016 Magnus Bergmark, Jim Neath / Purify, and contributors.
 
 * [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 
