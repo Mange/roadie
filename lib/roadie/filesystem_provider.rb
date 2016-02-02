@@ -15,11 +15,10 @@ module Roadie
     end
 
     # @return [Stylesheet, nil]
-    def find_stylesheet(name)
-      file_path = build_file_path(name)
-      if File.exist? file_path
-        Stylesheet.new file_path, File.read(file_path)
-      end
+    def find_stylesheet(url)
+      find_stylesheet!(url)
+    rescue CssNotFound
+      nil
     end
 
     # @raise InsecurePathError
