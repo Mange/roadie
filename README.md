@@ -433,6 +433,17 @@ bundle install
 rake
 ```
 
+Security
+--------
+
+Roadie is set up with the assumption that all CSS and HTML passing through it is under your control. It is not recommended to run arbritary HTML with the default settings.
+
+Care has been given to try to secure all file system accesses, but it is never guaranteed that someone cannot access something they should not be able to access.
+
+In order to secure Roadie against file system access, only use your own asset providers that you yourself can secure against your particular environment.
+
+If you have found any security vulnerability, please email me at `magnus.bergmark+security@gmail.com` to disclose it. [For very sensitive issues, please use my public GPG key.][gpg] You can also encrypt your message with my public key and open an issue if you do not want to email me directly. Thank you.
+
 History and contributors
 ------------------------
 
@@ -461,3 +472,4 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+[gpg]: https://gist.github.com/Mange/baf25e23e653a206ec2d#file-keybase-md
