@@ -9,10 +9,14 @@ rvm:
   - jruby
   - rbx
 
+matrix:
+  allow_failures:
+    # Rubinius has a lot of trouble and no large following, so I'm going to
+    # allow failures on it until it gets more stable on Travis / Real Life(tm).
+    # Let me know if you need it. Patches are welcome!
+    - rvm: rbx
+  fast_finish: true
+
 cache: bundler
 bundler_args: --without guard
 script: "rake"
-
-env:
-  # Setup Coveralls
-  secure: "D1Uvi+a7W89k91zXVVwuuvv8O8qbDdyJ4g9i+3bGaSYySHxD8YuuG1QiQ4G/S2KLp/r3VPRpa8Wb1mSwb81tEBzXpzoZC7zSvgntPxRPhMg4zpodZ0O0AkK8/t1yZSkIe0V5sejFOQ1a5LJa3OorKBBjrqM5kPDOygTXtO3bQ6E="

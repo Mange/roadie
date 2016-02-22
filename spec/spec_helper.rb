@@ -2,8 +2,11 @@ require 'rspec/collection_matchers'
 require 'webmock/rspec'
 
 if ENV['CI']
-  require 'coveralls'
-  Coveralls.wear!
+  require 'simplecov'
+  SimpleCov.start
+
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
 end
 
 $: << File.dirname(__FILE__) + '/../lib'

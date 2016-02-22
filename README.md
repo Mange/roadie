@@ -3,7 +3,7 @@ Roadie
 
 [![Build history and status](https://travis-ci.org/Mange/roadie.svg?branch=master)](http://travis-ci.org/#!/Mange/roadie)
 [![Code Climate](https://codeclimate.com/github/Mange/roadie.png)](https://codeclimate.com/github/Mange/roadie)
-[![Coverage Status](https://coveralls.io/repos/Mange/roadie/badge.png?branch=master)](https://coveralls.io/r/Mange/roadie?branch=master)
+[![Code coverage status](https://codecov.io/github/Mange/roadie/coverage.svg?branch=master)](https://codecov.io/github/Mange/roadie?branch=master)
 [![Gem Version](https://badge.fury.io/rb/roadie.png)](http://badge.fury.io/rb/roadie)
 [![Dependency Status](https://gemnasium.com/Mange/roadie.png)](https://gemnasium.com/Mange/roadie)
 
@@ -389,7 +389,7 @@ Tested with [Travis CI](http://travis-ci.org) using:
 * MRI 2.2
 * MRI 2.3.0
 * JRuby (latest)
-* Rubinius >= 2.1
+* Rubinius (failures on Rubinius will not fail the build due to a long history of instability in `rbx`)
 
 [(Build status)](http://travis-ci.org/#!/Mange/roadie)
 
