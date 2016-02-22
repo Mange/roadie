@@ -389,7 +389,7 @@ Tested with [Travis CI](http://travis-ci.org) using:
 * MRI 2.2
 * MRI 2.3.0
 * JRuby (latest)
-* Rubinius >= 2.1
+* Rubinius (failures on Rubinius will not fail the build due to a long history of instability in `rbx`)
 
 [(Build status)](http://travis-ci.org/#!/Mange/roadie)
 
