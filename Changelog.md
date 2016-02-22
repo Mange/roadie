@@ -3,7 +3,7 @@
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.1...master)
 
 * Enhancements:
-  * Build against Ruby MRI 2.3 too.
+  * Build against Ruby MRI 2.3.0 too.
 
 ### 3.1.1
 
