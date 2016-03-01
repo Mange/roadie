@@ -55,8 +55,11 @@ module Roadie
     # @see Inliner Inliner (inlines the stylesheets)
     # @see UrlRewriter UrlRewriter (rewrites URLs and makes them absolute)
     #
+    # @param [Hash] options. use `:to_html` item to pass parameters to Nokogiri.
+    #
     # @return [String] the transformed HTML
-    def transform
+    def transform options = {}
+      options[:to_html] ||= {}
       dom = Nokogiri::HTML.parse html
 
       callback before_transformation, dom
@@ -68,7 +71,7 @@ module Roadie
       callback after_transformation, dom
 
       # #dup is called since it fixed a few segfaults in certain versions of Nokogiri
-      dom.dup.to_html
+      dom.dup.to_html options[:to_html]
     end
 
     # Assign new normal asset providers. The supplied list will be wrapped in a {ProviderList} using {ProviderList.wrap}.

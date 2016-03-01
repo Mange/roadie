@@ -84,6 +84,16 @@ module Roadie
         document.transform
       end
 
+      it 'passes parameters to nokogiri' do
+        html = "<!DOCTYPE html>\n<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head><body><table><tr><td>foo</td><td>bar</td></tr></table></body></html>\n"
+        document = Document.new html
+        # normally, nokogiri puts <td> elements on separate lines but we should
+        # be able to control the whitespace behavior by passing options to
+        # transform. This way we can stop nokogiri from adding whitespace where
+        # we don't want.
+        expect(document.transform(to_html: { save_with: 0 })).to eq(html)
+      end
+
       # TODO: Remove on next major version.
       it "works on callables that don't expect more than one argument" do
         document = Document.new "<body></body>"
