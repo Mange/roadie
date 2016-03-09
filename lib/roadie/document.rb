@@ -67,8 +67,7 @@ module Roadie
 
       callback after_transformation, dom
 
-      # #dup is called since it fixed a few segfaults in certain versions of Nokogiri
-      dom.dup.to_html
+      serialize_document dom
     end
 
     # Assign new normal asset providers. The supplied list will be wrapped in a {ProviderList} using {ProviderList.wrap}.
@@ -97,6 +96,16 @@ module Roadie
 
     def rewrite_urls(dom)
       make_url_rewriter.transform_dom(dom)
+    end
+
+    def serialize_document(dom)
+      # #dup is called since it fixed a few segfaults in certain versions of Nokogiri
+      save_options = Nokogiri::XML::Node::SaveOptions
+      dom.dup.to_html(
+        save_with: (
+          save_options::NO_DECLARATION | save_options::NO_EMPTY_TAGS | save_options::AS_HTML
+        )
+      )
     end
 
     def make_url_rewriter

@@ -250,4 +250,25 @@ describe "Roadie functionality" do
     expect(result.at_css("body")["class"]).to eq("roadie")
     expect(result.at_css("span")).to be_nil
   end
+
+  it "does not add whitespace between table cells" do
+    document = Roadie::Document.new <<-HTML
+      <html>
+        <body>
+          <table>
+            <tr>
+              <td>One</td><td>1</td>
+            </tr>
+            <tr>
+              <td>Two</td><td>2</td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    HTML
+    result = document.transform
+
+    expect(result).to include("<td>One</td><td>1</td>")
+    expect(result).to include("<td>Two</td><td>2</td>")
+  end
 end
