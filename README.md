@@ -19,7 +19,7 @@ How does it work?
 
 Email clients have bad support for stylesheets, and some of them blocks stylesheets from downloading. The easiest way to handle this is to work with inline styles (`style="..."`), but that is error prone and hard to work with as you cannot use classes and/or reuse styling over your HTML.
 
-This gem makes this easier by automatically inlining stylesheets into the document. You give Roadie your CSS, or let it find it by itself from the `<link>` and `<style>` tags in the markup, and it will go though all of the selectors assigning the styles to the maching elements. Careful attention has been put into selectors being applied in the correct order, so it should behave just like in the browser.
+This gem makes this easier by automatically inlining stylesheets into the document. You give Roadie your CSS, or let it find it by itself from the `<link>` and `<style>` tags in the markup, and it will go through all of the selectors assigning the styles to the matching elements. Careful attention has been put into selectors being applied in the correct order, so it should behave just like in the browser.
 
 "Dynamic" selectors (`:hover`, `:visited`, `:focus`, etc.), or selectors not understood by Nokogiri will be inlined into a single `<style>` element for those email clients that support it. This changes specificity a great deal for these rules, so it might not work 100% out of the box. (See more about this below)
 
