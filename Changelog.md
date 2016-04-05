@@ -4,6 +4,7 @@
 
 * Enhancements:
   * Build against Ruby MRI 2.3.0 too.
+  * Don't add extra whitespace between table cells.
 
 ### 3.1.1
 
