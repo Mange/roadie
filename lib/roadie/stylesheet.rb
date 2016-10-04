@@ -6,6 +6,8 @@ module Roadie
   # @attr_reader [String] name the name of the stylesheet ("stylesheets/main.css", "Admin user styles", etc.). The name of the stylesheet will be visible if any errors occur.
   # @attr_reader [Array<StyleBlock>] blocks
   class Stylesheet
+    BOM = "\xEF\xBB\xBF".force_encoding('UTF-8').freeze
+
     attr_reader :name, :blocks
 
     # Parses the CSS string into a {StyleBlock}s and stores it.
@@ -14,7 +16,7 @@ module Roadie
     # @param [String] css
     def initialize(name, css)
       @name = name
-      @blocks = parse_blocks(css)
+      @blocks = parse_blocks(css.sub(BOM, ""))
     end
 
     # @yield [selector, properties]
