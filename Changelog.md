@@ -2,6 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.1...master)
 
+* Bug fixes:
+  * Strip UTF-8 BOM (Byte Order Mark) from stylesheets before parsing / concatenating - [Bartłomiej Wójtowicz](https://github.com/qbart) (#128)
 * Enhancements:
   * Build against Ruby MRI 2.3.0 too.
   * Don't add extra whitespace between table cells.

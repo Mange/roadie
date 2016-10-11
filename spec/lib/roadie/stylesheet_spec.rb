@@ -65,5 +65,11 @@ module Roadie
         Stylesheet.new("name", input)
       }.to_not change { input }.from(input_copy)
     end
+
+    it "strips UTF-8 Byte Order Mark" do
+      input = "\xEF\xBB\xBFbody { color: green; }"
+      stylesheet = Stylesheet.new("bom.css", input)
+      expect(stylesheet.to_s).to eq "body{color:green}"
+    end
   end
 end
