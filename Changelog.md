@@ -2,6 +2,9 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.1...master)
 
+* Deprecations:
+  * Dropped support for MRI 1.9.3.
+  * Dropped support for MRI 2.0.
 * Bug fixes:
   * Strip UTF-8 BOM (Byte Order Mark) from stylesheets before parsing / concatenating - [Bartłomiej Wójtowicz](https://github.com/qbart) (#128)
 * Enhancements:

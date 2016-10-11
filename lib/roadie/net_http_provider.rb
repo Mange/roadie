@@ -2,7 +2,6 @@
 require 'set'
 require 'uri'
 require 'net/http'
-require 'net/https' # For Ruby 1.9.3 support
 
 module Roadie
   # @api public
