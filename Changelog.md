@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.1.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.2.0...master)
+
+* Nothing yet.
+
+### 3.2.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.1.1...v3.2.0)
 
 * Deprecations:
   * Dropped support for MRI 1.9.3.
