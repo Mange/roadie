@@ -47,9 +47,10 @@ module Roadie
       @filter = filter
     end
 
-    def find_stylesheet(path)
-      new_path = filter.call(path)
-      provider.find_stylesheet(new_path) if new_path
+    def find_stylesheet(url)
+      find_stylesheet!(url)
+    rescue CssNotFound
+      nil
     end
 
     def find_stylesheet!(path)
