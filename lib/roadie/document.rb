@@ -27,9 +27,21 @@ module Roadie
     # Should CSS that cannot be inlined be kept in a new `<style>` element in `<head>`?
     attr_accessor :keep_uninlinable_css
 
+    # Whether or not to use improve dom functionality
+    attr_accessor :do_improve_dom
+
+    # Whether or not to run through the url_rewrite
+    attr_accessor :do_rewrite_urls
+
+    # Makes Nokigiri use the fragment method for partial HTML chunks
+    attr_accessor :html_is_fragment
+
     # @param [String] html the input HTML
     def initialize(html)
       @keep_uninlinable_css = true
+      @do_improve_dom = true
+      @do_rewrite_urls = true 
+      @html_is_fragment = false
       @html = html
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @external_asset_providers = ProviderList.empty
@@ -57,13 +69,13 @@ module Roadie
     #
     # @return [String] the transformed HTML
     def transform
-      dom = Nokogiri::HTML.parse html
+      dom = Nokogiri::HTML.send(parse_method, html)
 
       callback before_transformation, dom
 
-      improve dom
-      inline dom
-      rewrite_urls dom
+      improve dom if do_improve_dom
+      inline dom 
+      rewrite_urls dom if do_rewrite_urls
 
       callback after_transformation, dom
 
@@ -81,6 +93,14 @@ module Roadie
     end
 
     private
+    def parse_method 
+      if html_is_fragment 
+        :fragment
+      else
+        :parse 
+      end
+    end
+
     def stylesheet
       Stylesheet.new "(Document styles)", @css
     end
