@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.2.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.2.1...master)
+
+* Nothing yet.
+
+### 3.2.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.2.0...v3.2.1)
 
 * Enhancements
   * Support Nokogiri 1.7.x.
