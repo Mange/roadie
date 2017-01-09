@@ -87,7 +87,7 @@ The following URLs will be rewritten for you:
 
 By default, `style` and `link` elements in the email document's `head` are processed along with the stylesheets and removed from the `head`.
 
-You can set a special `data-roadie-ignore` attribute on `style` and `link` tags that you want to ignore (the attribute will be removed, however). This is the place to put things like `:hover` selectors that you want to have for email clients allowing them.
+You can set a special `data-immutable` attribute on `style` and `link` tags that you want to ignore (the attribute will be removed, however). This is the place to put things like `:hover` selectors that you want to have for email clients allowing them.
 
 Style and link elements with `media="print"` are also ignored.
 
@@ -96,9 +96,9 @@ Style and link elements with `media="print"` are also ignored.
   <link rel="stylesheet" type="text/css" href="/assets/emails/rock.css">         <!-- Will be inlined with normal providers -->
   <link rel="stylesheet" type="text/css" href="http://www.metal.org/metal.css">  <!-- Will be inlined with external providers, *IF* specified; otherwise ignored. -->
   <link rel="stylesheet" type="text/css" href="/assets/jazz.css" media="print">  <!-- Will NOT be inlined; print style -->
-  <link rel="stylesheet" type="text/css" href="/ambient.css" data-roadie-ignore> <!-- Will NOT be inlined; ignored -->
-  <style></style>                    <!-- Will be inlined -->
-  <style data-roadie-ignore></style> <!-- Will NOT be inlined; ignored -->
+  <link rel="stylesheet" type="text/css" href="/ambient.css" data-immutable> <!-- Will NOT be inlined; ignored -->
+  <style></style>                <!-- Will be inlined -->
+  <style data-immutable></style> <!-- Will NOT be inlined; ignored -->
 </head>
 ```
 
