@@ -27,12 +27,9 @@ module Roadie
       expect(document.external_asset_providers).to be_instance_of(ProviderList)
     end
 
-    it "defaults to having just a FilesystemProvider in the normal provider list" do
-      expect(document).to have(1).asset_providers
+    it "defaults to having no providers" do
+      expect(document).to have(0).asset_providers
       expect(document).to have(0).external_asset_providers
-
-      provider = document.asset_providers.first
-      expect(provider).to be_instance_of(FilesystemProvider)
     end
 
     it "allows changes to the normal asset providers" do
