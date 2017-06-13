@@ -2,7 +2,9 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.2.1...master)
 
-* Nothing yet.
+* Enhancements
+  * Support Nokogiri 1.x.
+  * Support `css_parser` 1.x.
 
 ### 3.2.1
 
