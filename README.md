@@ -45,7 +45,7 @@ Install & Usage
 [Add this gem to your Gemfile as recommended by Rubygems](http://rubygems.org/gems/roadie) and run `bundle install`.
 
 ```ruby
-gem 'roadie', '~> 3.2.1'
+gem 'roadie', '~> 3.2'
 ```
 
 You can then create a new instance of a Roadie document:
@@ -462,7 +462,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2016 Magnus Bergmark, Jim Neath / Purify, and contributors.
+Copyright (c) 2009-2017 Magnus Bergmark, Jim Neath / Purify, and contributors.
 
 * [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 
