@@ -5,6 +5,7 @@
 * Enhancements
   * Support Nokogiri 1.x.
   * Support `css_parser` 1.x.
+  * Make tests pass on Ruby 2.4.0 (upgrade Webmock).
 
 ### 3.2.1
 

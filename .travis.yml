@@ -3,8 +3,8 @@ language: ruby
 rvm:
   - 2.1
   - 2.2
-  - 2.3.0
-  - 2.4.0
+  - 2.3
+  - 2.4
   - jruby
   - rbx
 matrix:
@@ -14,7 +14,6 @@ matrix:
     # Let me know if you need it. Patches are welcome!
     - rvm: jruby
     - rvm: rbx
-    - rvm: 2.4.0
   fast_finish: true
 cache: bundler
 bundler_args: --without guard
