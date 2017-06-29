@@ -59,6 +59,12 @@ module Roadie
       expect(document.external_asset_providers).to eq(old_list)
     end
 
+    it "allows changes save_as_xhtml flag" do
+      document.save_as_xhtml = true
+
+      expect(document.save_as_xhtml).to be(true)
+    end
+
     it "can store callbacks for inlining" do
       callable = double "Callable"
 
@@ -97,6 +103,15 @@ module Roadie
           raise "Oops" unless second
         }
         expect { document.transform }.to_not raise_error
+      end
+
+      context 'when save as xhtml flag is present' do
+        it "does not escape some HTML symbols" do
+          document = Document.new "<body><a href='https://google.com/{{hello}}'>Hello</body>"
+          document.save_as_xhtml = true
+
+          expect(document.transform).to include("{{hello}}")
+        end
       end
     end
   end

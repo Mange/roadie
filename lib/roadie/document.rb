@@ -27,6 +27,8 @@ module Roadie
     # Should CSS that cannot be inlined be kept in a new `<style>` element in `<head>`?
     attr_accessor :keep_uninlinable_css
 
+    attr_accessor :save_as_xhtml
+
     # @param [String] html the input HTML
     def initialize(html)
       @keep_uninlinable_css = true
@@ -103,7 +105,9 @@ module Roadie
       save_options = Nokogiri::XML::Node::SaveOptions
       dom.dup.to_html(
         save_with: (
-          save_options::NO_DECLARATION | save_options::NO_EMPTY_TAGS | save_options::AS_HTML
+          save_options::NO_DECLARATION |
+          save_options::NO_EMPTY_TAGS |
+          (save_as_xhtml ? save_options::AS_XHTML : save_options::AS_HTML)
         )
       )
     end
