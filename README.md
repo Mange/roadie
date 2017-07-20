@@ -378,6 +378,17 @@ document.before_transformation = proc { |dom, document| logger.debug "Inlining d
 document.after_transformation = TrackNewsletterLinks.new
 ```
 
+### XHTML vs HTML ###
+
+You can configure the underlying HTML/XML engine to output XHTML or HTML (which
+is the default). One usecase for this is that `{` tokens usually gets escaped
+to `&#123;`, which would be a problem if you then pass the resulting HTML on to
+some other templating engine that uses those tokens (like Handlebars or Mustache).
+
+```ruby
+document.save_as_xhtml = true
+```
+
 Build Status
 ------------
 
