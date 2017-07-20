@@ -35,6 +35,10 @@ module Roadie
       expect(provider).to be_instance_of(FilesystemProvider)
     end
 
+    it "defaults to saving as HTML" do
+      expect(document.save_as_xhtml).to be(true)
+    end
+
     it "allows changes to the normal asset providers" do
       other_provider = double "Other proider"
       old_list = document.asset_providers
@@ -59,10 +63,12 @@ module Roadie
       expect(document.external_asset_providers).to eq(old_list)
     end
 
-    it "allows changes save_as_xhtml flag" do
+    it "allows changes to save_as_xhtml flag" do
       document.save_as_xhtml = true
-
       expect(document.save_as_xhtml).to be(true)
+
+      document.save_as_xhtml = false
+      expect(document.save_as_xhtml).to be(false)
     end
 
     it "can store callbacks for inlining" do
@@ -105,7 +111,7 @@ module Roadie
         expect { document.transform }.to_not raise_error
       end
 
-      context 'when save as xhtml flag is present' do
+      context "when save as xhtml flag is present" do
         it "does not escape some HTML symbols" do
           document = Document.new "<body><a href='https://google.com/{{hello}}'>Hello</body>"
           document.save_as_xhtml = true
