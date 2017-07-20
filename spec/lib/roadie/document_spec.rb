@@ -35,8 +35,8 @@ module Roadie
       expect(provider).to be_instance_of(FilesystemProvider)
     end
 
-    it "defaults to saving as HTML" do
-      expect(document.save_as_xhtml).to be(true)
+    it "defaults to HTML mode" do
+      expect(document.mode).to eq(:html)
     end
 
     it "allows changes to the normal asset providers" do
@@ -63,12 +63,18 @@ module Roadie
       expect(document.external_asset_providers).to eq(old_list)
     end
 
-    it "allows changes to save_as_xhtml flag" do
-      document.save_as_xhtml = true
-      expect(document.save_as_xhtml).to be(true)
+    it "allows changes to the mode setting" do
+      document.mode = :xhtml
+      expect(document.mode).to eq(:xhtml)
 
-      document.save_as_xhtml = false
-      expect(document.save_as_xhtml).to be(false)
+      document.mode = :html
+      expect(document.mode).to eq(:html)
+    end
+
+    it "does not allow unknown modes" do
+      expect {
+        document.mode = :other
+      }.to raise_error(ArgumentError, /:other/)
     end
 
     it "can store callbacks for inlining" do
@@ -111,10 +117,10 @@ module Roadie
         expect { document.transform }.to_not raise_error
       end
 
-      context "when save as xhtml flag is present" do
-        it "does not escape some HTML symbols" do
+      context "in HTML mode" do
+        it "does not escape curly braces" do
           document = Document.new "<body><a href='https://google.com/{{hello}}'>Hello</body>"
-          document.save_as_xhtml = true
+          document.mode = :xhtml
 
           expect(document.transform).to include("{{hello}}")
         end

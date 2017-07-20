@@ -27,7 +27,8 @@ module Roadie
     # Should CSS that cannot be inlined be kept in a new `<style>` element in `<head>`?
     attr_accessor :keep_uninlinable_css
 
-    attr_accessor :save_as_xhtml
+    # The mode to generate markup in. Valid values are `:html` (default) and `:xhtml`.
+    attr_reader :mode
 
     # @param [String] html the input HTML
     def initialize(html)
@@ -36,6 +37,7 @@ module Roadie
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @external_asset_providers = ProviderList.empty
       @css = ""
+      @mode = :html
     end
 
     # Append additional CSS to the document's internal stylesheet.
@@ -82,7 +84,23 @@ module Roadie
       @external_asset_providers = ProviderList.wrap(list)
     end
 
+    # Change the mode. The mode affects how the resulting markup is generated.
+    #
+    # Valid modes:
+    #   `:html` (default)
+    #   `:xhtml`
+    def mode=(mode)
+      if VALID_MODES.include?(mode)
+        @mode = mode
+      else
+        raise ArgumentError, "Invalid mode #{mode.inspect}. Valid modes are: #{VALID_MODES.inspect}"
+      end
+    end
+
     private
+    VALID_MODES = %i[html xhtml].freeze
+    private_constant :VALID_MODES
+
     def stylesheet
       Stylesheet.new "(Document styles)", @css
     end
@@ -103,12 +121,17 @@ module Roadie
     def serialize_document(dom)
       # #dup is called since it fixed a few segfaults in certain versions of Nokogiri
       save_options = Nokogiri::XML::Node::SaveOptions
+      format = {
+        html: save_options::AS_HTML,
+        xhtml: save_options::AS_XHTML,
+      }.fetch(mode)
+
       dom.dup.to_html(
         save_with: (
           save_options::NO_DECLARATION |
           save_options::NO_EMPTY_TAGS |
-          (save_as_xhtml ? save_options::AS_XHTML : save_options::AS_HTML)
-        )
+          format
+        ),
       )
     end
 

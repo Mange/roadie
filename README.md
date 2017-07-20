@@ -386,7 +386,7 @@ to `&#123;`, which would be a problem if you then pass the resulting HTML on to
 some other templating engine that uses those tokens (like Handlebars or Mustache).
 
 ```ruby
-document.save_as_xhtml = true
+document.mode = :xhtml
 ```
 
 Build Status
