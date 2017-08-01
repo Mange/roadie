@@ -30,6 +30,8 @@ module Roadie
     # The mode to generate markup in. Valid values are `:html` (default) and `:xhtml`.
     attr_reader :mode
 
+    #Allow for partial which will not have <!DOCTYPE html!><head>... added
+    attr_reader :partial
     # @param [String] html the input HTML
     def initialize(html)
       @keep_uninlinable_css = true
@@ -38,6 +40,7 @@ module Roadie
       @external_asset_providers = ProviderList.empty
       @css = ""
       @mode = :html
+      @partial = false
     end
 
     # Append additional CSS to the document's internal stylesheet.
@@ -61,8 +64,7 @@ module Roadie
     #
     # @return [String] the transformed HTML
     def transform
-      dom = Nokogiri::HTML.parse html
-
+      partial ? (dom = Nokogiri::HTML::DocumentFragment.parse html) : (dom = Nokogiri::HTML.parse html)
       callback before_transformation, dom
 
       improve dom
@@ -106,7 +108,7 @@ module Roadie
     end
 
     def improve(dom)
-      MarkupImprover.new(dom, html).improve
+      MarkupImprover.new(dom, html).improve unless partial
     end
 
     def inline(dom)
