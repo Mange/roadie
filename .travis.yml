@@ -5,8 +5,11 @@ rvm:
   - 2.2
   - 2.3
   - 2.4
+  - 2.5
   - jruby
   - rbx
+before_install:
+  - gem update --system # Need for Ruby 2.5.0. https://github.com/travis-ci/travis-ci/issues/8978
 matrix:
   allow_failures:
     # Rubinius and JRuby have a lot of trouble and no large following, so I'm going to
