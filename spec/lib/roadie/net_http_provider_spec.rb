@@ -43,6 +43,21 @@ module Roadie
       }.to_not raise_error
     end
 
+    describe "encoding" do
+      fake_body = "p { color: green; }"
+      it "should respect charset header if supplied" do
+        stub_request(:get, url).and_return(body: fake_body, headers: { "Content-Type" => "text/html;charset=ISO-8859-1" })
+        expect(Stylesheet).to receive(:new).with(url, fake_body.force_encoding("ISO-8859-1")).and_call_original
+        NetHttpProvider.new.find_stylesheet!(url)
+      end
+
+      it "should not force encoding if charset is not specified" do
+        stub_request(:get, url).and_return(body: fake_body)
+        expect(Stylesheet).to receive(:new).with(url, fake_body).and_call_original
+        NetHttpProvider.new.find_stylesheet!(url)
+      end
+    end
+
     describe "error handling" do
       it "handles timeouts" do
         stub_request(:get, url).and_timeout
