@@ -147,7 +147,8 @@ module Roadie
       MarkupImprover.new(dom, html).improve
     end
 
-    def inline(dom, keep_uninlinable_in:)
+    def inline(dom, options = {})
+      keep_uninlinable_in = options.fetch(:keep_uninlinable_in)
       dom_stylesheets = AssetScanner.new(dom, asset_providers, external_asset_providers).extract_css
       Inliner.new(dom_stylesheets + [stylesheet], dom).inline(
         keep_uninlinable_css: keep_uninlinable_css,

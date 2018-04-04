@@ -24,10 +24,13 @@ module Roadie
 
     # Start the inlining, mutating the DOM tree.
     #
-    # @param [true, false] keep_uninlinable_css
-    # @param [:root, :head] keep_uninlinable_in
+    # @option options [true, false] :keep_uninlinable_css
+    # @option options [:root, :head] :keep_uninlinable_in
     # @return [nil]
-    def inline(keep_uninlinable_css: true, keep_uninlinable_in: :head)
+    def inline(options = {})
+      keep_uninlinable_css = options.fetch(:keep_uninlinable_css, true)
+      keep_uninlinable_in = options.fetch(:keep_uninlinable_in, :head)
+
       style_map, extra_blocks = consume_stylesheets
 
       apply_style_map(style_map)
