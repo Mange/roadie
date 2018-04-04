@@ -7,6 +7,8 @@
   * Support partial HTML documents (fragments) - #147
     * With the help of [andfx](https://github.com/andfx) - #115
     * With the help of [Frida Sjoholm](https://github.com/andf://github.com/FridaSjoholm) - #146
+  * Skip URL rewriting on elements with `data-roadie-ignore` - #154.
+    * With the help of [Hamed Asghari](https://github.com/hasghari) - #138.
 * Bug fixes:
   * Apply correct string encoding / charset in `NetHttpProvider` - [Jeremy Nagel](https://github.com/jeznag) (#152).
 
