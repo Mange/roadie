@@ -34,7 +34,7 @@ module Roadie
     def find_stylesheet!(url)
       response = download(url)
       if response.kind_of? Net::HTTPSuccess
-        Stylesheet.new url, response.body
+        Stylesheet.new(url, response_body(response))
       else
         raise CssNotFound.new(url, "Server returned #{response.code}: #{truncate response.body}", self)
       end
@@ -85,6 +85,21 @@ module Roadie
         string[0, 49] + "…"
       else
         string
+      end
+    end
+
+    def response_body(response)
+      # Make sure we respect encoding because Net:HTTP will encode body as ASCII by default
+      # which will break if the response is not compatible.
+      supplied_charset = response.type_params['charset']
+      body = response.body
+
+      if supplied_charset
+        body.force_encoding(supplied_charset).encode!("UTF-8")
+      else
+        # Default to UTF-8 when server does not specify encoding as that is the
+        # most common charset.
+        body.force_encoding("UTF-8")
       end
     end
   end

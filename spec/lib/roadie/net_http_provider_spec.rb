@@ -43,6 +43,41 @@ module Roadie
       }.to_not raise_error
     end
 
+    it "applies encoding from the response" do
+      # Net::HTTP always returns the body string as a byte-encoded string
+      # (US-ASCII). The headers will indicate what charset the client should
+      # use when trying to make sense of these bytes.
+      stub_request(:get, url).and_return(
+        body: %(p::before { content: "l\xF6ve" }).force_encoding("US-ASCII"),
+        headers: {"Content-Type" => "text/css;charset=ISO-8859-1"},
+      )
+
+      # Seems like CssParser strips out the non-ascii character for some
+      # reason.
+      # stylesheet = NetHttpProvider.new.find_stylesheet!(url)
+      # expect(stylesheet.to_s).to eq('p::before{content:"löve"}')
+
+      allow(Stylesheet).to receive(:new).and_return(instance_double(Stylesheet))
+      NetHttpProvider.new.find_stylesheet!(url)
+      expect(Stylesheet).to have_received(:new).with(url, 'p::before { content: "löve" }')
+    end
+
+    it "assumes UTF-8 encoding if server headers do not specify a charset" do
+      stub_request(:get, url).and_return(
+        body: %(p::before { content: "Åh nej" }).force_encoding("US-ASCII"),
+        headers: {"Content-Type" => "text/css"},
+      )
+
+      # Seems like CssParser strips out the non-ascii characters for some
+      # reason.
+      # stylesheet = NetHttpProvider.new.find_stylesheet!(url)
+      # expect(stylesheet.to_s).to eq('p::before{content:"Åh nej"}')
+
+      allow(Stylesheet).to receive(:new).and_return(instance_double(Stylesheet))
+      NetHttpProvider.new.find_stylesheet!(url)
+      expect(Stylesheet).to have_received(:new).with(url, 'p::before { content: "Åh nej" }')
+    end
+
     describe "error handling" do
       it "handles timeouts" do
         stub_request(:get, url).and_timeout

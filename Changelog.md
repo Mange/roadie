@@ -4,6 +4,8 @@
 
 * Enhancements
   * Allow transforming to XHTML instead of HTML - [Zhivko Draganov](https://github.com/zdraganov) (#144).
+* Bug fixes:
+  * Apply correct string encoding / charset in `NetHttpProvider` - [Jeremy Nagel](https://github.com/jeznag) (#152).
 
 ### 3.2.2
 
