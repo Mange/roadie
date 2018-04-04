@@ -215,5 +215,27 @@ module Roadie
         %w[text-size 2em]
       ]).at_selector("p")
     end
+
+    it "removes data-roadie-ignore markers" do
+      document = Document.new <<-HTML
+        <html>
+          <head>
+            <link rel="stylesheet" href="/cool.css" data-roadie-ignore id="first">
+          </head>
+          <body>
+            <style data-roadie-ignore id="second">a { color: red; }</style>
+            <a href="#" data-roadie-ignore>
+              Hello world!
+              <span data-roadie-ignore></span>
+            </a>
+          </body>
+        </html>
+      HTML
+
+      result = Nokogiri::HTML.parse document.transform
+
+      expect(result).to have_selector("body > a > span")
+      expect(result).not_to have_selector("[data-roadie-ignore]")
+    end
   end
 end

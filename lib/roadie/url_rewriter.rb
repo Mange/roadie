@@ -20,7 +20,11 @@ module Roadie
     # @return [nil] DOM tree is mutated
     def transform_dom(dom)
       # Use only a single loop to do this
-      dom.css("a[href], img[src], *[style]").each do |element|
+      dom.css(
+        "a[href]:not([data-roadie-ignore]), " \
+          "img[src]:not([data-roadie-ignore]), " \
+          "*[style]:not([data-roadie-ignore])",
+      ).each do |element|
         transform_element_style element if element.has_attribute?('style')
         transform_element element
       end

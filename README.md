@@ -23,7 +23,11 @@ This gem makes this easier by automatically inlining stylesheets into the docume
 
 "Dynamic" selectors (`:hover`, `:visited`, `:focus`, etc.), or selectors not understood by Nokogiri will be inlined into a single `<style>` element for those email clients that support it. This changes specificity a great deal for these rules, so it might not work 100% out of the box. (See more about this below)
 
-Roadie also rewrites all relative URLs in the email to an absolute counterpart, making images you insert and those referenced in your stylesheets work. No more headaches about how to write the stylesheets while still having them work with emails from your acceptance environments.
+Roadie also rewrites all relative URLs in the email to an absolute counterpart,
+making images you insert and those referenced in your stylesheets work. No more
+headaches about how to write the stylesheets while still having them work with
+emails from your acceptance environments. You can disable this on specific
+elements using a `data-roadie-ignore` marker.
 
 Features
 --------
@@ -35,10 +39,12 @@ Features
   * Keeps `:hover` and friends around in a separate `<style>` element.
 * Makes image urls absolute.
   * Hostname and port configurable on a per-environment basis.
+  * Can be disabled on individual elements.
 * Makes link `href`s and `img` `src`s absolute.
 * Automatically adds proper HTML skeleton when missing; you don't have to create a layout for emails.
   * Also supports HTML fragments / partial documents, where layout is not added.
 * Allows you to inject stylesheets in a number of ways, at runtime.
+* Removes `data-roadie-ignore` markers before finishing the HTML.
 
 Install & Usage
 ---------------
@@ -90,6 +96,14 @@ The following URLs will be rewritten for you:
 * `a[href]` (HTML)
 * `img[src]` (HTML)
 * `url()` (CSS)
+
+You can disable individual elements by adding an `data-roadie-ignore` marker on
+them. CSS will still be inlined on those elements, but URLs will not be
+rewritten.
+
+```html
+<a href="|UNSUBSCRIBE_URL|" data-roadie-ignore>Unsubscribe</a>
+```
 
 ### Referenced stylesheets ###
 
@@ -185,7 +199,9 @@ The `NetHttpProvider` will download the URLs that is is given using Ruby's stand
 You can give it a whitelist of hosts that downloads are allowed from:
 
 ```ruby
-document.external_asset_providers << Roadie::NetHttpProvider.new(whitelist: ["myapp.com", "assets.myapp.com", "cdn.cdnnetwork.co.jp"])
+document.external_asset_providers << Roadie::NetHttpProvider.new(
+  whitelist: ["myapp.com", "assets.myapp.com", "cdn.cdnnetwork.co.jp"],
+)
 document.external_asset_providers << Roadie::NetHttpProvider.new # Allows every host
 ```
 
@@ -455,6 +471,33 @@ It sounds like you want to transform a partial document. Maybe you are building
 partials or template fragments to later place in other documents. Use
 `Document#transform_partial` instead of `Document#transform` in order to treat
 the HTML as a partial document.
+
+### Can I skip URL rewriting on a specific element?
+
+If you add the `data-roadie-ignore` attribute on an element, URL rewriting will
+not be performed on that element. This could be really useful for you if you
+intend to send the email through some other rendering pipeline that replaces
+some placeholders/variables.
+
+```html
+<a href="/about-us">About us</a>
+<a href="|UNSUBSCRIBE_URL|" data-roadie-ignore>Unsubscribe</a>
+```
+
+Note that this will not skip CSS inlining on the element; it will still get the
+correct styles applied.
+
+### What should I do about "Invalid URL" errors?
+
+If the URL is invalid on purpose, see _Can I skip URL rewriting on a specific
+element?_ above. Otherwise, you can try to parse it yourself using Ruby's `URI`
+class and see if you can figure it out.
+
+```ruby
+require "uri"
+URI.parse("https://example.com/best image.jpg") # raises
+URI.parse("https://example.com/best%20image.jpg") # Works!
+```
 
 Documentation
 -------------

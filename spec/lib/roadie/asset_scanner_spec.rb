@@ -192,25 +192,6 @@ module Roadie
         expect(dom).to_not have_selector("link[href*=some]")
         expect(dom).to have_selector("link[href*=other]")
       end
-
-      it "removes the data-roadie-ignore markers" do
-        dom = dom_document <<-HTML
-          <html>
-            <head>
-              <link rel="stylesheet" href="/cool.css" data-roadie-ignore id="first">
-            </head>
-            <body>
-              <style data-roadie-ignore id="second">a { color: red; }</style>
-            </body>
-          </html>
-        HTML
-        scanner = AssetScanner.new dom, TestProvider.new, external_provider
-
-        scanner.extract_css
-
-        expect(dom.at_css("#first").attributes).to_not include("data-roadie-ignore")
-        expect(dom.at_css("#second").attributes).to_not include("data-roadie-ignore")
-      end
     end
   end
 end

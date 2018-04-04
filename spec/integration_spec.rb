@@ -234,6 +234,33 @@ describe "Roadie functionality" do
       ).at_selector("a")
     end
 
+    it "does not change URLs of ignored elements, but still inlines styles on them" do
+      document = Roadie::Document.new <<-HTML
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <style>
+              a { color: green; }
+            </style>
+          </head>
+          <body>
+            <a class="one" href="/about_us">About us</a>
+            <a class="two" href="$UNSUBSCRIBE_URL" data-roadie-ignore>Unsubscribe</a>
+          </body>
+        </html>
+      HTML
+
+      document.url_options = {host: "myapp.com", scheme: "https", path: "rails/app/"}
+      result = parse_html document.transform
+
+      expect(result.at_css("a.one")["href"]).to eq("https://myapp.com/rails/app/about_us")
+      # Nokogiri still treats the attribute as an URL and escapes it.
+      expect(result.at_css("a.two")["href"]).to eq("%24UNSUBSCRIBE_URL")
+
+      expect(result).to have_styling("color" => "green").at_selector("a.one")
+      expect(result).to have_styling("color" => "green").at_selector("a.two")
+    end
+
     it "allows custom callbacks during inlining" do
       document = Roadie::Document.new <<-HTML
         <!DOCTYPE html>
