@@ -4,6 +4,9 @@
 
 * Enhancements
   * Allow transforming to XHTML instead of HTML - [Zhivko Draganov](https://github.com/zdraganov) (#144).
+  * Support partial HTML documents (fragments) - #147
+    * With the help of [andfx](https://github.com/andfx) - #115
+    * With the help of [Frida Sjoholm](https://github.com/andf://github.com/FridaSjoholm) - #146
 * Bug fixes:
   * Apply correct string encoding / charset in `NetHttpProvider` - [Jeremy Nagel](https://github.com/jeznag) (#152).
 
