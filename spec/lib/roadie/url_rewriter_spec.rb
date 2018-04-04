@@ -24,6 +24,18 @@ module Roadie
         }.to change { dom.at_css("a")["href"] }.to "http://foo.com/"
       end
 
+      it "skips rewrites for a[href] with data-roadie-ignore" do
+        dom = dom_document <<-HTML
+          <body>
+            <a href="%invalid_url%" data-roadie-ignore>Some path</a>
+          </body>
+        HTML
+
+        expect {
+          rewriter.transform_dom dom
+        }.not_to change { dom.at_css("a")["href"] }
+      end
+
       it "rewrites relative img[src]" do
         expect(generator).to receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
         dom = dom_document <<-HTML

@@ -25,5 +25,14 @@ module Roadie
     end
     # @api private
     module_function :warn
+
+    # @api private
+    def remove_ignore_markers(dom, selectors)
+      dom.css(selectors.map { |s| "#{s}[data-roadie-ignore]" }.join(",")).each do |node|
+        node.remove_attribute "data-roadie-ignore"
+      end
+    end
+    # @api private
+    module_function :remove_ignore_markers
   end
 end
