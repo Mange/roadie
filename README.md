@@ -5,7 +5,6 @@ Roadie
 [![Code Climate](https://codeclimate.com/github/Mange/roadie.png)](https://codeclimate.com/github/Mange/roadie)
 [![Code coverage status](https://codecov.io/github/Mange/roadie/coverage.svg?branch=master)](https://codecov.io/github/Mange/roadie?branch=master)
 [![Gem Version](https://badge.fury.io/rb/roadie.png)](http://badge.fury.io/rb/roadie)
-[![Dependency Status](https://gemnasium.com/Mange/roadie.png)](https://gemnasium.com/Mange/roadie)
 
 **Note: This README details the 3.x version of Roadie. You might be using 2.x, which is much older and only for Rails.**
 
