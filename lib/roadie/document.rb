@@ -76,6 +76,7 @@ module Roadie
 
       callback after_transformation, dom
 
+      remove_ignore_markers dom
       serialize_document dom
     end
 
@@ -194,6 +195,12 @@ module Roadie
         else
           callable.(dom, self)
         end
+      end
+    end
+
+    def remove_ignore_markers(dom)
+      dom.css("[data-roadie-ignore]").each do |node|
+        node.remove_attribute "data-roadie-ignore"
       end
     end
   end

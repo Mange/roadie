@@ -46,7 +46,6 @@ module Roadie
         element.remove if stylesheet
         stylesheet
       }.compact
-      remove_ignore_markers
       stylesheets
     end
 
@@ -101,12 +100,6 @@ module Roadie
       return false if external_asset_provider.respond_to?(:empty?) && external_asset_provider.empty?
 
       true
-    end
-
-    def remove_ignore_markers
-      @dom.css("[data-roadie-ignore]").each do |node|
-        node.remove_attribute "data-roadie-ignore"
-      end
     end
   end
 end
