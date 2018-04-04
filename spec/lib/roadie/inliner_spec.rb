@@ -219,8 +219,38 @@ module Roadie
               <body><p></p></body>
             </html>
           "
-          Inliner.new([stylesheet], dom).inline(false)
+          Inliner.new([stylesheet], dom).inline(keep_uninlinable_css: false)
           expect(dom).to_not have_selector("head > style")
+        end
+
+        it "puts the <style> element at the root when told so" do
+          stylesheet = use_css 'a:hover { color: red; }'
+          dom = Nokogiri::HTML.fragment("
+            <a></a>
+          ")
+
+          Inliner.new([stylesheet], dom).inline(
+            keep_uninlinable_css: true,
+            keep_uninlinable_in: :root,
+          )
+
+          expect(dom).to have_xpath("./a")
+          expect(dom).to have_xpath("./style")
+        end
+
+        it "raises error when told to save styles in an unknown place" do
+          stylesheet = use_css 'a:hover { color: red; }'
+          dom = Nokogiri::HTML.fragment("
+            <a></a>
+          ")
+
+          inliner = Inliner.new([stylesheet], dom)
+          expect {
+            inliner.inline(
+              keep_uninlinable_css: true,
+              keep_uninlinable_in: :unknown_place,
+            )
+          }.to raise_error(ArgumentError, /:unknown_place/)
         end
       end
     end

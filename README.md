@@ -37,6 +37,7 @@ Features
   * Hostname and port configurable on a per-environment basis.
 * Makes link `href`s and `img` `src`s absolute.
 * Automatically adds proper HTML skeleton when missing; you don't have to create a layout for emails.
+  * Also supports HTML fragments / partial documents, where layout is not added.
 * Allows you to inject stylesheets in a number of ways, at runtime.
 
 Install & Usage
@@ -51,10 +52,17 @@ gem 'roadie', '~> 3.2'
 You can then create a new instance of a Roadie document:
 
 ```ruby
+# Transform full documents with the #transform method.
 document = Roadie::Document.new "<html><body></body></html>"
 document.add_css "body { color: green; }"
 document.transform
     # => "<html><body style=\"color:green;\"></body></html>"
+
+# Transform partial documents with #transform_partial.
+document = Roadie::Document.new "<div>Hello world!</div>"
+document.add_css "div { color: green; }"
+document.transform_partial
+    # => "<div style=\"color:green;\">Hello world!</div>"
 ```
 
 Your document instance can be configured with several options:
@@ -331,11 +339,18 @@ end
 
 ### Keeping CSS that is impossible to inline
 
-Some CSS is impossible to inline properly. `:hover` and `::after` comes to mind. Roadie tries its best to keep these around by injecting them inside a new `<style>` element in the `<head>`.
+Some CSS is impossible to inline properly. `:hover` and `::after` comes to
+mind. Roadie tries its best to keep these around by injecting them inside a new
+`<style>` element in the `<head>` (or at the beginning of the partial if
+transforming a partial document).
 
-The problem here is that Roadie cannot possible adjust the specificity for you, so they will not apply the same way as they did before the styles were inlined.
+The problem here is that Roadie cannot possible adjust the specificity for you,
+so they will not apply the same way as they did before the styles were inlined.
 
-Another caveat is that a lot of email clients does not support this (which is the entire point of inlining in the first place), so don't put anything important in here. Always handle the case of these selectors not being part of the email.
+Another caveat is that a lot of email clients does not support this (which is
+the entire point of inlining in the first place), so don't put anything
+important in here. Always handle the case of these selectors not being part of
+the email.
 
 #### Specificity problems ####
 
@@ -374,7 +389,9 @@ class TrackNewsletterLinks
   end
 end
 
-document.before_transformation = proc { |dom, document| logger.debug "Inlining document with title #{dom.at_css('head > title').try(:text)}" }
+document.before_transformation = ->(dom, document) {
+  logger.debug "Inlining document with title #{dom.at_css('head > title').try(:text)}"
+}
 document.after_transformation = TrackNewsletterLinks.new
 ```
 
@@ -388,6 +405,9 @@ some other templating engine that uses those tokens (like Handlebars or Mustache
 ```ruby
 document.mode = :xhtml
 ```
+
+This will also affect the emitted `<!DOCTYPE>` if transforming a full document.
+Partial documents does not have a `<!DOCTYPE>`.
 
 Build Status
 ------------
@@ -428,6 +448,13 @@ Instructions on how to do this on most platforms, see [Nokogiri's official insta
 ### What happened to my `@keyframes`?
 
 The CSS Parser used in Roadie does not handle keyframes. I don't think any email clients do either, but if you want to keep on trying you can add them manually to a `<style>` element (or a separate referenced stylesheet) and [tell Roadie not to touch them](#referenced-stylesheets).
+
+### How do I get rid of the `<body>` elements that are added?
+
+It sounds like you want to transform a partial document. Maybe you are building
+partials or template fragments to later place in other documents. Use
+`Document#transform_partial` instead of `Document#transform` in order to treat
+the HTML as a partial document.
 
 Documentation
 -------------
@@ -473,7 +500,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2017 Magnus Bergmark, Jim Neath / Purify, and contributors.
+Copyright (c) 2009-2018 Magnus Bergmark, Jim Neath / Purify, and contributors.
 
 * [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 

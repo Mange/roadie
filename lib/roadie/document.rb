@@ -13,6 +13,8 @@ module Roadie
   # The internal stylesheet is used last and gets the highest priority. The
   # rest is used in the same order as browsers are supposed to use them.
   #
+  # The execution methods are {#transform} and {#transform_partial}.
+  #
   # @attr [#call] before_transformation Callback to call just before {#transform}ation begins. Will be called with the parsed DOM tree and the {Document} instance.
   # @attr [#call] after_transformation Callback to call just before {#transform}ation is completed. Will be called with the current DOM tree and the {Document} instance.
   class Document
@@ -46,18 +48,21 @@ module Roadie
       @css << "\n\n" << new_css
     end
 
-    # Transform the input HTML and returns the processed HTML.
+    # Transform the input HTML as a full document and returns the processed
+    # HTML.
     #
     # Before the transformation begins, the {#before_transformation} callback
     # will be called with the parsed HTML tree and the {Document} instance, and
     # after all work is complete the {#after_transformation} callback will be
     # invoked in the same way.
     #
-    # Most of the work is delegated to other classes. A list of them can be seen below.
+    # Most of the work is delegated to other classes. A list of them can be
+    # seen below.
     #
     # @see MarkupImprover MarkupImprover (improves the markup of the DOM)
     # @see Inliner Inliner (inlines the stylesheets)
     # @see UrlRewriter UrlRewriter (rewrites URLs and makes them absolute)
+    # @see #transform_partial Transforms partial documents (fragments)
     #
     # @return [String] the transformed HTML
     def transform
@@ -66,7 +71,40 @@ module Roadie
       callback before_transformation, dom
 
       improve dom
-      inline dom
+      inline dom, keep_uninlinable_in: :head
+      rewrite_urls dom
+
+      callback after_transformation, dom
+
+      serialize_document dom
+    end
+
+    # Transform the input HTML as a HTML fragment/partial and returns the
+    # processed HTML.
+    #
+    # Before the transformation begins, the {#before_transformation} callback
+    # will be called with the parsed HTML tree and the {Document} instance, and
+    # after all work is complete the {#after_transformation} callback will be
+    # invoked in the same way.
+    #
+    # The main difference between this and {#transform} is that this does not
+    # treat the HTML as a full document and does not try to fix it by adding
+    # doctypes, {<head>} elements, etc.
+    #
+    # Most of the work is delegated to other classes. A list of them can be
+    # seen below.
+    #
+    # @see Inliner Inliner (inlines the stylesheets)
+    # @see UrlRewriter UrlRewriter (rewrites URLs and makes them absolute)
+    # @see #transform Transforms full documents
+    #
+    # @return [String] the transformed HTML
+    def transform_partial
+      dom = Nokogiri::HTML.fragment html
+
+      callback before_transformation, dom
+
+      inline dom, keep_uninlinable_in: :root
       rewrite_urls dom
 
       callback after_transformation, dom
@@ -109,9 +147,13 @@ module Roadie
       MarkupImprover.new(dom, html).improve
     end
 
-    def inline(dom)
+    def inline(dom, options = {})
+      keep_uninlinable_in = options.fetch(:keep_uninlinable_in)
       dom_stylesheets = AssetScanner.new(dom, asset_providers, external_asset_providers).extract_css
-      Inliner.new(dom_stylesheets + [stylesheet], dom).inline(keep_uninlinable_css)
+      Inliner.new(dom_stylesheets + [stylesheet], dom).inline(
+        keep_uninlinable_css: keep_uninlinable_css,
+        keep_uninlinable_in: keep_uninlinable_in,
+      )
     end
 
     def rewrite_urls(dom)

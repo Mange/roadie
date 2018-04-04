@@ -24,13 +24,20 @@ module Roadie
 
     # Start the inlining, mutating the DOM tree.
     #
-    # @param [true, false] keep_extra_blocks
+    # @option options [true, false] :keep_uninlinable_css
+    # @option options [:root, :head] :keep_uninlinable_in
     # @return [nil]
-    def inline(keep_extra_blocks = true)
+    def inline(options = {})
+      keep_uninlinable_css = options.fetch(:keep_uninlinable_css, true)
+      keep_uninlinable_in = options.fetch(:keep_uninlinable_in, :head)
+
       style_map, extra_blocks = consume_stylesheets
 
       apply_style_map(style_map)
-      add_styles_to_head(extra_blocks) if keep_extra_blocks
+
+      if keep_uninlinable_css
+        add_uninlinable_styles(keep_uninlinable_in, extra_blocks)
+      end
 
       nil
     end
@@ -89,21 +96,31 @@ module Roadie
       nil
     end
 
-    def add_styles_to_head(blocks)
-      unless blocks.empty?
-        create_style_element(blocks, find_head)
-      end
+    def add_uninlinable_styles(parent, blocks)
+      return if blocks.empty?
+
+      parent_node =
+        case parent
+        when :head
+          find_head
+        when :root
+          dom
+        else
+          raise ArgumentError, "Parent must be either :head or :root. Was #{parent.inspect}"
+        end
+
+      create_style_element(blocks, parent_node)
     end
 
     def find_head
       dom.at_xpath('html/head')
     end
 
-    def create_style_element(style_blocks, head)
-      return unless head
-      element = Nokogiri::XML::Node.new("style", head.document)
+    def create_style_element(style_blocks, parent)
+      return unless parent
+      element = Nokogiri::XML::Node.new("style", parent.document)
       element.content = style_blocks.join("\n")
-      head.add_child(element)
+      parent.add_child(element)
     end
 
     # @api private

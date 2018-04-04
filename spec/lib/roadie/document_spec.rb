@@ -119,10 +119,43 @@ module Roadie
 
       context "in HTML mode" do
         it "does not escape curly braces" do
-          document = Document.new "<body><a href='https://google.com/{{hello}}'>Hello</body>"
+          document = Document.new "<body><a href='https://google.com/{{hello}}'>Hello</a></body>"
           document.mode = :xhtml
 
           expect(document.transform).to include("{{hello}}")
+        end
+      end
+    end
+
+    describe "partial transforming" do
+      it "runs the before and after callbacks" do
+        document = Document.new "<p></p>"
+        before = ->{}
+        after = ->{}
+        document.before_transformation = before
+        document.after_transformation = after
+
+        expect(before).to receive(:call).with(
+          instance_of(Nokogiri::HTML::DocumentFragment),
+          document,
+        ).ordered
+
+        expect(Inliner).to receive(:new).ordered.and_return double.as_null_object
+
+        expect(after).to receive(:call).with(
+          instance_of(Nokogiri::HTML::DocumentFragment),
+          document,
+        ).ordered
+
+        document.transform_partial
+      end
+
+      context "in HTML mode" do
+        it "does not escape curly braces" do
+          document = Document.new "<a href='https://google.com/{{hello}}'>Hello</a>"
+          document.mode = :xhtml
+
+          expect(document.transform_partial).to include("{{hello}}")
         end
       end
     end
