@@ -4,9 +4,13 @@ Roadie
 [![Build history and status](https://travis-ci.org/Mange/roadie.svg?branch=master)](http://travis-ci.org/#!/Mange/roadie)
 [![Code Climate](https://codeclimate.com/github/Mange/roadie.png)](https://codeclimate.com/github/Mange/roadie)
 [![Code coverage status](https://codecov.io/github/Mange/roadie/coverage.svg?branch=master)](https://codecov.io/github/Mange/roadie?branch=master)
-[![Gem Version](https://badge.fury.io/rb/roadie.png)](http://badge.fury.io/rb/roadie)
+[![Gem](https://img.shields.io/gem/v/roadie.svg)](https://rubygems.org/gems/roadie)
+[![Passive maintenance](https://img.shields.io/badge/maintenance-Passive-yellow.svg)][passive]
 
-**Note: This README details the 3.x version of Roadie. You might be using 2.x, which is much older and only for Rails.**
+
+|||
+|---|---|
+| :warning: | This gem is now in [passive maintenance mode][passive]. [(more)][passive] |
 
 > Making HTML emails comfortable for the Ruby rockstars
 
@@ -553,3 +557,4 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED ‘AS IS’, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 [gpg]: https://gist.github.com/Mange/baf25e23e653a206ec2d#file-keybase-md
+[passive]: https://github.com/Mange/roadie/issues/155
