@@ -49,6 +49,22 @@ module Roadie
           rewriter.transform_dom dom
         }.to change { dom.at_css("div")["style"] }.to 'background-image: url("http://foo.com/image.jpg");'
       end
+
+      it "skips elements with data-roadie-ignore attributes" do
+        allow(generator).to receive(:generate_url).and_return("http://example.com")
+
+        dom = dom_document <<-HTML
+          <body>
+            <a href="some/path.jpg" data-roadie-ignore>Image</a>
+            <img src="some/path.jpg" data-roadie-ignore>
+            <div style="background-image: url(&quot;some/path.jpg&quot;);" data-roadie-ignore>
+          </body>
+        HTML
+
+        rewriter.transform_dom dom
+
+        expect(generator).not_to have_received(:generate_url)
+      end
     end
 
     describe "transforming css" do
