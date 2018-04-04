@@ -43,19 +43,39 @@ module Roadie
       }.to_not raise_error
     end
 
-    describe "encoding" do
-      fake_body = "p { color: green; }"
-      it "should respect charset header if supplied" do
-        stub_request(:get, url).and_return(body: fake_body, headers: { "Content-Type" => "text/html;charset=ISO-8859-1" })
-        expect(Stylesheet).to receive(:new).with(url, fake_body.force_encoding("ISO-8859-1")).and_call_original
-        NetHttpProvider.new.find_stylesheet!(url)
-      end
+    it "applies encoding from the response" do
+      # Net::HTTP always returns the body string as a byte-encoded string
+      # (US-ASCII). The headers will indicate what charset the client should
+      # use when trying to make sense of these bytes.
+      stub_request(:get, url).and_return(
+        body: %(p::before { content: "l\xF6ve" }).force_encoding("US-ASCII"),
+        headers: {"Content-Type" => "text/css;charset=ISO-8859-1"},
+      )
 
-      it "should not force encoding if charset is not specified" do
-        stub_request(:get, url).and_return(body: fake_body)
-        expect(Stylesheet).to receive(:new).with(url, fake_body).and_call_original
-        NetHttpProvider.new.find_stylesheet!(url)
-      end
+      # Seems like CssParser strips out the non-ascii character for some
+      # reason.
+      # stylesheet = NetHttpProvider.new.find_stylesheet!(url)
+      # expect(stylesheet.to_s).to eq('p::before{content:"löve"}')
+
+      allow(Stylesheet).to receive(:new).and_return(instance_double(Stylesheet))
+      NetHttpProvider.new.find_stylesheet!(url)
+      expect(Stylesheet).to have_received(:new).with(url, 'p::before { content: "löve" }')
+    end
+
+    it "assumes UTF-8 encoding if server headers do not specify a charset" do
+      stub_request(:get, url).and_return(
+        body: %(p::before { content: "Åh nej" }).force_encoding("US-ASCII"),
+        headers: {"Content-Type" => "text/css"},
+      )
+
+      # Seems like CssParser strips out the non-ascii characters for some
+      # reason.
+      # stylesheet = NetHttpProvider.new.find_stylesheet!(url)
+      # expect(stylesheet.to_s).to eq('p::before{content:"Åh nej"}')
+
+      allow(Stylesheet).to receive(:new).and_return(instance_double(Stylesheet))
+      NetHttpProvider.new.find_stylesheet!(url)
+      expect(Stylesheet).to have_received(:new).with(url, 'p::before { content: "Åh nej" }')
     end
 
     describe "error handling" do
