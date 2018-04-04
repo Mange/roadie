@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.2.2...master)
+[full changelog](https://github.com/Mange/roadie/compare/v3.3.0...master)
+
+* Nothing yet.
+
+### 3.2.2
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.2.2...v3.3.0)
 
 * Enhancements
   * Allow transforming to XHTML instead of HTML - [Zhivko Draganov](https://github.com/zdraganov) (#144).
