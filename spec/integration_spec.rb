@@ -501,4 +501,29 @@ describe "Roadie functionality" do
       expect(result).to include("<td>Two</td><td>2</td>")
     end
   end
+
+  it "doesn't inline styles in media queries with features" do
+    document = Roadie::Document.new <<-HTML
+      <html>
+        <head>
+          <link rel="stylesheet" href="/style.css">
+        </head>
+        <body>
+          <div class="colorful"></div>
+        </body>
+      </html>
+    HTML
+
+    document.asset_providers = TestProvider.new(
+      "/style.css" => <<-CSS
+        .colorful { color: green; }
+        @media screen and (max-width 600px) {
+          .colorful { color: red; }
+        }
+      CSS
+    )
+
+    result = parse_html document.transform
+    expect(result).to have_styling('color' => 'green').at_selector('.colorful')
+  end
 end
