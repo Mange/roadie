@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe "Roadie functionality" do
-  describe "on full documents" do
-    def parse_html(html)
-      Nokogiri::HTML.parse(html)
-    end
+  def parse_html(html)
+    Nokogiri::HTML.parse(html)
+  end
 
+  describe "on full documents" do
     it "adds missing structure" do
       html = "<h1>Hello world!</h1>".encode("Shift_JIS")
       document = Roadie::Document.new(html)
@@ -523,7 +523,7 @@ describe "Roadie functionality" do
       CSS
     )
 
-    result = Nokogiri::HTML.parse document.transform
+    result = parse_html document.transform
     expect(result).to have_styling('color' => 'green').at_selector('.colorful')
   end
 
@@ -555,7 +555,7 @@ describe "Roadie functionality" do
       CSS
     )
 
-    result = Nokogiri::HTML.parse document.transform
+    result = parse_html document.transform
 
     styles = result.at_css('html > head > style').text
     expected_result = <<-CSS
