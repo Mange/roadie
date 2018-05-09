@@ -559,13 +559,16 @@ describe "Roadie functionality" do
 
     styles = result.at_css('html > head > style').text
     expected_result = <<-CSS
-      @media screen and (max-width 600px) { .colorful{color:red;width:600px} }
-      @media screen and (max-width 600px) { .colorful-2{color:red;width:600px} }
+      @media screen and (max-width 600px) {
+        .colorful{color:red;width:600px}
+        .colorful-2{color:red;width:600px}
+      }
       @media screen and (max-width 800px) { .colorful{color:blue} }
       @media screen, print and (max-width 800px) { .colorful{color:blue} }
     CSS
     expected_result = expected_result.gsub(/[\s]+/, ' ').strip
     actual_result = styles.gsub(/[\s]+/, ' ').strip
+
     expect(expected_result).to eq(actual_result)
   end
 end

@@ -119,7 +119,22 @@ module Roadie
     def create_style_element(style_blocks, parent)
       return unless parent
       element = Nokogiri::XML::Node.new("style", parent.document)
-      element.content = style_blocks.join("\n")
+
+      # For performance reasons, we should group styles with the same media types within
+      # one media query instead of creating thousands of media queries.
+      # https://github.com/artifex404/media-queries-benchmark
+      style_blocks_grouped_by_media_type = style_blocks.group_by { |block| block.media }
+      styles_in_shared_media_queries = style_blocks_grouped_by_media_type
+                                        .map do |media_types, blocks|
+                                          css_rules = blocks.map(&:to_s).join("\n")
+
+                                          unless media_types == [:all]
+                                            "@media #{media_types.map(&:to_s).join(', ')} {\n#{css_rules}\n}"
+                                          else
+                                            css_rules
+                                          end
+                                        end
+      element.content = styles_in_shared_media_queries.join("\n")
       parent.add_child(element)
     end
 
