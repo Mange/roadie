@@ -9,7 +9,7 @@ module Roadie
 
     # @param [Selector] selector
     # @param [Array<StyleProperty>] properties
-    # @param [Array<?>] media  Array of media types, e.g.
+    # @param [Array<Symbol>] media  Array of media types, e.g.
     #                          @media screen, print and (max-width 800px) will become
     #                          [:screen, :"print and (max-width 800px)"]
     def initialize(selector, properties, media)
@@ -25,13 +25,16 @@ module Roadie
     #   @see Selector#to_s
     def_delegator :selector, :to_s, :selector_string
 
-    # Checks whether the media query can be inlined (e.g. media)
+    # Checks whether the media query can be inlined
+    # @see inlineable_media
+    # @return {Boolean}
     def inlinable?
       inlinable_media? && selector.inlinable?
     end
 
     # String representation of the style block. This is valid CSS and can be
     # used in the DOM.
+    # @return {String}
     def to_s
       "#{selector}{#{properties.map(&:to_s).join(';')}}"
     end
