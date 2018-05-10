@@ -36,7 +36,8 @@ module Roadie
     # used in the DOM.
     # @return {String}
     def to_s
-      "#{selector}{#{properties.map(&:to_s).join(';')}}"
+      rules = properties.map { |rule| "#{rule.to_s};" }.join('')
+      "#{selector}{#{rules}}"
     end
 
     private

@@ -169,7 +169,7 @@ module Roadie
             </html>
           ")
           expect(result).to have_selector("head > style")
-          expect(result.at_css("head > style").text).to eq "a:hover{color:red}"
+          expect(result.at_css("head > style").text).to eq "a:hover{color:red;}"
         end
 
         it "puts them in <head> on unexpected inlining problems" do
@@ -181,7 +181,7 @@ module Roadie
             </html>
           ")
           expect(result).to have_selector("head > style")
-          expect(result.at_css("head > style").text).to eq "p:some-future-thing{color:red}"
+          expect(result.at_css("head > style").text).to eq "p:some-future-thing{color:red;}"
         end
 
         # This is not really wanted behavior, but there's nothing we can do

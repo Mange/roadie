@@ -24,7 +24,7 @@ module Roadie
 
     it "has a string representation" do
       properties = [double(to_s: "bar"), double(to_s: "baz")]
-      expect(StyleBlock.new(double(to_s: "foo"), properties, [:all]).to_s).to eq("foo{bar;baz}")
+      expect(StyleBlock.new(double(to_s: "foo"), properties, [:all]).to_s).to eq("foo{bar;baz;}")
     end
 
     describe "#inlinable" do
