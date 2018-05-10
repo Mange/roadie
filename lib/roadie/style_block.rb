@@ -9,13 +9,13 @@ module Roadie
 
     # @param [Selector] selector
     # @param [Array<StyleProperty>] properties
-    # @param [Array<Symbol>] media  Array of media types, e.g.
+    # @param [Array<String>] media  Array of media types, e.g.
     #                          @media screen, print and (max-width 800px) will become
-    #                          [:screen, :"print and (max-width 800px)"]
+    #                          ['screen', 'print and (max-width 800px)']
     def initialize(selector, properties, media)
       @selector = selector
       @properties = properties
-      @media = media
+      @media = media.map(&:to_s)
     end
 
     # @!method specificity
@@ -46,7 +46,7 @@ module Roadie
     # @media only screen and (max-width: 600px) {...} cannot be inlined
     # @return {Boolean}
     def inlinable_media?
-      @media.none? { |media_query| media_query.to_s.include? '(' }
+      @media.none? { |media_query| media_query.include? '(' }
     end
   end
 end

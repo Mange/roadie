@@ -29,12 +29,24 @@ module Roadie
     # Should CSS that cannot be inlined be kept in a new `<style>` element in `<head>`?
     attr_accessor :keep_uninlinable_css
 
+    # Should non-inlineable media queries be grouped?
+    # e.g.
+    # @media(max-width: 600px) { .col-6 { display: block; } }
+    # @media(max-width: 400px) { .col-12 { display: inline-block; } }
+    # @media(max-width: 600px) { .col-12 { display: block; } }
+    # will become
+    # @media(max-width: 600px) { .col-6 { display: block; } .col-12 { display: block; } }
+    # @media(max-width: 400px) { .col-12 { display: inline-block; } }
+    # which would change the styling on the page
+    attr_accessor :use_shared_media_queries
+
     # The mode to generate markup in. Valid values are `:html` (default) and `:xhtml`.
     attr_reader :mode
 
     # @param [String] html the input HTML
     def initialize(html)
       @keep_uninlinable_css = true
+      @use_shared_media_queries = true
       @html = html
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @external_asset_providers = ProviderList.empty
@@ -154,6 +166,7 @@ module Roadie
       Inliner.new(dom_stylesheets + [stylesheet], dom).inline(
         keep_uninlinable_css: keep_uninlinable_css,
         keep_uninlinable_in: keep_uninlinable_in,
+        use_shared_media_queries: use_shared_media_queries,
       )
     end
 
