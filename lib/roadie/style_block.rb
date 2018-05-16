@@ -36,8 +36,8 @@ module Roadie
     # used in the DOM.
     # @return {String}
     def to_s
-      rules = properties.map { |rule| "#{rule.to_s};" }.join('')
-      "#{selector}{#{rules}}"
+      # NB - leave off redundant final semicolon - see https://www.w3.org/TR/CSS2/syndata.html#declaration
+      "#{selector}{#{properties.map(&:to_s).join(';')}}"
     end
 
     private

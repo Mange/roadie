@@ -15,9 +15,9 @@ module Roadie
       CSS
       expect(stylesheet).to have(3).blocks
       expect(stylesheet.blocks.map(&:to_s)).to eq([
-        "body{color:green !important;font-size:200%;}",
-        "a{color:red;}",
-        "i{color:red;}",
+        "body{color:green !important;font-size:200%}",
+        "a{color:red}",
+        "i{color:red}",
       ])
     end
 
@@ -41,7 +41,7 @@ module Roadie
 
     it "has a string representation of the contents" do
       stylesheet = Stylesheet.new("example.css", "body { color: green;}a{ color: red; font-size: small }")
-      expect(stylesheet.to_s).to eq("body{color:green;}\na{color:red;font-size:small;}")
+      expect(stylesheet.to_s).to eq("body{color:green}\na{color:red;font-size:small}")
     end
 
     it "understands data URIs" do
@@ -54,7 +54,7 @@ module Roadie
 
       expect(stylesheet).to have(1).blocks
       expect(stylesheet.blocks.map(&:to_s)).to eq([
-        "h1{background-image:url(data:image/gif;base64,R0lGODl);}"
+        "h1{background-image:url(data:image/gif;base64,R0lGODl)}"
       ])
     end
 
@@ -69,7 +69,7 @@ module Roadie
     it "strips UTF-8 Byte Order Mark" do
       input = "\xEF\xBB\xBFbody { color: green; }"
       stylesheet = Stylesheet.new("bom.css", input)
-      expect(stylesheet.to_s).to eq "body{color:green;}"
+      expect(stylesheet.to_s).to eq "body{color:green}"
     end
   end
 end

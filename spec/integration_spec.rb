@@ -353,8 +353,8 @@ describe "Roadie functionality" do
 
       styles = result.at_css('html > head > style').text
       expected_result = <<-CSS
-        @media screen and (max-width 800px) { .colorful{color:blue;} }
-        @media screen, print and (max-width 800px) { .colorful{color:blue;} }
+        @media screen and (max-width 800px) { .colorful{color:blue} }
+        @media screen, print and (max-width 800px) { .colorful{color:blue} }
       CSS
       expected_result = expected_result.gsub(/[\s]+/, ' ').strip
       actual_result = styles.gsub(/[\s]+/, ' ').strip
@@ -391,8 +391,8 @@ describe "Roadie functionality" do
       styles = result.at_css('html > head > style').text
       expected_result = <<-CSS
         @media screen and (max-width 600px) {
-          .colorful{color:red;width:600px;}
-          .colorful-2{color:red;width:600px;}
+          .colorful{color:red;width:600px}
+          .colorful-2{color:red;width:600px}
         }
       CSS
       expected_result = expected_result.gsub(/[\s]+/, ' ').strip
@@ -401,7 +401,7 @@ describe "Roadie functionality" do
       expect(actual_result).to eq(expected_result)
     end
 
-    describe 'if use_shared_media_queries is set to false' do
+    describe 'if merge_media_queries is set to false' do
       it "doesn't group non-inlineable media queries in the head" do
         document = Roadie::Document.new <<-HTML
           <html>
@@ -414,7 +414,7 @@ describe "Roadie functionality" do
           </html>
         HTML
 
-        document.use_shared_media_queries = false
+        document.merge_media_queries = false
 
         document.asset_providers = TestProvider.new(
           "/style.css" => <<-CSS
@@ -433,10 +433,10 @@ describe "Roadie functionality" do
         styles = result.at_css('html > head > style').text
         expected_result = <<-CSS
           @media screen and (max-width 600px) {
-            .colorful{color:red;width:600px;}
+            .colorful{color:red;width:600px}
           }
           @media screen and (max-width 600px) {
-            .colorful-2{color:red;width:600px;}
+            .colorful-2{color:red;width:600px}
           }
         CSS
         expected_result = expected_result.gsub(/[\s]+/, ' ').strip

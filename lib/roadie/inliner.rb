@@ -26,30 +26,28 @@ module Roadie
     #
     # @option options [true, false] :keep_uninlinable_css
     # @option options [:root, :head] :keep_uninlinable_in
-    # @option options [true, false] :use_shared_media_queries
+    # @option options [true, false] :merge_media_queries
     # @return [nil]
     def inline(options = {})
       keep_uninlinable_css = options.fetch(:keep_uninlinable_css, true)
       keep_uninlinable_in = options.fetch(:keep_uninlinable_in, :head)
-      use_shared_media_queries = options.fetch(:use_shared_media_queries, true)
+      merge_media_queries = options.fetch(:merge_media_queries, true)
 
       style_map, extra_blocks = consume_stylesheets
 
       apply_style_map(style_map)
 
       if keep_uninlinable_css
-        add_uninlinable_styles(keep_uninlinable_in, extra_blocks, use_shared_media_queries)
+        add_uninlinable_styles(keep_uninlinable_in, extra_blocks, merge_media_queries)
       end
 
       nil
     end
 
     protected
-
     attr_reader :stylesheets, :dom
 
     private
-
     def consume_stylesheets
       style_map = StyleMap.new
       extra_blocks = []
@@ -82,7 +80,7 @@ module Roadie
     end
 
     def apply_element_style(element, builder)
-      element['style'] = [builder.attribute_string, element['style']].compact.join(';')
+      element["style"] = [builder.attribute_string, element["style"]].compact.join(";")
     end
 
     def elements_matching_selector(stylesheet, selector)
@@ -104,8 +102,8 @@ module Roadie
     # either the head or in the document
     # @param [Symbol] parent  Where to put the styles
     # @param [Array<StyleBlock>] blocks  Non-inlineable style blocks
-    # @param [Boolean]  use_shared_media_queries  Whether to group media queries
-    def add_uninlinable_styles(parent, blocks, use_shared_media_queries)
+    # @param [Boolean]  merge_media_queries  Whether to group media queries
+    def add_uninlinable_styles(parent, blocks, merge_media_queries)
       return if blocks.empty?
 
       parent_node =
@@ -118,22 +116,23 @@ module Roadie
           raise ArgumentError, "Parent must be either :head or :root. Was #{parent.inspect}"
         end
 
-      create_style_element(blocks, parent_node, use_shared_media_queries)
+      create_style_element(blocks, parent_node, merge_media_queries)
     end
 
     def find_head
       dom.at_xpath('html/head')
     end
 
-    def create_style_element(style_blocks, parent, use_shared_media_queries)
+    def create_style_element(style_blocks, parent, merge_media_queries)
       return unless parent
       element = Nokogiri::XML::Node.new('style', parent.document)
 
-      element.content = if use_shared_media_queries
-                          styles_in_shared_media_queries(style_blocks).join("\n")
-                        else
-                          styles_in_individual_media_queries(style_blocks).join("\n")
-                        end
+      element.content =
+        if merge_media_queries
+          styles_in_shared_media_queries(style_blocks).join("\n")
+        else
+          styles_in_individual_media_queries(style_blocks).join("\n")
+        end
       parent.add_child(element)
     end
 
@@ -168,7 +167,7 @@ module Roadie
     # (before it would've yielded display: block; for .col-12 at max-width: 600px
     # and now it yields inline-block;)
     #
-    # If use_shared_media_queries is set to false,
+    # If merge_media_queries is set to false,
     # we will generate #{style_blocks.size} media queries, potentially
     # causing performance issues.
     # @param {Array<StyleBlock>} style_blocks  All style blocks
