@@ -78,6 +78,22 @@ Your document instance can be configured with several options:
 
 * `url_options` - Dictates how absolute URLs should be built.
 * `keep_uninlinable_css` - Set to false to skip CSS that cannot be inlined.
+* `merge_media_queries` - Set to false to not group media queries. Some users might prefer to not group rules within media queries because
+  it will result in rules getting reordered.
+  e.g.
+  ```
+  @media(max-width: 600px) { .col-6 { display: block; } }
+  @media(max-width: 400px) { .col-12 { display: inline-block; } }
+  @media(max-width: 600px) { .col-12 { display: block; } }
+  ```
+  will become
+  ```
+  @media(max-width: 600px) { .col-6 { display: block; } .col-12 { display: block; } }
+  @media(max-width: 400px) { .col-12 { display: inline-block; } }
+  ```
+  which would change the styling on the page
+  (before it would've yielded display: block; for .col-12 at max-width: 600px
+  and now it yields inline-block;)
 * `asset_providers` - A list of asset providers that are invoked when CSS files are referenced. See below.
 * `external_asset_providers` - A list of asset providers that are invoked when absolute CSS URLs are referenced. See below.
 * `before_transformation` - A callback run before transformation starts.

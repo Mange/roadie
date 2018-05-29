@@ -299,6 +299,152 @@ describe "Roadie functionality" do
       expect(result).to include("<td>One</td><td>1</td>")
       expect(result).to include("<td>Two</td><td>2</td>")
     end
+
+    it "doesn't inline styles in media queries with features" do
+      document = Roadie::Document.new <<-HTML
+        <html>
+          <head>
+            <link rel="stylesheet" href="/style.css">
+          </head>
+          <body>
+            <div class="colorful"></div>
+          </body>
+        </html>
+      HTML
+
+      document.asset_providers = TestProvider.new(
+        "/style.css" => <<-CSS
+          .colorful { color: green; }
+          @media screen and (max-width 600px) {
+            .colorful { color: red; }
+          }
+        CSS
+      )
+
+      result = parse_html document.transform
+      expect(result).to have_styling('color' => 'green').at_selector('.colorful')
+    end
+
+    it 'puts non-inlineable media queries in the head' do
+      document = Roadie::Document.new <<-HTML
+        <html>
+          <head>
+            <link rel="stylesheet" href="/style.css">
+          </head>
+          <body>
+            <div class="colorful"></div>
+          </body>
+        </html>
+      HTML
+
+      document.asset_providers = TestProvider.new(
+        "/style.css" => <<-CSS
+          .colorful { color: green; }
+          @media screen and (max-width 800px) {
+            .colorful { color: blue; }
+          }
+          @media screen, print and (max-width 800px) {
+            .colorful { color: blue; }
+          }
+        CSS
+      )
+
+      result = parse_html document.transform
+
+      styles = result.at_css('html > head > style').text
+      expected_result = <<-CSS
+        @media screen and (max-width 800px) { .colorful{color:blue} }
+        @media screen, print and (max-width 800px) { .colorful{color:blue} }
+      CSS
+      expected_result = expected_result.gsub(/[\s]+/, ' ').strip
+      actual_result = styles.gsub(/[\s]+/, ' ').strip
+
+      expect(actual_result).to eq(expected_result)
+    end
+
+    it 'groups non-inlineable media queries in the head by default' do
+      document = Roadie::Document.new <<-HTML
+        <html>
+          <head>
+            <link rel="stylesheet" href="/style.css">
+          </head>
+          <body>
+            <div class="colorful"></div>
+          </body>
+        </html>
+      HTML
+
+      document.asset_providers = TestProvider.new(
+        "/style.css" => <<-CSS
+          .colorful { color: green; }
+          @media screen and (max-width 600px) {
+            .colorful { color: red; width: 600px; }
+          }
+          @media screen and (max-width 600px) {
+            .colorful-2 { color: red; width: 600px; }
+          }
+        CSS
+      )
+
+      result = parse_html document.transform
+
+      styles = result.at_css('html > head > style').text
+      expected_result = <<-CSS
+        @media screen and (max-width 600px) {
+          .colorful{color:red;width:600px}
+          .colorful-2{color:red;width:600px}
+        }
+      CSS
+      expected_result = expected_result.gsub(/[\s]+/, ' ').strip
+      actual_result = styles.gsub(/[\s]+/, ' ').strip
+
+      expect(actual_result).to eq(expected_result)
+    end
+
+    describe 'if merge_media_queries is set to false' do
+      it "doesn't group non-inlineable media queries in the head" do
+        document = Roadie::Document.new <<-HTML
+          <html>
+            <head>
+              <link rel="stylesheet" href="/style.css">
+            </head>
+            <body>
+              <div class="colorful"></div>
+            </body>
+          </html>
+        HTML
+
+        document.merge_media_queries = false
+
+        document.asset_providers = TestProvider.new(
+          "/style.css" => <<-CSS
+            .colorful { color: green; }
+            @media screen and (max-width 600px) {
+              .colorful { color: red; width: 600px; }
+            }
+            @media screen and (max-width 600px) {
+              .colorful-2 { color: red; width: 600px; }
+            }
+          CSS
+        )
+
+        result = parse_html document.transform
+
+        styles = result.at_css('html > head > style').text
+        expected_result = <<-CSS
+          @media screen and (max-width 600px) {
+            .colorful{color:red;width:600px}
+          }
+          @media screen and (max-width 600px) {
+            .colorful-2{color:red;width:600px}
+          }
+        CSS
+        expected_result = expected_result.gsub(/[\s]+/, ' ').strip
+        actual_result = styles.gsub(/[\s]+/, ' ').strip
+
+        expect(actual_result).to eq(expected_result)
+      end
+    end
   end
 
   describe "on partial documents" do

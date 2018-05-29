@@ -8,3 +8,6 @@ Gemfile.lock
 doc
 tmp
 pkg
+.bundle
+.history
+vendor/
