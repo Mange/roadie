@@ -2,7 +2,16 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.3.0...master)
 
-* Nothing yet.
+* Enhancements
+  * Better support for media queries - [BroiSatse (Stanislaw
+    Klajn)](https://github.com/BroiSatse) and [jeznag (Jeremy
+    Nagel)](https://github.com/jeznag) (#157).
+
+Media queries should no longer be inlined in your HTML; instead they should
+appear in `<head>` if `keep_uninlinable_css` is enabled. By default different
+media query blocks with the same conditions will be merged together (which
+might change specificity), but this behavior can be disabled by setting
+`merge_media_queries` to `false`.
 
 ### 3.3.0
 
@@ -12,7 +21,7 @@
   * Allow transforming to XHTML instead of HTML - [Zhivko Draganov](https://github.com/zdraganov) (#144).
   * Support partial HTML documents (fragments) - #147
     * With the help of [andfx](https://github.com/andfx) - #115
-    * With the help of [Frida Sjoholm](https://github.com/andf://github.com/FridaSjoholm) - #146
+    * With the help of [Frida Sjoholm](https://github.com/FridaSjoholm) - #146
   * Skip URL rewriting on elements with `data-roadie-ignore` - #154.
     * With the help of [Hamed Asghari](https://github.com/hasghari) - #138.
 * Bug fixes:

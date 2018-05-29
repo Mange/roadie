@@ -39,7 +39,7 @@ Features
   * Respects `!important` styles.
   * Does not overwrite styles already present in the `style` attribute of tags.
   * Supports the same CSS selectors as [Nokogiri](http://nokogiri.org/); use CSS3 selectors in your emails!
-  * Keeps `:hover` and friends around in a separate `<style>` element.
+  * Keeps `:hover`, `@media { ... }` and friends around in a separate `<style>` element.
 * Makes image urls absolute.
   * Hostname and port configurable on a per-environment basis.
   * Can be disabled on individual elements.
@@ -55,7 +55,7 @@ Install & Usage
 [Add this gem to your Gemfile as recommended by Rubygems](http://rubygems.org/gems/roadie) and run `bundle install`.
 
 ```ruby
-gem 'roadie', '~> 3.2'
+gem 'roadie', '~> 3.3'
 ```
 
 You can then create a new instance of a Roadie document:
@@ -81,19 +81,16 @@ Your document instance can be configured with several options:
 * `merge_media_queries` - Set to false to not group media queries. Some users might prefer to not group rules within media queries because
   it will result in rules getting reordered.
   e.g.
-  ```
+  ```css
   @media(max-width: 600px) { .col-6 { display: block; } }
   @media(max-width: 400px) { .col-12 { display: inline-block; } }
   @media(max-width: 600px) { .col-12 { display: block; } }
   ```
   will become
-  ```
+  ```css
   @media(max-width: 600px) { .col-6 { display: block; } .col-12 { display: block; } }
   @media(max-width: 400px) { .col-12 { display: inline-block; } }
   ```
-  which would change the styling on the page
-  (before it would've yielded display: block; for .col-12 at max-width: 600px
-  and now it yields inline-block;)
 * `asset_providers` - A list of asset providers that are invoked when CSS files are referenced. See below.
 * `external_asset_providers` - A list of asset providers that are invoked when absolute CSS URLs are referenced. See below.
 * `before_transformation` - A callback run before transformation starts.
@@ -483,6 +480,12 @@ Instructions on how to do this on most platforms, see [Nokogiri's official insta
 ### What happened to my `@keyframes`?
 
 The CSS Parser used in Roadie does not handle keyframes. I don't think any email clients do either, but if you want to keep on trying you can add them manually to a `<style>` element (or a separate referenced stylesheet) and [tell Roadie not to touch them](#referenced-stylesheets).
+
+### My `@media` queries are reordered, how can I fix this?
+
+Different `@media` query blocks with the same conditions are merged by default,
+which will change the order in some cases. You can disable this by setting
+`merge_media_queries` to `false`. (See *Install & Usage* section above).
 
 ### How do I get rid of the `<body>` elements that are added?
 
