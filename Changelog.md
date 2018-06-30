@@ -7,11 +7,16 @@
     Klajn)](https://github.com/BroiSatse) and [jeznag (Jeremy
     Nagel)](https://github.com/jeznag) (#157).
 
-Media queries should no longer be inlined in your HTML; instead they should
-appear in `<head>` if `keep_uninlinable_css` is enabled. By default different
-media query blocks with the same conditions will be merged together (which
-might change specificity), but this behavior can be disabled by setting
-`merge_media_queries` to `false`.
+    Media queries should no longer be inlined in your HTML; instead they should
+    appear in `<head>` if `keep_uninlinable_css` is enabled. By default different
+    media query blocks with the same conditions will be merged together (which
+    might change specificity), but this behavior can be disabled by setting
+    `merge_media_queries` to `false`.
+
+  * Remove Guard as a development dependency. Tests run fast anyway, and I
+    never liked that this tool "infected" the dependencies of the project when
+    it should remain a user-specific tool unless the project wants to enforce
+    it.
 
 ### 3.3.0
 

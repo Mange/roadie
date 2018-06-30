@@ -20,5 +20,4 @@ matrix:
     - rvm: rbx
   fast_finish: true
 cache: bundler
-bundler_args: --without guard
 script: "rake"
