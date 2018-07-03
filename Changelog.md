@@ -4,7 +4,7 @@
 
 Nothing yet.
 
-### 3.3.0
+### 3.4.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.3.0...v3.4.0)
 
