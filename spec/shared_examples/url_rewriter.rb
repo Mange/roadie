@@ -14,10 +14,17 @@ shared_examples_for "url rewriter" do
     expect(subject.transform_dom(dom)).to be_nil
   end
 
-  it "has a #transform_css(css) method that returns nil" do
+  it "has a #transform_css!(css) method that returns nil" do
+    expect(subject).to respond_to(:transform_css!)
+    expect(subject.method(:transform_css!).arity).to eq(1)
+
+    expect(subject.transform_css!(String.new())).to be_nil
+  end
+
+  it "has a #transform_css(css) method that returns the transformed css" do
     expect(subject).to respond_to(:transform_css)
     expect(subject.method(:transform_css).arity).to eq(1)
 
-    expect(subject.transform_css("")).to be_nil
+    expect(subject.transform_css("")).to eq("")
   end
 end

@@ -7,6 +7,9 @@ module Roadie
   class NullUrlRewriter
     def initialize(generator = nil) end
     def transform_dom(dom) end
-    def transform_css(css) end
+    def transform_css!(css) end
+    def transform_css(css)
+      css
+    end
   end
 end
