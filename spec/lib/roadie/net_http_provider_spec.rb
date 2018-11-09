@@ -18,13 +18,13 @@ module Roadie
       invalid_name: "http://example.com/red.css"
     ) do
       before do
-        stub_request(:get, "http://example.com/green.css").and_return(body: "p { color: green; }")
+        stub_request(:get, "http://example.com/green.css").and_return(body: String.new("p { color: green; }"))
         stub_request(:get, "http://example.com/red.css").and_return(status: 404, body: "Not here!")
       end
     end
 
     it "can download over HTTPS" do
-      stub_request(:get, "https://example.com/style.css").and_return(body: "p { color: green; }")
+      stub_request(:get, "https://example.com/style.css").and_return(body: String.new("p { color: green; }"))
       expect {
         NetHttpProvider.new.find_stylesheet!("https://example.com/style.css")
       }.to_not raise_error
@@ -37,7 +37,7 @@ module Roadie
       # asset inlining, but the scheme-less URL implies that there should exist
       # both a HTTP and a HTTPS endpoint. Let's take the secure one in that
       # case!
-      stub_request(:get, "https://example.com/style.css").and_return(body: "p { color: green; }")
+      stub_request(:get, "https://example.com/style.css").and_return(body: String.new("p { color: green; }"))
       expect {
         NetHttpProvider.new.find_stylesheet!("//example.com/style.css")
       }.to_not raise_error
@@ -48,7 +48,7 @@ module Roadie
       # (US-ASCII). The headers will indicate what charset the client should
       # use when trying to make sense of these bytes.
       stub_request(:get, url).and_return(
-        body: %(p::before { content: "l\xF6ve" }).force_encoding("US-ASCII"),
+        body: String.new(%(p::before { content: "l\xF6ve" })).force_encoding("US-ASCII"),
         headers: {"Content-Type" => "text/css;charset=ISO-8859-1"},
       )
 
@@ -64,7 +64,7 @@ module Roadie
 
     it "assumes UTF-8 encoding if server headers do not specify a charset" do
       stub_request(:get, url).and_return(
-        body: %(p::before { content: "Åh nej" }).force_encoding("US-ASCII"),
+        body: String.new(%(p::before { content: "Åh nej" })).force_encoding("US-ASCII"),
         headers: {"Content-Type" => "text/css"},
       )
 
@@ -119,8 +119,8 @@ module Roadie
         whitelisted_url = "http://whitelisted.example.com/style.css"
         other_url       = "http://www.example.com/style.css"
 
-        whitelisted_request = stub_request(:get, whitelisted_url).and_return(body: "x")
-        other_request       = stub_request(:get, other_url).and_return(body: "x")
+        whitelisted_request = stub_request(:get, whitelisted_url).and_return(body: String.new("x"))
+        other_request       = stub_request(:get, other_url).and_return(body: String.new("x"))
 
         expect(provider.find_stylesheet(other_url)).to be_nil
         expect {
