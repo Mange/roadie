@@ -4,6 +4,12 @@
 
 Nothing yet.
 
+### 3.5.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.4.0...v3.5.0)
+
+* Drop support for Nokogiri before 1.8.
+
 ### 3.4.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.3.0...v3.4.0)
