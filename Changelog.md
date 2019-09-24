@@ -2,7 +2,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.4.0...master)
 
-Nothing yet.
+* Gracefully handle empty string email body, such as those provided by `ActionMailer::Base::NullMail` objects
 
 ### 3.5.0
 
