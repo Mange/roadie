@@ -1,8 +1,18 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.4.0...master)
+### dev
 
-* Gracefully handle empty string email body, such as those provided by `ActionMailer::Base::NullMail` objects
+[full changelog](https://github.com/Mange/roadie/compare/v3.5.1...master)
+
+* Nothing yet.
+
+### 3.5.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.5.0...v3.5.1)
+
+* Gracefully handle empty string email body, such as those provided by
+  `ActionMailer::Base::NullMail` objects - [adamkiczula (Adam
+  Kiczula)](https://github.com/adamkiczula) (#163).
 
 ### 3.5.0
 
