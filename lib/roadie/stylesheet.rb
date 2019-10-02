@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # Domain object that represents a stylesheet (from disc, perhaps).
   #

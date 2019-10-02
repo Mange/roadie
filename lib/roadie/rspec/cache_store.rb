@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for "roadie cache store" do
   it "allows storing Stylesheets" do
     stylesheet = Roadie::Stylesheet.new("foo.css", "body { color: green; }")

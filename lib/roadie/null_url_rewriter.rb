@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # @api private
   # Null Object for the URL rewriter role.

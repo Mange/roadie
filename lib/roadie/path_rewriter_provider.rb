@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # @api public
   # This provider acts a bit like a pipeline in normal UNIX parlour by enabling

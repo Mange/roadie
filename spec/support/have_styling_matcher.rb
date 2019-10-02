@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_styling do |rules|
   normalized_rules = StylingExpectation.new(rules)
 

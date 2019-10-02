@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # roadie.gemspec
 # -*- encoding: utf-8 -*-
 

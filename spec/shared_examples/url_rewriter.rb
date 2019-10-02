@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for "url rewriter" do
   it "is constructed with a generator" do
     generator = double "URL generator"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples_for "roadie asset provider" do |options|
   valid_name = options[:valid_name] or raise "You must provide a :valid_name option to the shared examples"
   invalid_name = options[:invalid_name] or raise "You must provide an :invalid_name option to the shared examples"

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_xpath do |xpath|
   match { |document| !document.xpath(xpath).empty? }
   failure_message { "expected document to have xpath #{xpath.inspect}"}

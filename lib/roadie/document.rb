@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # The main entry point for Roadie. A document represents a working unit and
   # is built with the input HTML and the configuration options you need.

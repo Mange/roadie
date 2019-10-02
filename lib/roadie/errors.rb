@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # Base class for all Roadie errors. Rescue this if you want to catch errors
   # from Roadie.

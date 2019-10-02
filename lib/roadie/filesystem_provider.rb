@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # Asset provider that looks for files on your local filesystem.
   #

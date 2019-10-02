@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # This module can be included in your own code to help you implement the
   # standard behavior for asset providers.

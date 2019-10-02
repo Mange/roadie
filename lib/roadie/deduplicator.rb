@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   class Deduplicator
     def self.apply(input)
