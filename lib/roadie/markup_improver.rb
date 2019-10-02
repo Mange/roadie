@@ -25,6 +25,7 @@ module Roadie
     # @return [nil] passed DOM will be mutated
     def improve
       ensure_doctype_present
+      ensure_html_element_present
       head = ensure_head_element_present
       ensure_declared_charset head
     end
@@ -46,6 +47,12 @@ module Roadie
     def uses_buggy_jruby?
       # No reason to check for version yet since no existing version has a fix.
       defined?(JRuby)
+    end
+
+    def ensure_html_element_present
+      return if dom.at_xpath('html')
+      html = Nokogiri::XML::Node.new 'html', dom
+      dom << html
     end
 
     def ensure_head_element_present

@@ -36,6 +36,7 @@ module Roadie
 
     describe "basic HTML structure" do
       it "inserts a <html> element as the root" do
+        expect(improve("")).to have_selector("html")
         expect(improve("<h1>Hey!</h1>")).to have_selector("html h1")
         expect(improve("<html></html>").css('html').size).to eq(1)
       end
