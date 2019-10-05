@@ -37,13 +37,12 @@ module Roadie
     #
     # This will make all URLs inside url() absolute.
     #
-    # [nil] is returned so no one can misunderstand that this method mutates
-    # the passed string.
+    # Copy of CSS that is mutated is returned, passed string is not mutated.
     #
     # @param [String] css the css to mutate
-    # @return [nil] css is mutated
+    # @return [String] copy of css that is mutated
     def transform_css(css)
-      css.gsub!(CSS_URL_REGEXP) do
+      css.gsub(CSS_URL_REGEXP) do
         matches = Regexp.last_match
         "url(#{matches[:quote]}#{generate_url(matches[:url])}#{matches[:quote]})"
       end
@@ -83,8 +82,7 @@ module Roadie
       # We need to use a setter for Nokogiri to detect the string mutation.
       # If nokogiri used "dumber" data structures, this would all be redundant.
       css = element["style"]
-      transform_css css
-      element["style"] = css
+      element["style"] = transform_css(css)
     end
   end
 end

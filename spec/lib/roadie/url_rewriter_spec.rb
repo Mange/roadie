@@ -73,9 +73,8 @@ module Roadie
       it "rewrites all url() directives" do
         expect(generator).to receive(:generate_url).with("some/path.jpg").and_return "http://foo.com/image.jpg"
         css = "body { background: top url(some/path.jpg) #eee; }"
-        expect {
-          rewriter.transform_css css
-        }.to change { css }.to "body { background: top url(http://foo.com/image.jpg) #eee; }"
+        transformed_css = rewriter.transform_css css
+        expect(transformed_css).to eq "body { background: top url(http://foo.com/image.jpg) #eee; }"
       end
 
       it "correctly identifies URLs with single quotes" do

@@ -8,7 +8,7 @@ module Roadie
   # @attr_reader [String] name the name of the stylesheet ("stylesheets/main.css", "Admin user styles", etc.). The name of the stylesheet will be visible if any errors occur.
   # @attr_reader [Array<StyleBlock>] blocks
   class Stylesheet
-    BOM = "\xEF\xBB\xBF".force_encoding('UTF-8').freeze
+    BOM = (+"\xEF\xBB\xBF").force_encoding('UTF-8').freeze
 
     attr_reader :name, :blocks
 

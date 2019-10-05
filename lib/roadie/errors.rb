@@ -61,8 +61,8 @@ module Roadie
     # TODO: Remove argument on version 4.0.
     def build_message(extra_message = @extra_message)
       message = %(Could not find stylesheet "#{css_name}")
-      message << ": #{extra_message}" if extra_message
-      message << "\nUsed provider:\n#{provider}" if provider
+      message += ": #{extra_message}" if extra_message
+      message += "\nUsed provider:\n#{provider}" if provider
       message
     end
   end
@@ -79,7 +79,7 @@ module Roadie
     def build_message(extra_message)
       message = %(Could not find stylesheet "#{css_name}": #{extra_message}\nUsed providers:\n)
       each_error_row(errors) do |row|
-        message << "\t" << row << "\n"
+        message += "\t" + row + "\n"
       end
       message
     end

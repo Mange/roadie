@@ -8,7 +8,7 @@ shared_examples_for "url rewriter" do
     }.to_not raise_error
   end
 
-  it "has a #transform_dom(dom) method that returns nil" do
+  it "has a #transform_dom(dom) method that returns the modified string" do
     expect(subject).to respond_to(:transform_dom)
     expect(subject.method(:transform_dom).arity).to eq(1)
 
@@ -16,10 +16,10 @@ shared_examples_for "url rewriter" do
     expect(subject.transform_dom(dom)).to be_nil
   end
 
-  it "has a #transform_css(css) method that returns nil" do
+  it "has a #transform_css(css) method that returns the modified string" do
     expect(subject).to respond_to(:transform_css)
     expect(subject.method(:transform_css).arity).to eq(1)
 
-    expect(subject.transform_css("")).to be_nil
+    expect(subject.transform_css("")).to eq("")
   end
 end
