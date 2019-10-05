@@ -23,7 +23,6 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '~> 3.0'
   s.add_development_dependency 'rspec-collection_matchers', '~> 1.0'
-  s.add_development_dependency 'rubocop', '0.64.0'
   s.add_development_dependency 'webmock', '~> 3.0'
 
   s.extra_rdoc_files = %w[README.md Changelog.md]
