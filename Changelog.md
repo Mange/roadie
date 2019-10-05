@@ -4,7 +4,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.5.1...master)
 
-* Nothing yet.
+* Add support for frozen string literals
 
 ### 3.5.1
 
