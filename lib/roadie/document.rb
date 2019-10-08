@@ -59,7 +59,7 @@ module Roadie
     # Append additional CSS to the document's internal stylesheet.
     # @param [String] new_css
     def add_css(new_css)
-      @css += "\n\n" + new_css
+      @css << "\n\n" << new_css
     end
 
     # Transform the input HTML as a full document and returns the processed
