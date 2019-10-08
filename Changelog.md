@@ -4,7 +4,9 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.5.1...master)
 
-* Add support for frozen string literals
+* Drop support for Ruby 2.1, 2.2, and 2.3 and
+  add support for frozen string literals and Ruby 2.6 - [adamkiczula (Adam
+  Kiczula)](https://github.com/adamkiczula) (#164)
 
 ### 3.5.1
 
