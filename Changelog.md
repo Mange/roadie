@@ -11,6 +11,7 @@ Nothing yet.
 * Drop support for Ruby 2.1, 2.2, and 2.3 and
   add support for frozen string literals and Ruby 2.6 - [adamkiczula (Adam
   Kiczula)](https://github.com/adamkiczula) (#164)
+* `Roadie::Stylesheet#each_inlinable_block` is now removed.
 
 ### 3.5.1
 

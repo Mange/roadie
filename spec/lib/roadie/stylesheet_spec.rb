@@ -22,24 +22,6 @@ module Roadie
       ])
     end
 
-    if VERSION < "4.0"
-      it "can iterate all inlinable blocks" do
-        inlinable = double(inlinable?: true, selector: "good", properties: "props")
-        bad = double(inlinable?: false, selector: "bad", properties: "props")
-
-        stylesheet = Stylesheet.new("example.css", "")
-        allow(stylesheet).to receive_messages blocks: [bad, inlinable, bad]
-
-        expect(stylesheet.each_inlinable_block.to_a).to eq([
-          ["good", "props"],
-        ])
-      end
-    else
-      it "should no longer have #each_inlinable_block" do
-        fail "Remove #each_inlinable_block"
-      end
-    end
-
     it "has a string representation of the contents" do
       stylesheet = Stylesheet.new("example.css", "body { color: green;}a{ color: red; font-size: small }")
       expect(stylesheet.to_s).to eq("body{color:green}\na{color:red;font-size:small}")
