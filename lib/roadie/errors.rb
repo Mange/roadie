@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # Base class for all Roadie errors. Rescue this if you want to catch errors
   # from Roadie.
@@ -58,7 +60,7 @@ module Roadie
     # Redundant method argument is to keep API compatability without major version bump.
     # TODO: Remove argument on version 4.0.
     def build_message(extra_message = @extra_message)
-      message = %(Could not find stylesheet "#{css_name}")
+      message = +%(Could not find stylesheet "#{css_name}")
       message << ": #{extra_message}" if extra_message
       message << "\nUsed provider:\n#{provider}" if provider
       message
@@ -75,7 +77,7 @@ module Roadie
 
     private
     def build_message(extra_message)
-      message = %(Could not find stylesheet "#{css_name}": #{extra_message}\nUsed providers:\n)
+      message = +%(Could not find stylesheet "#{css_name}": #{extra_message}\nUsed providers:\n)
       each_error_row(errors) do |row|
         message << "\t" << row << "\n"
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_attribute do |attribute|
   @selector = 'body > *:first'
 

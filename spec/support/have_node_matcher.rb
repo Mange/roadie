@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec::Matchers.define :have_node do |selector|
   chain(:with_attributes) { |attributes| @attributes = attributes }
   match do |document|

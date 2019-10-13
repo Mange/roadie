@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # The main entry point for Roadie. A document represents a working unit and
   # is built with the input HTML and the configuration options you need.
@@ -50,7 +52,7 @@ module Roadie
       @html = html
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @external_asset_providers = ProviderList.empty
-      @css = ""
+      @css = +""
       @mode = :html
     end
 

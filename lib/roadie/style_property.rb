@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # @api private
   # Domain object for a CSS property such as "color: red !important".

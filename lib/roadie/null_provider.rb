@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # An asset provider that returns empty stylesheets for any name.
   #

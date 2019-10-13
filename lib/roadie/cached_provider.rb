@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Roadie
   # @api public
   # The {CachedProvider} wraps another provider (or {ProviderList}) and caches
