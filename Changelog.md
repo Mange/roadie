@@ -1,8 +1,12 @@
 ### dev
 
-### dev
+[full changelog](https://github.com/Mange/roadie/compare/v4.0.0...master)
 
-[full changelog](https://github.com/Mange/roadie/compare/v3.5.1...master)
+Nothing yet.
+
+### 4.0.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v3.5.1...v4.0.0)
 
 * Drop support for Ruby 2.1, 2.2, and 2.3 and
   add support for frozen string literals and Ruby 2.6 - [adamkiczula (Adam

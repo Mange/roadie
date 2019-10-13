@@ -55,7 +55,7 @@ Install & Usage
 [Add this gem to your Gemfile as recommended by Rubygems](http://rubygems.org/gems/roadie) and run `bundle install`.
 
 ```ruby
-gem 'roadie', '~> 3.5'
+gem 'roadie', '~> 4.0'
 ```
 
 You can then create a new instance of a Roadie document:
