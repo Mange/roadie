@@ -446,10 +446,10 @@ Build Status
 
 Tested with [Travis CI](http://travis-ci.org) using:
 
-* MRI 2.1
-* MRI 2.2
-* MRI 2.3
 * MRI 2.4
+* MRI 2.5
+* MRI 2.6
+* MRI 2.7
 * JRuby (latest)
 * Rubinius (failures on Rubinius will not fail the build due to a long history of instability in `rbx`)
 
