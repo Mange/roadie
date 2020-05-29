@@ -1,13 +1,13 @@
-sudo: false
 language: ruby
 rvm:
   - 2.4
   - 2.5
   - 2.6
+  - 2.7
   - jruby
   - rbx
 before_install:
-  - gem install bundler -v '1.17.3'
+  - gem install bundler
 matrix:
   allow_failures:
     # Rubinius and JRuby have a lot of trouble and no large following, so I'm going to
@@ -17,4 +17,3 @@ matrix:
     - rvm: rbx
   fast_finish: true
 cache: bundler
-script: "rake"

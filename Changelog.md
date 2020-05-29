@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v4.0.0...master)
 
-Nothing yet.
+* Enhancements
+  * Test with Ruby 2.7 - [aried3r (Anton Rieder)](https://github.com/aried3r) (#167)
 
 ### 4.0.0
 
@@ -387,4 +388,3 @@ Roadie fork!
   * + some other enhancements
 * Deprecations:
   * Removed support for Rails 2.x
-
