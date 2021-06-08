@@ -70,6 +70,9 @@ module Roadie
 
       document.mode = :html
       expect(document.mode).to eq(:html)
+
+      document.mode = :xml
+      expect(document.mode).to eq(:xml)
     end
 
     it "does not allow unknown modes" do
@@ -126,6 +129,21 @@ module Roadie
           expect(document.transform).to include("{{hello}}")
         end
       end
+
+      context "in XML mode" do
+        it "doesn't replace empty tags with self-closed ones" do
+          document = Document.new "<img src='https://google.com/image.png'></img>"
+          document.mode = :xml
+
+          expect(document.transform_partial).to end_with('</img>')
+        end
+
+        it "does not escape curly braces" do
+          document = Document.new "<a href='https://google.com/{{hello}}'>Hello</a>"
+          document.mode = :xml
+          expect(document.transform_partial).to include("{{hello}}")
+        end
+      end
     end
 
     describe "partial transforming" do
@@ -156,6 +174,21 @@ module Roadie
           document = Document.new "<a href='https://google.com/{{hello}}'>Hello</a>"
           document.mode = :xhtml
 
+          expect(document.transform_partial).to include("{{hello}}")
+        end
+      end
+
+      context "in XML mode" do
+        it "doesn't replace empty tags with self-closed ones" do
+          document = Document.new "<img src='https://google.com/image.png'></img>"
+          document.mode = :xml
+
+          expect(document.transform_partial).to end_with('</img>')
+        end
+
+        it "does not escape curly braces" do
+          document = Document.new "<a href='https://google.com/{{hello}}'>Hello</a>"
+          document.mode = :xml
           expect(document.transform_partial).to include("{{hello}}")
         end
       end
