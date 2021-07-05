@@ -142,6 +142,7 @@ module Roadie
     # Valid modes:
     #   `:html` (default)
     #   `:xhtml`
+    #   `:xml`
     def mode=(mode)
       if VALID_MODES.include?(mode)
         @mode = mode
@@ -151,7 +152,7 @@ module Roadie
     end
 
     private
-    VALID_MODES = %i[html xhtml].freeze
+    VALID_MODES = %i[html xhtml xml].freeze
     private_constant :VALID_MODES
 
     def stylesheet
@@ -182,6 +183,7 @@ module Roadie
       format = {
         html: save_options::AS_HTML,
         xhtml: save_options::AS_XHTML,
+        xml: save_options::AS_XML,
       }.fetch(mode)
 
       dom.dup.to_html(
