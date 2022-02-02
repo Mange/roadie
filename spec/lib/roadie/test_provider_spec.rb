@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'roadie/rspec'
+require "spec_helper"
+require "roadie/rspec"
 
 describe TestProvider do
   subject(:provider) { TestProvider.new }
@@ -13,7 +13,7 @@ describe TestProvider do
   it "finds styles from a predefined hash" do
     provider = TestProvider.new({
       "foo.css" => "a { color: red; }",
-      "bar.css" => "body { color: green; }",
+      "bar.css" => "body { color: green; }"
     })
     expect(provider.find_stylesheet("foo.css").to_s).not_to include("body")
     expect(provider.find_stylesheet("bar.css").to_s).to include("body")
@@ -23,7 +23,7 @@ describe TestProvider do
   it "can have a default for missing entries" do
     provider = TestProvider.new({
       "foo.css" => "a { color: red; }",
-      :default  => "body { color: green; }",
+      :default => "body { color: green; }"
     })
     expect(provider.find_stylesheet("foo.css").to_s).not_to include("body")
     expect(provider.find_stylesheet("bar.css").to_s).to include("body")

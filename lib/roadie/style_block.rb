@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
 module Roadie
   # @api private
@@ -39,7 +39,7 @@ module Roadie
     # @return {String}
     def to_s
       # NB - leave off redundant final semicolon - see https://www.w3.org/TR/CSS2/syndata.html#declaration
-      "#{selector}{#{properties.map(&:to_s).join(';')}}"
+      "#{selector}{#{properties.map(&:to_s).join(";")}}"
     end
 
     private
@@ -49,7 +49,7 @@ module Roadie
     # @media only screen and (max-width: 600px) {...} cannot be inlined
     # @return {Boolean}
     def inlinable_media?
-      @media.none? { |media_query| media_query.include? '(' }
+      @media.none? { |media_query| media_query.include? "(" }
     end
   end
 end

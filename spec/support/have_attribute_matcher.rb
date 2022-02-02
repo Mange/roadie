@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec::Matchers.define :have_attribute do |attribute|
-  @selector = 'body > *:first'
+  @selector = "body > *:first"
 
   chain :at_selector do |selector|
     @selector = selector
@@ -27,4 +27,3 @@ RSpec::Matchers.define :have_attribute do |attribute|
     node && node[attribute_name]
   end
 end
-

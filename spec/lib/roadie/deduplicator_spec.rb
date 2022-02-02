@@ -9,13 +9,13 @@ module Roadie
         ["a", "1"],
         ["b", "2"],
         ["a", "3"],
-        ["a", "1"],
+        ["a", "1"]
       ]
 
       expect(Deduplicator.apply(input)).to eq [
         ["b", "2"],
         ["a", "3"],
-        ["a", "1"],
+        ["a", "1"]
       ]
     end
 
@@ -23,7 +23,7 @@ module Roadie
       input = [
         ["a", "1"],
         ["a", "3"],
-        ["a", "2"],
+        ["a", "2"]
       ]
 
       expect(Deduplicator.apply(input)).to eq input

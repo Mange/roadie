@@ -37,9 +37,17 @@ module Roadie
       !(pseudo_element? || at_rule? || pseudo_function?)
     end
 
-    def to_s() selector end
-    def to_str() to_s end
-    def inspect() selector.inspect end
+    def to_s
+      selector
+    end
+
+    def to_str
+      to_s
+    end
+
+    def inspect
+      selector.inspect
+    end
 
     # {Selector}s are equal to other {Selector}s if, and only if, their string
     # representations are equal.
@@ -52,9 +60,11 @@ module Roadie
     end
 
     protected
+
     attr_reader :selector
 
     private
+
     BAD_PSEUDO_FUNCTIONS = %w[
       :active :focus :hover :link :target :visited
       :-ms-input-placeholder :-moz-placeholder
@@ -63,11 +73,11 @@ module Roadie
     ].freeze
 
     def pseudo_element?
-      selector.include? '::'
+      selector.include? "::"
     end
 
     def at_rule?
-      selector[0, 1] == '@'
+      selector[0, 1] == "@"
     end
 
     def pseudo_function?

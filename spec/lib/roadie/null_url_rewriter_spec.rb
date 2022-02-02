@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'shared_examples/url_rewriter'
+require "spec_helper"
+require "shared_examples/url_rewriter"
 
 module Roadie
   describe NullUrlRewriter do

@@ -38,14 +38,15 @@ module Roadie
     end
 
     def to_s
-      [property, value_with_important].join(':')
+      [property, value_with_important].join(":")
     end
 
     def inspect
-      "#{to_s} (#{specificity})"
+      "#{self} (#{specificity})"
     end
 
     private
+
     def value_with_important
       if important
         "#{value} !important"

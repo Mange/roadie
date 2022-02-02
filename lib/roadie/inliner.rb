@@ -1,21 +1,28 @@
 # frozen_string_literal: true
 
-require 'set'
-require 'nokogiri'
-require 'uri'
-require 'css_parser'
+require "set"
+require "nokogiri"
+require "uri"
+require "css_parser"
 
 module Roadie
   # @api private
   # The Inliner inlines stylesheets to the elements of the DOM.
   #
   # Inlining means that {StyleBlock}s and a DOM tree are combined:
-  #   a { color: red; } # StyleBlock
-  #   <a href="/"></a>  # DOM
+  #
+  # ```css
+  # a { color: red; } # StyleBlock
+  # ```
+  # ```html
+  # <a href="/"></a>  # DOM
+  # ```
   #
   # becomes
   #
-  #   <a href="/" style="color:red"></a>
+  # ```html
+  # <a href="/" style="color:red"></a>
+  # ```
   class Inliner
     # @param [Array<Stylesheet>] stylesheets the stylesheets to use in the inlining
     # @param [Nokogiri::HTML::Document] dom
@@ -47,9 +54,11 @@ module Roadie
     end
 
     protected
+
     attr_reader :stylesheets, :dom
 
     private
+
     def consume_stylesheets
       style_map = StyleMap.new
       extra_blocks = []
@@ -91,12 +100,18 @@ module Roadie
     # with having to rescue errors.
     # Pseudo selectors that are known to be bad are skipped automatically but
     # this will catch the rest.
-    rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError => error
-      Utils.warn "Cannot inline #{selector.inspect} from \"#{stylesheet.name}\" stylesheet. If this is valid CSS, please report a bug."
+    rescue Nokogiri::XML::XPath::SyntaxError, Nokogiri::CSS::SyntaxError
+      Utils.warn(
+        "Cannot inline #{selector.inspect} from \"#{stylesheet.name}\" " \
+          "stylesheet. If this is valid CSS, please report a bug."
+      )
       nil
     rescue => error
-      Utils.warn "Got error when looking for #{selector.inspect} (from \"#{stylesheet.name}\" stylesheet): #{error}"
-      raise unless error.message.include?('XPath')
+      Utils.warn(
+        "Got error when looking for #{selector.inspect} " \
+          "(from \"#{stylesheet.name}\" stylesheet): #{error}"
+      )
+      raise unless error.message.include?("XPath")
       nil
     end
 
@@ -122,12 +137,12 @@ module Roadie
     end
 
     def find_head
-      dom.at_xpath('html/head')
+      dom.at_xpath("html/head")
     end
 
     def create_style_element(style_blocks, parent, merge_media_queries)
       return unless parent
-      element = Nokogiri::XML::Node.new('style', parent.document)
+      element = Nokogiri::XML::Node.new("style", parent.document)
 
       element.content =
         if merge_media_queries
@@ -141,17 +156,23 @@ module Roadie
     # For performance reasons, we should group styles with the same media types within
     # one media query instead of creating thousands of media queries.
     # https://github.com/artifex404/media-queries-benchmark
-    # Example result: ["@media(max-width: 600px) { .col-12 { display: block; } }"]
+    #
+    # Example result:
+    #
+    # ```ruby
+    # ["@media(max-width: 600px) { .col-12 { display: block; } }"]
+    # ```
+    #
     # @param {Array<StyleBlock>} style_blocks  Style blocks that could not be inlined
     # @return {Array<String>}
     def styles_in_shared_media_queries(style_blocks)
       style_blocks.group_by(&:media).map do |media_types, blocks|
         css_rules = blocks.map(&:to_s).join("\n")
 
-        if media_types == ['all']
+        if media_types == ["all"]
           css_rules
         else
-          "@media #{media_types.join(', ')} {\n#{css_rules}\n}"
+          "@media #{media_types.join(", ")} {\n#{css_rules}\n}"
         end
       end
     end
@@ -159,27 +180,36 @@ module Roadie
     # Some users might prefer to not group rules within media queries because
     # it will result in rules getting reordered.
     # e.g.
+    #
+    # ```css
     # @media(max-width: 600px) { .col-6 { display: block; } }
     # @media(max-width: 400px) { .col-12 { display: inline-block; } }
     # @media(max-width: 600px) { .col-12 { display: block; } }
+    # ````
+    #
     # will become
+    #
+    # ```css
     # @media(max-width: 600px) { .col-6 { display: block; } .col-12 { display: block; } }
     # @media(max-width: 400px) { .col-12 { display: inline-block; } }
+    # ```
+    #
+    #
     # which would change the styling on the page
     # (before it would've yielded display: block; for .col-12 at max-width: 600px
     # and now it yields inline-block;)
     #
     # If merge_media_queries is set to false,
-    # we will generate #{style_blocks.size} media queries, potentially
+    # we will generate `style_blocks.size` media queries, potentially
     # causing performance issues.
     # @param {Array<StyleBlock>} style_blocks  All style blocks
     # @return {Array<String>}
     def styles_in_individual_media_queries(style_blocks)
       style_blocks.map do |css_rule|
-        if css_rule.media == ['all']
+        if css_rule.media == ["all"]
           css_rule
         else
-          "@media #{css_rule.media.join(', ')} {\n#{css_rule}\n}"
+          "@media #{css_rule.media.join(", ")} {\n#{css_rule}\n}"
         end
       end
     end

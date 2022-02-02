@@ -69,6 +69,7 @@ module Roadie
     end
 
     private
+
     def cache_fetch(name)
       cache[name] || cache[name] = yield
     rescue CssNotFound

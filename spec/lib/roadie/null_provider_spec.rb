@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'shared_examples/asset_provider'
+require "spec_helper"
+require "shared_examples/asset_provider"
 
 module Roadie
   describe NullProvider do

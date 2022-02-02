@@ -36,10 +36,16 @@ module Roadie
       end
     end
 
-    def to_s() inspect end
-    def inspect() "#<#{self.class} #@path>" end
+    def to_s
+      inspect
+    end
+
+    def inspect
+      "#<#{self.class} #{@path}>"
+    end
 
     private
+
     def build_file_path(name)
       raise InsecurePathError, name if name.include?("..")
       File.join(@path, name[/^([^?]+)/])

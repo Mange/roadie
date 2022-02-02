@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'forwardable'
+require "forwardable"
 
 module Roadie
   # An asset provider that just composes a list of other asset providers.
@@ -25,7 +25,7 @@ module Roadie
     # @overload wrap(provider1, provider2, ...)
     #   @return a new {ProviderList} with all the passed providers in it.
     def self.wrap(*providers)
-      if providers.size == 1 && providers.first.class == self
+      if providers.size == 1 && providers.first.instance_of?(self)
         providers.first
       else
         new(providers.flatten)
@@ -33,7 +33,9 @@ module Roadie
     end
 
     # Returns a new empty list.
-    def self.empty() new([]) end
+    def self.empty
+      new([])
+    end
 
     def initialize(providers)
       @providers = providers
@@ -55,11 +57,9 @@ module Roadie
     def find_stylesheet!(name)
       errors = []
       @providers.each do |provider|
-        begin
-          return provider.find_stylesheet!(name)
-        rescue CssNotFound => error
-          errors << error
-        end
+        return provider.find_stylesheet!(name)
+      rescue CssNotFound => error
+        errors << error
       end
       raise ProvidersFailed.new(name, self, errors)
     end
@@ -69,12 +69,14 @@ module Roadie
         # Indent every line one level
         provider.to_s.split("\n").join("\n\t")
       }
-      "ProviderList: [\n\t#{list.join(",\n\t")}\n]"
+      "ProviderList: [\n\t#{list.join(",\n\t")}\n]\n"
     end
 
     # ProviderList can be coerced to an array. This makes Array#flatten work
     # with it, among other things.
-    def to_ary() to_a end
+    def to_ary
+      to_a
+    end
 
     # @!method each
     #   @see Array#each

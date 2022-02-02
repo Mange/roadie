@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'roadie/rspec'
+require "spec_helper"
+require "roadie/rspec"
 
 module Roadie
   describe ProviderList do
@@ -69,16 +69,16 @@ module Roadie
       provider = double("Provider", to_s: "Some provider")
       sublist = ProviderList.new([provider, provider])
       list = ProviderList.new([provider, sublist, provider])
-      expect(list.to_s).to eql(
-        "ProviderList: [\n" +
-          "\tSome provider,\n" +
-          "\tProviderList: [\n" +
-            "\t\tSome provider,\n" +
-            "\t\tSome provider\n" +
-          "\t],\n" +
-          "\tSome provider\n" +
-        "]"
-      )
+      expect(list.to_s).to eq(<<~TEXT)
+        ProviderList: [
+        \tSome provider,
+        \tProviderList: [
+        \t\tSome provider,
+        \t\tSome provider
+        \t],
+        \tSome provider
+        ]
+      TEXT
     end
 
     it "raises a readable error message" do
@@ -91,14 +91,14 @@ module Roadie
       list = ProviderList.new([provider, sublist, provider])
 
       expect { list.find_stylesheet!("style.css") }.to raise_error { |error|
-        expect(error.message).to eq(
-          "Could not find stylesheet \"style.css\": All providers failed\n" +
-          "Used providers:\n" +
-            "\tSome provider: I tripped\n" +
-            "\tSome provider: I tripped\n" +
-            "\tSome provider: I tripped\n" +
-            "\tSome provider: I tripped\n"
-        )
+        expect(error.message).to eq(<<~TEXT)
+          Could not find stylesheet "style.css": All providers failed
+          Used providers:
+          \tSome provider: I tripped
+          \tSome provider: I tripped
+          \tSome provider: I tripped
+          \tSome provider: I tripped
+        TEXT
       }
     end
 

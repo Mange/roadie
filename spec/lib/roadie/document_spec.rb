@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe Document do
@@ -94,8 +94,8 @@ module Roadie
     describe "transforming" do
       it "runs the before and after callbacks" do
         document = Document.new "<body></body>"
-        before = ->{}
-        after = ->{}
+        before = -> {}
+        after = -> {}
         document.before_transformation = before
         document.after_transformation = after
 
@@ -109,8 +109,8 @@ module Roadie
       # TODO: Remove on next major version.
       it "works on callables that don't expect more than one argument" do
         document = Document.new "<body></body>"
-        document.before_transformation = ->(first) { }
-        document.after_transformation = ->(first = nil) { }
+        document.before_transformation = ->(first) {}
+        document.after_transformation = ->(first = nil) {}
 
         expect { document.transform }.to_not raise_error
 
@@ -135,7 +135,7 @@ module Roadie
           document = Document.new "<img src='https://google.com/image.png'></img>"
           document.mode = :xml
 
-          expect(document.transform_partial).to end_with('</img>')
+          expect(document.transform_partial).to end_with("</img>")
         end
 
         it "does not escape curly braces" do
@@ -149,21 +149,21 @@ module Roadie
     describe "partial transforming" do
       it "runs the before and after callbacks" do
         document = Document.new "<p></p>"
-        before = ->{}
-        after = ->{}
+        before = -> {}
+        after = -> {}
         document.before_transformation = before
         document.after_transformation = after
 
         expect(before).to receive(:call).with(
           instance_of(Nokogiri::HTML::DocumentFragment),
-          document,
+          document
         ).ordered
 
         expect(Inliner).to receive(:new).ordered.and_return double.as_null_object
 
         expect(after).to receive(:call).with(
           instance_of(Nokogiri::HTML::DocumentFragment),
-          document,
+          document
         ).ordered
 
         document.transform_partial
@@ -183,7 +183,7 @@ module Roadie
           document = Document.new "<img src='https://google.com/image.png'></img>"
           document.mode = :xml
 
-          expect(document.transform_partial).to end_with('</img>')
+          expect(document.transform_partial).to end_with("</img>")
         end
 
         it "does not escape curly braces" do
@@ -212,11 +212,11 @@ module Roadie
 
       result = Nokogiri::HTML.parse document.transform
 
-      expect(result).to have_selector('html > head > title')
-      expect(result.at_css('title').text).to eq("Greetings")
+      expect(result).to have_selector("html > head > title")
+      expect(result.at_css("title").text).to eq("Greetings")
 
-      expect(result).to have_selector('html > body > p')
-      paragraph = result.at_css('p')
+      expect(result).to have_selector("html > body > p")
+      paragraph = result.at_css("p")
       expect(paragraph.text).to eq("Hello, world!")
       expect(paragraph.to_xml).to eq('<p style="color:green">Hello, world!</p>')
     end
@@ -235,7 +235,7 @@ module Roadie
       HTML
 
       document.asset_providers = TestProvider.new({
-        "/sample.css" => "p { color: red; text-align: right; }",
+        "/sample.css" => "p { color: red; text-align: right; }"
       })
 
       document.add_css "p { color: green; text-size: 2em; }"

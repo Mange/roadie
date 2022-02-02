@@ -18,10 +18,10 @@ module Roadie
 
     def initialize(given_path, cause = nil)
       @cause = cause
-      if cause
-        cause_message = " Caused by: #{cause}"
+      cause_message = if cause
+        " Caused by: #{cause}"
       else
-        cause_message = ""
+        ""
       end
       super "Cannot use path \"#{given_path}\" in URL generation.#{cause_message}"
     end
@@ -52,11 +52,13 @@ module Roadie
     end
 
     protected
+
     def error_row
       "#{provider || "Unknown provider"}: #{extra_message || message}"
     end
 
     private
+
     # Redundant method argument is to keep API compatability without major version bump.
     # TODO: Remove argument on version 4.0.
     def build_message(extra_message = @extra_message)
@@ -76,6 +78,7 @@ module Roadie
     end
 
     private
+
     def build_message(extra_message)
       message = +%(Could not find stylesheet "#{css_name}": #{extra_message}\nUsed providers:\n)
       each_error_row(errors) do |row|

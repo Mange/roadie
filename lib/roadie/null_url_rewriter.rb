@@ -7,8 +7,12 @@ module Roadie
   # Used whenever client does not pass any URL options and no URL rewriting
   # should take place.
   class NullUrlRewriter
-    def initialize(generator = nil) end
-    def transform_dom(dom) end
+    def initialize(generator = nil)
+    end
+
+    def transform_dom(dom)
+    end
+
     def transform_css(css)
       css
     end

@@ -10,7 +10,7 @@ module Roadie
       #
       # URLs that start with double slashes (//css/app.css) are also absolute
       # in modern browsers, but most email clients do not understand them.
-      return true if path =~ %r{^(\w+:|//)}
+      return true if %r{^(\w+:|//)}.match?(path)
 
       begin
         !URI.parse(path).relative?

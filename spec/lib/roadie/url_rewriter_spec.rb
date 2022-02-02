@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'shared_examples/url_rewriter'
+require "spec_helper"
+require "shared_examples/url_rewriter"
 
 module Roadie
   describe UrlRewriter do
@@ -11,7 +11,9 @@ module Roadie
     it_behaves_like "url rewriter"
 
     describe "transforming DOM trees" do
-      def dom_document(html); Nokogiri::HTML.parse html; end
+      def dom_document(html)
+        Nokogiri::HTML.parse html
+      end
 
       it "rewrites all a[href]" do
         expect(generator).to receive(:generate_url).with("some/path").and_return "http://foo.com/"
@@ -89,7 +91,7 @@ module Roadie
 
       it "correctly identifies URLs with parenthesis inside them" do
         expect(generator).to receive(:generate_url).with("images/map_(large_(extra)).png").and_return "x"
-        rewriter.transform_css 'url(images/map_(large_(extra)).png)'
+        rewriter.transform_css "url(images/map_(large_(extra)).png)"
       end
     end
   end

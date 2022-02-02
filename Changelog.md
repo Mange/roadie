@@ -4,6 +4,7 @@
 
 * Enhancements
   * Test with Ruby 2.7 - [aried3r (Anton Rieder)](https://github.com/aried3r) (#167)
+  * Add standardrb as code formatter
 
 ### 4.0.0
 

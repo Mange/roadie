@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'set'
+require "set"
 
 module Roadie
   # @api private
@@ -23,8 +23,15 @@ module Roadie
     # @option url_options [String] :scheme URL scheme ("http" is default)
     # @option url_options [String] :protocol alias for :scheme
     def initialize(url_options)
-      raise ArgumentError, "No URL options were specified" unless url_options
-      raise ArgumentError, "No :host was specified; options are: #{url_options.inspect}" unless url_options[:host]
+      unless url_options
+        raise ArgumentError, "No URL options were specified"
+      end
+
+      unless url_options[:host]
+        raise ArgumentError,
+          "No :host was specified; options were: #{url_options.inspect}"
+      end
+
       validate_options url_options
 
       @url_options = url_options
@@ -58,7 +65,7 @@ module Roadie
     # @param [String] base The base which the relative path comes from
     # @return [String] an absolute URL
     def generate_url(path, base = "/")
-      return root_uri.to_s if path.nil? or path.empty?
+      return root_uri.to_s if path.nil? || path.empty?
       return path if path_is_anchor?(path)
       return add_scheme(path) if path_is_schemeless?(path)
       return path if Utils.path_is_absolute?(path)
@@ -67,13 +74,20 @@ module Roadie
     end
 
     protected
+
     attr_reader :root_uri, :scheme
 
     private
+
     def build_root_uri
       path = make_absolute url_options[:path]
       port = parse_port url_options[:port]
-      URI::Generic.build(scheme: scheme, host: url_options[:host], port: port, path: path)
+      URI::Generic.build(
+        scheme: scheme,
+        host: url_options[:host],
+        port: port,
+        path: path
+      )
     end
 
     def add_scheme(path)
@@ -98,7 +112,7 @@ module Roadie
 
     # Strip :// from any scheme, if present
     def normalize_scheme(scheme)
-      return 'http' unless scheme
+      return "http" unless scheme
       scheme.to_s[/^\w+/]
     end
 
@@ -119,7 +133,7 @@ module Roadie
     end
 
     def path_is_anchor?(path)
-      path.start_with? '#'
+      path.start_with? "#"
     end
 
     VALID_OPTIONS = Set[:host, :port, :path, :protocol, :scheme].freeze
@@ -127,7 +141,9 @@ module Roadie
     def validate_options(options)
       keys = Set.new(options.keys)
       unless keys.subset? VALID_OPTIONS
-        raise ArgumentError, "Passed invalid options: #{(keys - VALID_OPTIONS).to_a}, valid options are: #{VALID_OPTIONS.to_a}"
+        raise ArgumentError,
+          "Passed invalid options: #{(keys - VALID_OPTIONS).to_a}, " \
+            "valid options are: #{VALID_OPTIONS.to_a}"
       end
     end
   end

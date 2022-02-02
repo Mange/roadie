@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe MarkupImprover do
@@ -24,8 +24,8 @@ module Roadie
       end
 
       it "does not insert duplicate doctypes" do
-        html = improve('<!DOCTYPE html><html><body></body></html>').to_html
-        expect(html.scan('DOCTYPE').size).to eq(1)
+        html = improve("<!DOCTYPE html><html><body></body></html>").to_html
+        expect(html.scan("DOCTYPE").size).to eq(1)
       end
 
       it "leaves other doctypes alone" do
@@ -39,35 +39,35 @@ module Roadie
       it "inserts a <html> element as the root" do
         expect(improve("")).to have_selector("html")
         expect(improve("<h1>Hey!</h1>")).to have_selector("html h1")
-        expect(improve("<html></html>").css('html').size).to eq(1)
+        expect(improve("<html></html>").css("html").size).to eq(1)
       end
 
       it "inserts <head> if not present" do
-        expect(improve('<html><body></body></html>')).to have_selector('html > head + body')
-        expect(improve('<html></html>')).to have_selector('html > head')
-        expect(improve('Foo')).to have_selector('html > head')
-        expect(improve('<html><head></head></html>').css('head').size).to eq(1)
+        expect(improve("<html><body></body></html>")).to have_selector("html > head + body")
+        expect(improve("<html></html>")).to have_selector("html > head")
+        expect(improve("Foo")).to have_selector("html > head")
+        expect(improve("<html><head></head></html>").css("head").size).to eq(1)
       end
 
       it "inserts <body> if not present" do
-        expect(improve('<h1>Hey!</h1>')).to have_selector('html > body > h1')
-        expect(improve('<html><h1>Hey!</h1></html>')).to have_selector('html > body > h1')
-        expect(improve('<html><body><h1>Hey!</h1></body></html>').css('body').size).to eq(1)
+        expect(improve("<h1>Hey!</h1>")).to have_selector("html > body > h1")
+        expect(improve("<html><h1>Hey!</h1></html>")).to have_selector("html > body > h1")
+        expect(improve("<html><body><h1>Hey!</h1></body></html>").css("body").size).to eq(1)
       end
     end
 
     describe "charset declaration" do
       it "is inserted if missing" do
-        dom = improve('<html><head></head><body></body></html>')
+        dom = improve("<html><head></head><body></body></html>")
 
-        expect(dom).to have_selector('head meta')
-        meta = dom.at_css('head meta')
-        expect(meta['http-equiv']).to eq('Content-Type')
-        expect(meta['content']).to eq('text/html; charset=UTF-8')
+        expect(dom).to have_selector("head meta")
+        meta = dom.at_css("head meta")
+        expect(meta["http-equiv"]).to eq("Content-Type")
+        expect(meta["content"]).to eq("text/html; charset=UTF-8")
       end
 
       it "is left alone when predefined" do
-        expect(improve(<<-HTML).xpath('//meta')).to have(1).item
+        expect(improve(<<-HTML).xpath("//meta")).to have(1).item
         <html>
           <head>
             <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
