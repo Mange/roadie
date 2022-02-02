@@ -1,12 +1,20 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v4.0.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v5.0.0...master)
+
+Nothing yet.
+
+### 5.0.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v4.0.0...v5.0.0)
 
 * Drop support for Ruby 2.4 and Ruby 2.5
 * Drop support for JRuby and Rubinius
 * Test with Ruby 2.7 - [aried3r (Anton Rieder)](https://github.com/aried3r) (#167)
 * Test with Ruby 3.0 and Ruby 3.1
 * Add standardrb as code formatter
+* Drop support for callbacks that accepts only a single argument.
+* Change signature of `Roadie::CssNotFound` and `Roadie::ProvidersFailed`.
 
 ### 4.0.0
 

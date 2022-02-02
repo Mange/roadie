@@ -106,21 +106,6 @@ module Roadie
         document.transform
       end
 
-      # TODO: Remove on next major version.
-      it "works on callables that don't expect more than one argument" do
-        document = Document.new "<body></body>"
-        document.before_transformation = ->(first) {}
-        document.after_transformation = ->(first = nil) {}
-
-        expect { document.transform }.to_not raise_error
-
-        # It still supplies the second argument, if possible.
-        document.after_transformation = ->(first, second = nil) {
-          raise "Oops" unless second
-        }
-        expect { document.transform }.to_not raise_error
-      end
-
       context "in HTML mode" do
         it "does not escape curly braces" do
           document = Document.new "<body><a href='https://google.com/{{hello}}'>Hello</a></body>"

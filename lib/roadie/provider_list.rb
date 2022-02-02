@@ -61,7 +61,9 @@ module Roadie
       rescue CssNotFound => error
         errors << error
       end
-      raise ProvidersFailed.new(name, self, errors)
+      raise ProvidersFailed.new(
+        css_name: name, providers: self, errors: errors
+      )
     end
 
     def to_s

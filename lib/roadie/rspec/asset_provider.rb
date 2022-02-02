@@ -45,7 +45,10 @@ shared_examples_for "roadie asset provider" do |options|
     it "raises Roadie::CssNotFound on invalid stylesheets" do
       expect {
         subject.find_stylesheet!(invalid_name)
-      }.to raise_error Roadie::CssNotFound, Regexp.new(Regexp.quote(invalid_name))
+      }.to raise_error(
+        Roadie::CssNotFound,
+        Regexp.new(Regexp.quote(invalid_name))
+      )
     end
   end
 end

@@ -206,13 +206,7 @@ module Roadie
 
     def callback(callable, dom)
       if callable.respond_to?(:call)
-        # Arity checking is to support the API without bumping a major version.
-        # TODO: Remove on next major version (v4.0)
-        if !callable.respond_to?(:parameters) || callable.parameters.size == 1
-          callable.call(dom)
-        else
-          callable.call(dom, self)
-        end
+        callable.call(dom, self)
       end
     end
 
