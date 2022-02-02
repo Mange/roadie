@@ -332,7 +332,10 @@ class UserAssetsProvider
   end
 
   def find_stylesheet!(name)
-    find_stylesheet(name) or raise Roadie::CssNotFound.new(name, "does not match a user stylesheet", self)
+    find_stylesheet(name) or
+      raise Roadie::CssNotFound.new(
+        css_name: name, message: "does not match a user stylesheet", provider: self
+      )
   end
 
   # Instead of implementing #find_stylesheet!, you could also:

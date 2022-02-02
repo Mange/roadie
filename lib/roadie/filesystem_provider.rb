@@ -32,7 +32,11 @@ module Roadie
         Stylesheet.new file_path, File.read(file_path)
       else
         basename = File.basename file_path
-        raise CssNotFound.new(basename, %{#{file_path} does not exist. (Original name was "#{name}")}, self)
+        raise CssNotFound.new(
+          css_name: basename,
+          message: %{#{file_path} does not exist. (Original name was "#{name}")},
+          provider: self
+        )
       end
     end
 

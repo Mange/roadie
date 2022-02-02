@@ -120,7 +120,9 @@ describe "Roadie functionality" do
         </html>
       HTML
 
-      expect { document.transform }.to raise_error(Roadie::CssNotFound, /does_not_exist\.css/)
+      expect {
+        document.transform
+      }.to raise_error(Roadie::CssNotFound, /does_not_exist\.css/)
 
       document.asset_providers << Roadie::NullProvider.new
       expect { document.transform }.to_not raise_error
@@ -524,7 +526,9 @@ describe "Roadie functionality" do
         <link rel="stylesheet" href="/spec/fixtures/does_not_exist.css">
       HTML
 
-      expect { document.transform_partial }.to raise_error(Roadie::CssNotFound, /does_not_exist\.css/)
+      expect {
+        document.transform_partial
+      }.to raise_error(Roadie::CssNotFound, /does_not_exist\.css/)
 
       document.asset_providers << Roadie::NullProvider.new
       expect { document.transform_partial }.to_not raise_error

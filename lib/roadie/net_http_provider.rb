@@ -37,10 +37,14 @@ module Roadie
       if response.is_a? Net::HTTPSuccess
         Stylesheet.new(url, response_body(response))
       else
-        raise CssNotFound.new(url, "Server returned #{response.code}: #{truncate response.body}", self)
+        raise CssNotFound.new(
+          css_name: url,
+          message: "Server returned #{response.code}: #{truncate response.body}",
+          provider: self
+        )
       end
     rescue Timeout::Error
-      raise CssNotFound.new(url, "Timeout", self)
+      raise CssNotFound.new(css_name: url, message: "Timeout", provider: self)
     end
 
     def to_s
@@ -69,7 +73,11 @@ module Roadie
       if access_granted_to?(uri.host)
         get_response(uri)
       else
-        raise CssNotFound.new(url, "#{uri.host} is not part of whitelist!", self)
+        raise CssNotFound.new(
+          css_name: url,
+          message: "#{uri.host} is not part of whitelist!",
+          provider: self
+        )
       end
     end
 

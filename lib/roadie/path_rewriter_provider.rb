@@ -59,7 +59,10 @@ module Roadie
       if new_path
         provider.find_stylesheet!(new_path)
       else
-        raise CssNotFound, "Filter returned #{new_path.inspect}"
+        raise CssNotFound.new(
+          css_name: path,
+          message: "Filter returned #{new_path.inspect}"
+        )
       end
     end
   end

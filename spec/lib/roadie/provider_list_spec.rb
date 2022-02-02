@@ -84,7 +84,11 @@ module Roadie
     it "raises a readable error message" do
       provider = double("Provider", to_s: "Some provider")
       allow(provider).to receive(:find_stylesheet!).and_raise(
-        CssNotFound.new("style.css", "I tripped", provider)
+        CssNotFound.new(
+          css_name: "style.css",
+          message: "I tripped",
+          provider: provider
+        )
       )
 
       sublist = ProviderList.new([provider, provider])
