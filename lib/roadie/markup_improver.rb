@@ -11,9 +11,6 @@ module Roadie
   #   * `<head>`
   #   * `<body>`
   #   * `<meta>` declaring charset and content-type (text/html)
-  #
-  # @note Due to a Nokogiri bug, the HTML5 doctype cannot be added under JRuby. No doctype is outputted under JRuby.
-  #   See https://github.com/sparklemotion/nokogiri/issues/984
   class MarkupImprover
     # The original HTML must also be passed in in order to handle the doctypes
     # since a +Nokogiri::HTML::Document+ will always have a doctype, no matter if
@@ -39,18 +36,10 @@ module Roadie
     private
 
     def ensure_doctype_present
-      return if uses_buggy_jruby?
       return if @html.include?("<!DOCTYPE ")
       # Nokogiri adds a "default" doctype to the DOM, which we will remove
       dom.internal_subset&.remove
       dom.create_internal_subset "html", nil, nil
-    end
-
-    # JRuby up to at least 1.6.0 has a bug where the doctype of a document cannot be changed.
-    # See https://github.com/sparklemotion/nokogiri/issues/984
-    def uses_buggy_jruby?
-      # No reason to check for version yet since no existing version has a fix.
-      defined?(JRuby)
     end
 
     def ensure_html_element_present

@@ -13,14 +13,7 @@ describe "Roadie functionality" do
       document = Roadie::Document.new(html)
       result = document.transform
 
-      unless defined?(JRuby)
-        # JRuby has a bug that makes DTD manipulation impossible
-        # See Nokogiri bugs #984 and #985
-        # https://github.com/sparklemotion/nokogiri/issues/984
-        # https://github.com/sparklemotion/nokogiri/issues/985
-        expect(result).to include("<!DOCTYPE html>")
-      end
-
+      expect(result).to include("<!DOCTYPE html>")
       expect(result).to include("<html>")
       expect(result).to include("<head>")
       expect(result).to include("<body>")

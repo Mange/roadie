@@ -58,11 +58,6 @@ class StylingExpectation
 
   def parse_property(property)
     rule, value = property.split(":", 2).map(&:strip)
-    [rule, normalize_quotes(value)]
-  end
-
-  # JRuby's Nokogiri encodes quotes
-  def normalize_quotes(string)
-    string.gsub "%22", '"'
+    [rule, value]
   end
 end

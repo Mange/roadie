@@ -203,12 +203,6 @@ module Roadie
           result = rendering("<p></p>")
 
           expect(result).to have_styling([]).at_selector("p")
-
-          # css_parser actually sees an empty @keyframes on JRuby, and nothing
-          # on the others
-          if (style_element = result.at_css("head > style"))
-            expect(style_element.text).to_not include "background-position"
-          end
         end
 
         it "ignores them if told not to keep them" do
