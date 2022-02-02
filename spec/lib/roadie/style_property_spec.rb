@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe StyleProperty do
     it "is initialized with a property, value, if it is marked as important, and the specificity" do
-      StyleProperty.new('color', 'green', true, 45).tap do |declaration|
-        expect(declaration.property).to eq('color')
-        expect(declaration.value).to eq('green')
+      StyleProperty.new("color", "green", true, 45).tap do |declaration|
+        expect(declaration.property).to eq("color")
+        expect(declaration.value).to eq("green")
         expect(declaration).to be_important
         expect(declaration.specificity).to eq(45)
       end
@@ -15,18 +15,18 @@ module Roadie
 
     describe "string representation" do
       it "is the property and the value joined with a colon" do
-        expect(StyleProperty.new('color', 'green', false, 1).to_s).to eq('color:green')
-        expect(StyleProperty.new('font-size', '1.1em', false, 1).to_s).to eq('font-size:1.1em')
+        expect(StyleProperty.new("color", "green", false, 1).to_s).to eq("color:green")
+        expect(StyleProperty.new("font-size", "1.1em", false, 1).to_s).to eq("font-size:1.1em")
       end
 
       it "contains the !important flag when set" do
-        expect(StyleProperty.new('color', 'green', true, 1).to_s).to eq('color:green !important')
+        expect(StyleProperty.new("color", "green", true, 1).to_s).to eq("color:green !important")
       end
     end
 
     describe "comparing" do
       def declaration(specificity, important = false)
-        StyleProperty.new('color', 'green', important, specificity)
+        StyleProperty.new("color", "green", important, specificity)
       end
 
       it "compares on specificity" do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe StyleAttributeBuilder do
@@ -17,8 +17,8 @@ module Roadie
     it "preserves the order of added attributes with the same specificity" do
       builder = StyleAttributeBuilder.new
 
-      builder << StyleProperty.new("color", "pink",  false, 50)
-      builder << StyleProperty.new("color", "red",   false, 50)
+      builder << StyleProperty.new("color", "pink", false, 50)
+      builder << StyleProperty.new("color", "red", false, 50)
       builder << StyleProperty.new("color", "green", false, 50)
 
       # We need one different element to trigger the problem with Ruby's
@@ -31,9 +31,9 @@ module Roadie
     it "removes duplicate properties" do
       builder = StyleAttributeBuilder.new
 
-      builder << StyleProperty.new("color", "pink",  false, 10)
+      builder << StyleProperty.new("color", "pink", false, 10)
       builder << StyleProperty.new("color", "green", false, 20)
-      builder << StyleProperty.new("color", "pink",  false, 50)
+      builder << StyleProperty.new("color", "pink", false, 50)
 
       expect(builder.attribute_string).to eq "color:green;color:pink"
     end

@@ -25,9 +25,9 @@ module Roadie
       dom.css(
         "a[href]:not([data-roadie-ignore]), " \
           "img[src]:not([data-roadie-ignore]), " \
-          "*[style]:not([data-roadie-ignore])",
+          "*[style]:not([data-roadie-ignore])"
       ).each do |element|
-        transform_element_style element if element.has_attribute?('style')
+        transform_element_style element if element.has_attribute?("style")
         transform_element element
       end
       nil
@@ -49,7 +49,10 @@ module Roadie
     end
 
     private
-    def generate_url(*args) @generator.generate_url(*args) end
+
+    def generate_url(*args)
+      @generator.generate_url(*args)
+    end
 
     # Regexp matching all the url() declarations in CSS
     #

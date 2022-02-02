@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'set'
-require 'uri'
-require 'net/http'
+require "set"
+require "uri"
+require "net/http"
 
 module Roadie
   # @api public
@@ -34,7 +34,7 @@ module Roadie
 
     def find_stylesheet!(url)
       response = download(url)
-      if response.kind_of? Net::HTTPSuccess
+      if response.is_a? Net::HTTPSuccess
         Stylesheet.new(url, response_body(response))
       else
         raise CssNotFound.new(url, "Server returned #{response.code}: #{truncate response.body}", self)
@@ -43,10 +43,16 @@ module Roadie
       raise CssNotFound.new(url, "Timeout", self)
     end
 
-    def to_s() inspect end
-    def inspect() "#<#{self.class} whitelist: #{whitelist.inspect}>" end
+    def to_s
+      inspect
+    end
+
+    def inspect
+      "#<#{self.class} whitelist: #{whitelist.inspect}>"
+    end
 
     private
+
     def host_set(hosts)
       hosts.each { |host| validate_host(host) }.to_set
     end
@@ -71,7 +77,7 @@ module Roadie
       if RUBY_VERSION >= "2.0.0"
         Net::HTTP.get_response(uri)
       else
-        Net::HTTP.start(uri.host, uri.port, use_ssl: (uri.scheme == 'https')) do |http|
+        Net::HTTP.start(uri.host, uri.port, use_ssl: (uri.scheme == "https")) do |http|
           http.request(Net::HTTP::Get.new(uri.request_uri))
         end
       end
@@ -92,7 +98,7 @@ module Roadie
     def response_body(response)
       # Make sure we respect encoding because Net:HTTP will encode body as ASCII by default
       # which will break if the response is not compatible.
-      supplied_charset = response.type_params['charset']
+      supplied_charset = response.type_params["charset"]
       body = response.body
 
       if supplied_charset

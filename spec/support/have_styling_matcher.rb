@@ -5,7 +5,7 @@ RSpec::Matchers.define :have_styling do |rules|
 
   chain(:at_selector) { |selector| @selector = selector }
   match { |document|
-    @selector ||= 'body > *:first'
+    @selector ||= "body > *:first"
     normalized_rules == styles_at_selector(document)
   }
 
@@ -23,7 +23,7 @@ RSpec::Matchers.define :have_styling do |rules|
 
   def styles_at_selector(document)
     expect(document).to have_selector(@selector)
-    StylingExpectation.new document.at_css(@selector)['style']
+    StylingExpectation.new document.at_css(@selector)["style"]
   end
 end
 
@@ -42,23 +42,22 @@ class StylingExpectation
     rules == other.rules
   end
 
-  def to_s() rules.to_s end
+  def to_s
+    rules.to_s
+  end
 
   protected
+
   attr_reader :rules
 
   private
+
   def parse_rules(css)
-    css.split(';').map { |property| parse_property(property) }
+    css.split(";").map { |property| parse_property(property) }
   end
 
   def parse_property(property)
-    rule, value = property.split(':', 2).map(&:strip)
-    [rule, normalize_quotes(value)]
-  end
-
-  # JRuby's Nokogiri encodes quotes
-  def normalize_quotes(string)
-    string.gsub '%22', '"'
+    rule, value = property.split(":", 2).map(&:strip)
+    [rule, value]
   end
 end

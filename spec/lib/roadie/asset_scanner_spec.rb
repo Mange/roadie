@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe AssetScanner do
@@ -8,8 +8,13 @@ module Roadie
     let(:external_provider) { ProviderList.empty }
     let(:dom) { dom_document "<html></html>" }
 
-    def dom_fragment(html); Nokogiri::HTML.fragment html; end
-    def dom_document(html); Nokogiri::HTML.parse html; end
+    def dom_fragment(html)
+      Nokogiri::HTML.fragment html
+    end
+
+    def dom_document(html)
+      Nokogiri::HTML.parse html
+    end
 
     it "is initialized with a DOM tree, a normal asset provider set, and an external asset provider set" do
       scanner = AssetScanner.new dom, normal_provider, external_provider
@@ -111,7 +116,7 @@ module Roadie
         expect(scanner.find_css).to eq([])
       end
 
-      it 'ignores HTML comments and CDATA sections' do
+      it "ignores HTML comments and CDATA sections" do
         # TinyMCE posts invalid CSS. We support that just to be pragmatic.
         dom = dom_fragment %(<style><![CDATA[
           <!--

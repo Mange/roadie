@@ -152,6 +152,7 @@ module Roadie
     end
 
     private
+
     VALID_MODES = %i[html xhtml xml].freeze
     private_constant :VALID_MODES
 
@@ -169,7 +170,7 @@ module Roadie
       Inliner.new(dom_stylesheets + [stylesheet], dom).inline(
         keep_uninlinable_css: keep_uninlinable_css,
         keep_uninlinable_in: keep_uninlinable_in,
-        merge_media_queries: merge_media_queries,
+        merge_media_queries: merge_media_queries
       )
     end
 
@@ -183,7 +184,7 @@ module Roadie
       format = {
         html: save_options::AS_HTML,
         xhtml: save_options::AS_XHTML,
-        xml: save_options::AS_XML,
+        xml: save_options::AS_XML
       }.fetch(mode)
 
       dom.dup.to_html(
@@ -191,7 +192,7 @@ module Roadie
           save_options::NO_DECLARATION |
           save_options::NO_EMPTY_TAGS |
           format
-        ),
+        )
       )
     end
 
@@ -208,9 +209,9 @@ module Roadie
         # Arity checking is to support the API without bumping a major version.
         # TODO: Remove on next major version (v4.0)
         if !callable.respond_to?(:parameters) || callable.parameters.size == 1
-          callable.(dom)
+          callable.call(dom)
         else
-          callable.(dom, self)
+          callable.call(dom, self)
         end
       end
     end

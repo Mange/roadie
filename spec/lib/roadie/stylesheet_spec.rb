@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe Stylesheet do
@@ -18,7 +18,7 @@ module Roadie
       expect(stylesheet.blocks.map(&:to_s)).to eq([
         "body{color:green !important;font-size:200%}",
         "a{color:red}",
-        "i{color:red}",
+        "i{color:red}"
       ])
     end
 

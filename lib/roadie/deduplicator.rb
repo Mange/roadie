@@ -26,6 +26,7 @@ module Roadie
     end
 
     private
+
     attr_reader :input, :latest_occurance
 
     def has_duplicates?

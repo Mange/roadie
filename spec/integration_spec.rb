@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 describe "Roadie functionality" do
   describe "on full documents" do
@@ -13,14 +13,7 @@ describe "Roadie functionality" do
       document = Roadie::Document.new(html)
       result = document.transform
 
-      unless defined?(JRuby)
-        # JRuby has a bug that makes DTD manipulation impossible
-        # See Nokogiri bugs #984 and #985
-        # https://github.com/sparklemotion/nokogiri/issues/984
-        # https://github.com/sparklemotion/nokogiri/issues/985
-        expect(result).to include("<!DOCTYPE html>")
-      end
-
+      expect(result).to include("<!DOCTYPE html>")
       expect(result).to include("<html>")
       expect(result).to include("<head>")
       expect(result).to include("<body>")
@@ -47,8 +40,8 @@ describe "Roadie functionality" do
       CSS
 
       result = parse_html document.transform
-      expect(result).to have_styling('text-align' => 'center').at_selector('h1')
-      expect(result).to have_styling('color' => 'red').at_selector('p > em')
+      expect(result).to have_styling("text-align" => "center").at_selector("h1")
+      expect(result).to have_styling("color" => "red").at_selector("p > em")
     end
 
     it "stores styles that cannot be inlined in the <head>" do
@@ -112,7 +105,7 @@ describe "Roadie functionality" do
       HTML
 
       result = parse_html document.transform
-      expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
+      expect(result).to have_styling("font-size" => "200%").at_selector("p > em")
     end
 
     it "crashes when stylesheets cannot be found, unless using NullProvider" do
@@ -151,8 +144,8 @@ describe "Roadie functionality" do
       document.external_asset_providers = []
 
       result = parse_html document.transform
-      expect(result).to have_selector('head > link')
-      expect(result).to have_styling([]).at_selector('p > em')
+      expect(result).to have_selector("head > link")
+      expect(result).to have_styling([]).at_selector("p > em")
     end
 
     it "inlines external css if configured" do
@@ -175,8 +168,8 @@ describe "Roadie functionality" do
       )
 
       result = parse_html document.transform
-      expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
-      expect(result).to_not have_selector('head > link')
+      expect(result).to have_styling("font-size" => "200%").at_selector("p > em")
+      expect(result).to_not have_selector("head > link")
     end
 
     it "does not inline the same properties several times" do
@@ -197,8 +190,8 @@ describe "Roadie functionality" do
 
       result = parse_html document.transform
       expect(result).to have_styling([
-        ['color', 'red']
-      ]).at_selector('p')
+        ["color", "red"]
+      ]).at_selector("p")
     end
 
     it "makes URLs absolute" do
@@ -232,7 +225,7 @@ describe "Roadie functionality" do
       ).at_selector("body")
 
       expect(result).to have_styling(
-        "background" => 'url(https://myapp.com/rails/app/assets/link-abcdef1234567890.png)'
+        "background" => "url(https://myapp.com/rails/app/assets/link-abcdef1234567890.png)"
       ).at_selector("a")
     end
 
@@ -324,10 +317,10 @@ describe "Roadie functionality" do
       )
 
       result = parse_html document.transform
-      expect(result).to have_styling('color' => 'green').at_selector('.colorful')
+      expect(result).to have_styling("color" => "green").at_selector(".colorful")
     end
 
-    it 'puts non-inlineable media queries in the head' do
+    it "puts non-inlineable media queries in the head" do
       document = Roadie::Document.new <<-HTML
         <html>
           <head>
@@ -353,18 +346,18 @@ describe "Roadie functionality" do
 
       result = parse_html document.transform
 
-      styles = result.at_css('html > head > style').text
+      styles = result.at_css("html > head > style").text
       expected_result = <<-CSS
         @media screen and (max-width 800px) { .colorful{color:blue} }
         @media screen, print and (max-width 800px) { .colorful{color:blue} }
       CSS
-      expected_result = expected_result.gsub(/[\s]+/, ' ').strip
-      actual_result = styles.gsub(/[\s]+/, ' ').strip
+      expected_result = expected_result.gsub(/\s+/, " ").strip
+      actual_result = styles.gsub(/\s+/, " ").strip
 
       expect(actual_result).to eq(expected_result)
     end
 
-    it 'groups non-inlineable media queries in the head by default' do
+    it "groups non-inlineable media queries in the head by default" do
       document = Roadie::Document.new <<-HTML
         <html>
           <head>
@@ -390,20 +383,20 @@ describe "Roadie functionality" do
 
       result = parse_html document.transform
 
-      styles = result.at_css('html > head > style').text
+      styles = result.at_css("html > head > style").text
       expected_result = <<-CSS
         @media screen and (max-width 600px) {
           .colorful{color:red;width:600px}
           .colorful-2{color:red;width:600px}
         }
       CSS
-      expected_result = expected_result.gsub(/[\s]+/, ' ').strip
-      actual_result = styles.gsub(/[\s]+/, ' ').strip
+      expected_result = expected_result.gsub(/\s+/, " ").strip
+      actual_result = styles.gsub(/\s+/, " ").strip
 
       expect(actual_result).to eq(expected_result)
     end
 
-    describe 'if merge_media_queries is set to false' do
+    describe "if merge_media_queries is set to false" do
       it "doesn't group non-inlineable media queries in the head" do
         document = Roadie::Document.new <<-HTML
           <html>
@@ -432,7 +425,7 @@ describe "Roadie functionality" do
 
         result = parse_html document.transform
 
-        styles = result.at_css('html > head > style').text
+        styles = result.at_css("html > head > style").text
         expected_result = <<-CSS
           @media screen and (max-width 600px) {
             .colorful{color:red;width:600px}
@@ -441,8 +434,8 @@ describe "Roadie functionality" do
             .colorful-2{color:red;width:600px}
           }
         CSS
-        expected_result = expected_result.gsub(/[\s]+/, ' ').strip
-        actual_result = styles.gsub(/[\s]+/, ' ').strip
+        expected_result = expected_result.gsub(/\s+/, " ").strip
+        actual_result = styles.gsub(/\s+/, " ").strip
 
         expect(actual_result).to eq(expected_result)
       end
@@ -474,8 +467,8 @@ describe "Roadie functionality" do
       CSS
 
       result = parse_html document.transform_partial
-      expect(result).to have_styling('text-align' => 'center').at_selector('h1')
-      expect(result).to have_styling('color' => 'red').at_selector('p > em')
+      expect(result).to have_styling("text-align" => "center").at_selector("h1")
+      expect(result).to have_styling("color" => "red").at_selector("p > em")
     end
 
     it "stores styles that cannot be inlined in a new <style> element" do
@@ -523,7 +516,7 @@ describe "Roadie functionality" do
       HTML
 
       result = parse_html document.transform_partial
-      expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
+      expect(result).to have_styling("font-size" => "200%").at_selector("p > em")
     end
 
     it "crashes when stylesheets cannot be found, unless using NullProvider" do
@@ -547,8 +540,8 @@ describe "Roadie functionality" do
       document.external_asset_providers = []
 
       result = parse_html document.transform_partial
-      expect(result).to have_xpath('./link')
-      expect(result).to have_styling([]).at_selector('p > em')
+      expect(result).to have_xpath("./link")
+      expect(result).to have_styling([]).at_selector("p > em")
     end
 
     it "inlines external css if configured" do
@@ -563,8 +556,8 @@ describe "Roadie functionality" do
       )
 
       result = parse_html document.transform_partial
-      expect(result).to have_styling('font-size' => '200%').at_selector('p > em')
-      expect(result).to_not have_xpath('./link')
+      expect(result).to have_styling("font-size" => "200%").at_selector("p > em")
+      expect(result).to_not have_xpath("./link")
     end
 
     it "does not inline the same properties several times" do
@@ -581,8 +574,8 @@ describe "Roadie functionality" do
 
       result = parse_html document.transform_partial
       expect(result).to have_styling([
-        ['color', 'red']
-      ]).at_selector('p')
+        ["color", "red"]
+      ]).at_selector("p")
     end
 
     it "makes URLs absolute" do
@@ -615,7 +608,7 @@ describe "Roadie functionality" do
       ).at_selector("div")
 
       expect(result).to have_styling(
-        "background" => 'url(https://myapp.com/rails/app/assets/link-abcdef1234567890.png)'
+        "background" => "url(https://myapp.com/rails/app/assets/link-abcdef1234567890.png)"
       ).at_selector("a")
     end
 

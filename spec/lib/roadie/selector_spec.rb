@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 module Roadie
   describe Selector do
@@ -31,15 +31,15 @@ module Roadie
         expect(Selector.new(bad_selector)).not_to be_inlinable
       end
 
-      expect(Selector.new('p.active')).to be_inlinable
+      expect(Selector.new("p.active")).to be_inlinable
     end
 
     it "cannot be inlined when containing pseudo elements" do
-      expect(Selector.new('p::some-element')).not_to be_inlinable
+      expect(Selector.new("p::some-element")).not_to be_inlinable
     end
 
     it "cannot be inlined when selector is an at-rule" do
-      expect(Selector.new('@keyframes progress-bar-stripes')).not_to be_inlinable
+      expect(Selector.new("@keyframes progress-bar-stripes")).not_to be_inlinable
     end
 
     it "has a calculated specificity" do

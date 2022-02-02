@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'roadie/rspec'
-require 'shared_examples/asset_provider'
+require "spec_helper"
+require "roadie/rspec"
+require "shared_examples/asset_provider"
 
 module Roadie
   describe CachedProvider do
     let(:upstream) { TestProvider.new("good.css" => "body { color: green; }") }
-    let(:cache) { Hash.new }
+    let(:cache) { {} }
     subject(:provider) { CachedProvider.new(upstream, cache) }
 
     it_behaves_like "roadie asset provider", valid_name: "good.css", invalid_name: "bad.css"

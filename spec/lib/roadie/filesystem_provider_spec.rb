@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'roadie/rspec'
-require 'shared_examples/asset_provider'
+require "spec_helper"
+require "roadie/rspec"
+require "shared_examples/asset_provider"
 
 module Roadie
   describe FilesystemProvider do
@@ -63,13 +63,11 @@ module Roadie
       end
 
       it "shows that the query string is ignored inside raised errors" do
-        begin
-          provider.find_stylesheet!("/foo.css?query-string")
-          fail "No error was raised"
-        rescue CssNotFound => error
-          expect(error.css_name).to eq("foo.css")
-          expect(error.to_s).to include("/foo.css?query-string")
-        end
+        provider.find_stylesheet!("/foo.css?query-string")
+        fail "No error was raised"
+      rescue CssNotFound => error
+        expect(error.css_name).to eq("foo.css")
+        expect(error.to_s).to include("/foo.css?query-string")
       end
     end
   end

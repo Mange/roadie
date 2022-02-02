@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'roadie/rspec'
-require 'shared_examples/asset_provider'
+require "spec_helper"
+require "roadie/rspec"
+require "shared_examples/asset_provider"
 
 module Roadie
   describe NetHttpProvider do
@@ -12,7 +12,7 @@ module Roadie
       WebMock.allow_net_connect!
     end
 
-    url = "http://example.com/style.css".freeze
+    url = "http://example.com/style.css"
 
     it_behaves_like(
       "roadie asset provider",
@@ -51,7 +51,7 @@ module Roadie
       # use when trying to make sense of these bytes.
       stub_request(:get, url).and_return(
         body: (+%(p::before { content: "l\xF6ve" })).force_encoding("US-ASCII"),
-        headers: {"Content-Type" => "text/css;charset=ISO-8859-1"},
+        headers: {"Content-Type" => "text/css;charset=ISO-8859-1"}
       )
 
       # Seems like CssParser strips out the non-ascii character for some
@@ -67,7 +67,7 @@ module Roadie
     it "assumes UTF-8 encoding if server headers do not specify a charset" do
       stub_request(:get, url).and_return(
         body: (+%(p::before { content: "Åh nej" })).force_encoding("US-ASCII"),
-        headers: {"Content-Type" => "text/css"},
+        headers: {"Content-Type" => "text/css"}
       )
 
       # Seems like CssParser strips out the non-ascii characters for some
@@ -119,10 +119,10 @@ module Roadie
         provider = NetHttpProvider.new(whitelist: ["whitelisted.example.com"])
 
         whitelisted_url = "http://whitelisted.example.com/style.css"
-        other_url       = "http://www.example.com/style.css"
+        other_url = "http://www.example.com/style.css"
 
         whitelisted_request = stub_request(:get, whitelisted_url).and_return(body: +"x")
-        other_request       = stub_request(:get, other_url).and_return(body: +"x")
+        other_request = stub_request(:get, other_url).and_return(body: +"x")
 
         expect(provider.find_stylesheet(other_url)).to be_nil
         expect {

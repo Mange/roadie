@@ -11,10 +11,11 @@ module Roadie
     end
 
     def attribute_string
-      Deduplicator.apply(stable_sort(@styles).map(&:to_s)).join(';')
+      Deduplicator.apply(stable_sort(@styles).map(&:to_s)).join(";")
     end
 
     private
+
     def stable_sort(list)
       # Ruby's sort is unstable for performance reasons. We need it to be
       # stable, e.g. to preserve order of elements that are compared equal in

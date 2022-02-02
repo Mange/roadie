@@ -1,7 +1,6 @@
 Roadie
 ======
 
-[![Build history and status](https://travis-ci.org/Mange/roadie.svg?branch=master)](http://travis-ci.org/#!/Mange/roadie)
 [![Code Climate](https://codeclimate.com/github/Mange/roadie.png)](https://codeclimate.com/github/Mange/roadie)
 [![Code coverage status](https://codecov.io/github/Mange/roadie/coverage.svg?branch=master)](https://codecov.io/github/Mange/roadie?branch=master)
 [![Gem](https://img.shields.io/gem/v/roadie.svg)](https://rubygems.org/gems/roadie)
@@ -444,18 +443,14 @@ Partial documents does not have a `<!DOCTYPE>`.
 Build Status
 ------------
 
-Tested with [Travis CI](http://travis-ci.org) using:
+Tested with Github CI using:
 
-* MRI 2.4
-* MRI 2.5
 * MRI 2.6
 * MRI 2.7
-* JRuby (latest)
-* Rubinius (failures on Rubinius will not fail the build due to a long history of instability in `rbx`)
+* MRI 3.0
+* MRI 3.1
 
-[(Build status)](http://travis-ci.org/#!/Mange/roadie)
-
-Let me know if you want any other VM supported officially.
+Let me know if you want any other runtime supported officially.
 
 ### Versioning ###
 
@@ -565,7 +560,7 @@ License
 
 (The MIT License)
 
-Copyright (c) 2009-2018 Magnus Bergmark, Jim Neath / Purify, and contributors.
+Copyright (c) 2009-2022 Magnus Bergmark, Jim Neath / Purify, and contributors.
 
 * [Magnus Bergmark](https://github.com/Mange) <magnus.bergmark@gmail.com>
 

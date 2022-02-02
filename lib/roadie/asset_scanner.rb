@@ -43,15 +43,15 @@ module Roadie
     # @see #find_css
     # @return [Enumerable<Stylesheet>] every extracted stylesheet
     def extract_css
-      stylesheets = @dom.css(STYLE_ELEMENT_QUERY).map { |element|
+      @dom.css(STYLE_ELEMENT_QUERY).map { |element|
         stylesheet = read_stylesheet(element)
         element.remove if stylesheet
         stylesheet
       }.compact
-      stylesheets
     end
 
     private
+
     STYLE_ELEMENT_QUERY = (
       "style:not([data-roadie-ignore]), " +
       # TODO: When using Nokogiri 1.6.1 and later; we may use a double :not here
@@ -75,7 +75,7 @@ module Roadie
     def read_stylesheet(element)
       if element.name == "style"
         read_style_element element
-      elsif element.name == "link" && element['media'] != "print" && element["href"]
+      elsif element.name == "link" && element["media"] != "print" && element["href"]
         read_link_element element
       end
     end
@@ -86,14 +86,14 @@ module Roadie
 
     def read_link_element(element)
       if Utils.path_is_absolute?(element["href"])
-        external_asset_provider.find_stylesheet! element['href'] if should_find_external?
+        external_asset_provider.find_stylesheet! element["href"] if should_find_external?
       else
-        normal_asset_provider.find_stylesheet! element['href']
+        normal_asset_provider.find_stylesheet! element["href"]
       end
     end
 
     def clean_css(css)
-      css.gsub(CLEANING_MATCHER, '')
+      css.gsub(CLEANING_MATCHER, "")
     end
 
     def should_find_external?

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'bundler/setup'
+require "bundler/setup"
 
 Bundler::GemHelper.install_tasks
 
@@ -10,4 +10,4 @@ task :spec do
 end
 
 desc "Default: Run specs"
-task :default => :spec
+task default: :spec
