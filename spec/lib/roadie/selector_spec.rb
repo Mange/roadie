@@ -27,6 +27,7 @@ module Roadie
         p:enabled
         p:disabled
         p:checked
+        p:host
       ].each do |bad_selector|
         expect(Selector.new(bad_selector)).not_to be_inlinable
       end
