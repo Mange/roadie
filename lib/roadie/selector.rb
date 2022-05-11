@@ -70,6 +70,7 @@ module Roadie
       :-ms-input-placeholder :-moz-placeholder
       :before :after
       :enabled :disabled :checked
+      :host
     ].freeze
 
     def pseudo_element?
