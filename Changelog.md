@@ -1,8 +1,16 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v5.0.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v5.0.1...master)
 
 Nothing yet.
+
+### 5.0.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v5.0.0...v5.0.1)
+
+* Don't try to inline [the `:host`
+  pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:host) -
+  [viamin (Bart Agapinan)](https://github.com/viamin). (#170)
 
 ### 5.0.0
 
