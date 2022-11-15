@@ -94,6 +94,8 @@ Your document instance can be configured with several options:
 * `external_asset_providers` - A list of asset providers that are invoked when absolute CSS URLs are referenced. See below.
 * `before_transformation` - A callback run before transformation starts.
 * `after_transformation` - A callback run after transformation is completed.
+* `serialization_options` - An integer bitmap of options passed along to Nokogiri during serialization.
+By default it's `Nokogiri::XML::Node::SaveOptions::NO_DECLARATION | Nokogiri::XML::Node::SaveOptions::NO_EMPTY_TAGS`.
 
 ### Making URLs absolute ###
 

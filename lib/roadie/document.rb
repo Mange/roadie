@@ -42,6 +42,10 @@ module Roadie
     # which would change the styling on the page
     attr_accessor :merge_media_queries
 
+    # Integer representing a bitmap set of options used by Nokogiri during serialization.
+    # For the complete set of available options look into +Nokogiri::XML::Node::SaveOptions+.
+    attr_reader :serialization_options
+
     # The mode to generate markup in. Valid values are `:html` (default) and `:xhtml`.
     attr_reader :mode
 
@@ -49,6 +53,9 @@ module Roadie
     def initialize(html)
       @keep_uninlinable_css = true
       @merge_media_queries = true
+      @serialization_options =
+        Nokogiri::XML::Node::SaveOptions::NO_DECLARATION |
+        Nokogiri::XML::Node::SaveOptions::NO_EMPTY_TAGS
       @html = html
       @asset_providers = ProviderList.wrap(FilesystemProvider.new)
       @external_asset_providers = ProviderList.empty
@@ -137,6 +144,13 @@ module Roadie
       @external_asset_providers = ProviderList.wrap(list)
     end
 
+    # Integer representing a bitmap set of options used by Nokogiri during serialization.
+    # For the complete set of available options look into +Nokogiri::XML::Node::SaveOptions+.
+    # (To change the mode in which the document is generated use {#mode=} however.)
+    def serialization_options=(options)
+      @serialization_options = options || 0
+    end
+
     # Change the mode. The mode affects how the resulting markup is generated.
     #
     # Valid modes:
@@ -187,13 +201,7 @@ module Roadie
         xml: save_options::AS_XML
       }.fetch(mode)
 
-      dom.dup.to_html(
-        save_with: (
-          save_options::NO_DECLARATION |
-          save_options::NO_EMPTY_TAGS |
-          format
-        )
-      )
+      dom.dup.to_html(save_with: (serialization_options | format))
     end
 
     def make_url_rewriter
