@@ -17,6 +17,16 @@ module Roadie
       expect(document.url_options).to eq({host: "foo.bar"})
     end
 
+    it "has an accessor for serialization options" do
+      serialization_options = Nokogiri::XML::Node::SaveOptions::FORMAT |
+        Nokogiri::XML::Node::SaveOptions::NO_EMPTY_TAGS
+      document.serialization_options = serialization_options
+      expect(document.serialization_options).to eq(serialization_options)
+
+      document.serialization_options = nil
+      expect(document.serialization_options).to eq(0)
+    end
+
     it "has a setting for keeping uninlinable styles" do
       expect(document.keep_uninlinable_css).to be true
       document.keep_uninlinable_css = false

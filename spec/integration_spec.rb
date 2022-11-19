@@ -398,6 +398,38 @@ describe "Roadie functionality" do
       expect(actual_result).to eq(expected_result)
     end
 
+    it "adds XML declaration into XHTML with no serialization options prohibiting it" do
+      document = Roadie::Document.new <<-HTML
+        <html>
+          <head>
+            <title>Greetings</title>
+          </head>
+        </html>
+      HTML
+
+      document.mode = :xhtml
+      document.serialization_options = 0
+      result = document.transform
+
+      expect(result).to match(/\A<\?xml[^>]*?>/i)
+    end
+
+    it "does not add XML declaration into XHTML with serialization options prohibiting it" do
+      document = Roadie::Document.new <<-HTML
+        <html>
+          <head>
+            <title>Greetings</title>
+          </head>
+        </html>
+      HTML
+
+      document.mode = :xhtml
+      document.serialization_options = Nokogiri::XML::Node::SaveOptions::NO_DECLARATION
+      result = document.transform
+
+      expect(result).not_to match(/\A<\?xml[^>]*?>/i)
+    end
+
     describe "if merge_media_queries is set to false" do
       it "doesn't group non-inlineable media queries in the head" do
         document = Roadie::Document.new <<-HTML

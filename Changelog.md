@@ -2,7 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.0.1...master)
 
-Nothing yet.
+* Support passing serialization options to Nokogiri with `serialization_options=` method -
+  [Dmytro Savochkin](https://github.com/dmytro-savochkin). (#171)
 
 ### 5.0.1
 
