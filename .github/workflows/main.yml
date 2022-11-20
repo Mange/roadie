@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       # This setup is not compatible with the way Travis CI was
       # setup, so the cache will only work for the root folder.
