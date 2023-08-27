@@ -8,6 +8,7 @@ module Roadie
   # should take place.
   class NullUrlRewriter
     def initialize(generator = nil)
+      # Intentionally left blank.
     end
 
     def transform_dom(dom)

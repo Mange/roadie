@@ -8,9 +8,5 @@ exclude:
   - ".bundle/**/*"
 require: []
 domains: []
-plugins:
-  - solargraph-standardrb
-reporters:
-  - standardrb
 require_paths: []
 max_files: 5000

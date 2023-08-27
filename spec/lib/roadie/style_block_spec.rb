@@ -39,7 +39,7 @@ module Roadie
       context "when one of media queries includes feature condition" do
         it "returns false" do
           selector = double "Selector", inlinable?: "maybe"
-          expect(StyleBlock.new(selector, [], [:all, :'screen (min-width: 300px)']).inlinable?).to be(false)
+          expect(StyleBlock.new(selector, [], [:all, :"screen (min-width: 300px)"]).inlinable?).to be(false)
         end
       end
     end
