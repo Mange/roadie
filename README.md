@@ -450,10 +450,10 @@ Build Status
 
 Tested with Github CI using:
 
-* MRI 2.6
 * MRI 2.7
 * MRI 3.0
 * MRI 3.1
+* MRI 3.2
 
 Let me know if you want any other runtime supported officially.
 

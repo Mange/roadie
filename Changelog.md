@@ -1,6 +1,14 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v5.1.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v5.2.0...master)
+
+### 5.2.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v5.1.0...v5.2.0)
+
+* Upgrade to Nokogiri `~>` 1.15.
+* Drop support for Ruby 2.6.
+* Add official support for Ruby 3.2.
 
 ### 5.1.0
 
