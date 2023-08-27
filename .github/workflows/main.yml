@@ -34,13 +34,19 @@ jobs:
 
       - uses: codecov/codecov-action@v2
 
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: standardrb
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        uses: amoeba/standardrb-action@v2
-    permissions:
-      checks: write
-      contents: read
+  # Does not work. The action runs in Ruby 2.6, which is not compatible with
+  # the gem and fails to install.
+  # This is very strange considering that the source of the action uses a
+  # Dockerfile with Ruby 2.7. However, I don't want to spend time to fix this
+  # in a passively maintained gem.
+  #
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: standardrb
+  #       env:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #       uses: amoeba/standardrb-action@v2
+  #   permissions:
+  #     checks: write
+  #     contents: read
