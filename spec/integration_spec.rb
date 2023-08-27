@@ -251,8 +251,7 @@ describe "Roadie functionality" do
       result = parse_html document.transform
 
       expect(result.at_css("a.one")["href"]).to eq("https://myapp.com/rails/app/about_us")
-      # Nokogiri still treats the attribute as an URL and escapes it.
-      expect(result.at_css("a.two")["href"]).to eq("%24UNSUBSCRIBE_URL")
+      expect(result.at_css("a.two")["href"]).to eq("$UNSUBSCRIBE_URL")
 
       expect(result).to have_styling("color" => "green").at_selector("a.one")
       expect(result).to have_styling("color" => "green").at_selector("a.two")
