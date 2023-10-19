@@ -36,7 +36,7 @@ jobs:
       - name: Rake
         run: bundle exec rake
 
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v3
 
   lint:
     runs-on: ubuntu-latest
