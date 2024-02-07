@@ -2,6 +2,8 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.2.0...master)
 
+* Don't strip `:root` pseudo-class - [Asger Behncke](https://github.com/asgerb) (#173)
+
 ### 5.2.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.1.0...v5.2.0)
