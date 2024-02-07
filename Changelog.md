@@ -2,7 +2,7 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.2.0...master)
 
-* Don't strip `:root` pseudo-class - [Asger Behncke](https://github.com/asgerb) (#173)
+* Don't strip the [`:root` pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:root) - [Asger Behncke](https://github.com/asgerb) (#173)
 
 ### 5.2.0
 
