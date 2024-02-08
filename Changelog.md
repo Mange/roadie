@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v5.2.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v5.2.1...master)
+
+Nothing yet.
+
+### dev
+
+[full changelog](https://github.com/Mange/roadie/compare/v5.2.0...v5.2.1)
 
 - Don't strip the [`:root` pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:root) - [Asger Behncke Jacobsen](https://github.com/asgerb) (#173)
 
