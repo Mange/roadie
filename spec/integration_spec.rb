@@ -67,6 +67,29 @@ describe "Roadie functionality" do
       expect(styles).to include Roadie::Stylesheet.new("", css).to_s
     end
 
+    it "does not strip :root pseudo-class" do
+      document = Roadie::Document.new <<-HTML
+        <html>
+          <head>
+            <title>Hello world!</title>
+          </head>
+          <body>
+            <h1>Hello world!</h1>
+          </body>
+        </html>
+      HTML
+      css = <<-CSS
+        :root { --color: red; }
+      CSS
+      document.add_css css
+
+      result = parse_html document.transform
+      expect(result).to have_selector("html > head > style")
+
+      styles = result.at_css("html > head > style").text
+      expect(styles).to include Roadie::Stylesheet.new("", css).to_s
+    end
+
     it "can be configured to skip styles that cannot be inlined" do
       document = Roadie::Document.new <<-HTML
         <html>

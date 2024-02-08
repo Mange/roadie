@@ -71,6 +71,7 @@ module Roadie
       :before :after
       :enabled :disabled :checked
       :host
+      :root
     ].freeze
 
     def pseudo_element?
