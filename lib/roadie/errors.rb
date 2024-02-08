@@ -23,7 +23,9 @@ module Roadie
       else
         ""
       end
-      super "Cannot use path \"#{given_path}\" in URL generation.#{cause_message}"
+      super(
+        "Cannot use path \"#{given_path}\" in URL generation.#{cause_message}"
+      )
     end
   end
 
@@ -47,7 +49,7 @@ module Roadie
       @css_name = css_name
       @provider = provider
       @extra_message = message
-      super build_message
+      super(build_message)
     end
 
     protected
