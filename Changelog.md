@@ -2,28 +2,28 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.2.0...master)
 
-* Don't strip the [`:root` pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:root) - [Asger Behncke Jacobsen](https://github.com/asgerb) (#173)
+- Don't strip the [`:root` pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:root) - [Asger Behncke Jacobsen](https://github.com/asgerb) (#173)
 
 ### 5.2.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.1.0...v5.2.0)
 
-* Upgrade to Nokogiri `~>` 1.15.
-* Drop support for Ruby 2.6.
-* Add official support for Ruby 3.2.
+- Upgrade to Nokogiri `~>` 1.15.
+- Drop support for Ruby 2.6.
+- Add official support for Ruby 3.2.
 
 ### 5.1.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.0.1...v5.1.0)
 
-* Support passing serialization options to Nokogiri with `serialization_options=` method -
+- Support passing serialization options to Nokogiri with `serialization_options=` method -
   [Dmytro Savochkin](https://github.com/dmytro-savochkin). (#171)
 
 ### 5.0.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.0.0...v5.0.1)
 
-* Don't try to inline [the `:host`
+- Don't try to inline [the `:host`
   pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:host) -
   [viamin (Bart Agapinan)](https://github.com/viamin). (#170)
 
@@ -31,28 +31,28 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v4.0.0...v5.0.0)
 
-* Drop support for Ruby 2.4 and Ruby 2.5
-* Drop support for JRuby and Rubinius
-* Test with Ruby 2.7 - [aried3r (Anton Rieder)](https://github.com/aried3r) (#167)
-* Test with Ruby 3.0 and Ruby 3.1
-* Add standardrb as code formatter
-* Drop support for callbacks that accepts only a single argument.
-* Change signature of `Roadie::CssNotFound` and `Roadie::ProvidersFailed`.
+- Drop support for Ruby 2.4 and Ruby 2.5
+- Drop support for JRuby and Rubinius
+- Test with Ruby 2.7 - [aried3r (Anton Rieder)](https://github.com/aried3r) (#167)
+- Test with Ruby 3.0 and Ruby 3.1
+- Add standardrb as code formatter
+- Drop support for callbacks that accepts only a single argument.
+- Change signature of `Roadie::CssNotFound` and `Roadie::ProvidersFailed`.
 
 ### 4.0.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.5.1...v4.0.0)
 
-* Drop support for Ruby 2.1, 2.2, and 2.3 and
+- Drop support for Ruby 2.1, 2.2, and 2.3 and
   add support for frozen string literals and Ruby 2.6 - [adamkiczula (Adam
   Kiczula)](https://github.com/adamkiczula) (#164)
-* `Roadie::Stylesheet#each_inlinable_block` is now removed.
+- `Roadie::Stylesheet#each_inlinable_block` is now removed.
 
 ### 3.5.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.5.0...v3.5.1)
 
-* Gracefully handle empty string email body, such as those provided by
+- Gracefully handle empty string email body, such as those provided by
   `ActionMailer::Base::NullMail` objects - [adamkiczula (Adam
   Kiczula)](https://github.com/adamkiczula) (#163).
 
@@ -60,14 +60,15 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.4.0...v3.5.0)
 
-* Drop support for Nokogiri before 1.8.
+- Drop support for Nokogiri before 1.8.
 
 ### 3.4.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.3.0...v3.4.0)
 
-* Enhancements
-  * Better support for media queries - [BroiSatse (Stanislaw
+- Enhancements
+
+  - Better support for media queries - [BroiSatse (Stanislaw
     Klajn)](https://github.com/BroiSatse) and [jeznag (Jeremy
     Nagel)](https://github.com/jeznag) (#157).
 
@@ -77,7 +78,7 @@
     might change specificity), but this behavior can be disabled by setting
     `merge_media_queries` to `false`.
 
-  * Remove Guard as a development dependency. Tests run fast anyway, and I
+  - Remove Guard as a development dependency. Tests run fast anyway, and I
     never liked that this tool "infected" the dependencies of the project when
     it should remain a user-specific tool unless the project wants to enforce
     it.
@@ -86,138 +87,140 @@
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.2.2...v3.3.0)
 
-* Enhancements
-  * Allow transforming to XHTML instead of HTML - [Zhivko Draganov](https://github.com/zdraganov) (#144).
-  * Support partial HTML documents (fragments) - #147
-    * With the help of [andfx](https://github.com/andfx) - #115
-    * With the help of [Frida Sjoholm](https://github.com/FridaSjoholm) - #146
-  * Skip URL rewriting on elements with `data-roadie-ignore` - #154.
-    * With the help of [Hamed Asghari](https://github.com/hasghari) - #138.
-* Bug fixes:
-  * Apply correct string encoding / charset in `NetHttpProvider` - [Jeremy Nagel](https://github.com/jeznag) (#152).
+- Enhancements
+  - Allow transforming to XHTML instead of HTML - [Zhivko Draganov](https://github.com/zdraganov) (#144).
+  - Support partial HTML documents (fragments) - #147
+    - With the help of [andfx](https://github.com/andfx) - #115
+    - With the help of [Frida Sjoholm](https://github.com/FridaSjoholm) - #146
+  - Skip URL rewriting on elements with `data-roadie-ignore` - #154.
+    - With the help of [Hamed Asghari](https://github.com/hasghari) - #138.
+- Bug fixes:
+  - Apply correct string encoding / charset in `NetHttpProvider` - [Jeremy Nagel](https://github.com/jeznag) (#152).
 
 ### 3.2.2
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.2.1...v3.2.2)
 
-* Enhancements
-  * Support Nokogiri 1.x.
-  * Support `css_parser` 1.x.
-  * Make tests pass on Ruby 2.4.0 (upgrade Webmock).
+- Enhancements
+  - Support Nokogiri 1.x.
+  - Support `css_parser` 1.x.
+  - Make tests pass on Ruby 2.4.0 (upgrade Webmock).
 
 ### 3.2.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.2.0...v3.2.1)
 
-* Enhancements
-  * Support Nokogiri 1.7.x.
+- Enhancements
+  - Support Nokogiri 1.7.x.
 
 ### 3.2.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.1...v3.2.0)
 
-* Deprecations:
-  * Dropped support for MRI 1.9.3.
-  * Dropped support for MRI 2.0.
-* Upgrades:
-  * Use `css_parser` 1.4.x instead of 1.3.x.
-* Bug fixes:
-  * Strip UTF-8 BOM (Byte Order Mark) from stylesheets before parsing / concatenating - [Bartłomiej Wójtowicz](https://github.com/qbart) (#128)
-* Enhancements:
-  * Build against Ruby MRI 2.3.0 too.
-  * Don't add extra whitespace between table cells.
+- Deprecations:
+  - Dropped support for MRI 1.9.3.
+  - Dropped support for MRI 2.0.
+- Upgrades:
+  - Use `css_parser` 1.4.x instead of 1.3.x.
+- Bug fixes:
+  - Strip UTF-8 BOM (Byte Order Mark) from stylesheets before parsing / concatenating - [Bartłomiej Wójtowicz](https://github.com/qbart) (#128)
+- Enhancements:
+  - Build against Ruby MRI 2.3.0 too.
+  - Don't add extra whitespace between table cells.
 
 ### 3.1.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.0...v3.1.1)
 
-* Enhancements:
-  * Duplicate style properties are now removed when inlining.
-    * This means that `color: green; color: red; color: green` will now be `color: red; color: green`.
-    * The size of your emails should be the same, or smaller.
+- Enhancements:
+  - Duplicate style properties are now removed when inlining.
+    - This means that `color: green; color: red; color: green` will now be `color: red; color: green`.
+    - The size of your emails should be the same, or smaller.
 
 ### 3.1.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.1.0.rc1...v3.1.0)
 
-* Enchancements:
-  * `NetHttpProvider` validates the whitelist hostnames; passing an invalid hostname will raise `ArgumentError`.
-  * `NetHttpProvider` supports scheme-less URLs (`//foo.com/`), defaulting to `https`.
+- Enchancements:
+  - `NetHttpProvider` validates the whitelist hostnames; passing an invalid hostname will raise `ArgumentError`.
+  - `NetHttpProvider` supports scheme-less URLs (`//foo.com/`), defaulting to `https`.
 
 ### 3.1.0.rc1
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.5...v3.1.0.rc1)
 
-* Enhancements:
-  * Allow user to specify asset providers for referenced assets with full URLs and inline them (#107)
-  * Pass `Document` instance to transformation callbacks (#86)
-  * Made `nokogiri` dependency more forgiving.
-    * Supports `1.5.0`...`1.7.0` now instead of `1.6.0`...`1.7.0`. Some people out there are stuck on this older version of Nokogiri, and I don't want to leave them out.
-  * Output better errors when no assets can be found.
-    * The error will now show which providers were tried and in which order, along with the error message from the specific providers.
-    * `Roadie::FilesystemProvider` shows the given path when inspected.
-  * `data-roadie-ignore` attributes will now be removed from markup; hiding "development markers" in the final email.
-  * Add a `Roadie::CachedProvider` asset provider that wraps other providers and cache them.
-  * Add a `Roadie::PathRewriterProvider` asset provider that rewrites asset names for other providers.
-    * This saves you from having to create custom providers if you require small tweaks to the lookup in order to use an official provider.
-* **Deprecations:**
-  * `Roadie::Stylesheet#each_inlinable_block` is now deprecated. You can iterate and filter the `blocks` at your own discresion.
+- Enhancements:
+  - Allow user to specify asset providers for referenced assets with full URLs and inline them (#107)
+  - Pass `Document` instance to transformation callbacks (#86)
+  - Made `nokogiri` dependency more forgiving.
+    - Supports `1.5.0`...`1.7.0` now instead of `1.6.0`...`1.7.0`. Some people out there are stuck on this older version of Nokogiri, and I don't want to leave them out.
+  - Output better errors when no assets can be found.
+    - The error will now show which providers were tried and in which order, along with the error message from the specific providers.
+    - `Roadie::FilesystemProvider` shows the given path when inspected.
+  - `data-roadie-ignore` attributes will now be removed from markup; hiding "development markers" in the final email.
+  - Add a `Roadie::CachedProvider` asset provider that wraps other providers and cache them.
+  - Add a `Roadie::PathRewriterProvider` asset provider that rewrites asset names for other providers.
+    - This saves you from having to create custom providers if you require small tweaks to the lookup in order to use an official provider.
+- **Deprecations:**
+  - `Roadie::Stylesheet#each_inlinable_block` is now deprecated. You can iterate and filter the `blocks` at your own discresion.
 
 ### 3.0.5
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.4...v3.0.5)
 
-* Bug fixes:
-  * Don't try to inline external stylesheets. (#106)
-  * Don't generate absolute URLs for anchor links. (Mange/roadie-rails#40)
+- Bug fixes:
+  - Don't try to inline external stylesheets. (#106)
+  - Don't generate absolute URLs for anchor links. (Mange/roadie-rails#40)
 
 ### 3.0.4
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.3...v3.0.4)
 
-* Bug fixes:
-  * Schemeless URLs was accepted as-is, which isn't supported in a lot of email clients. (#104)
+- Bug fixes:
+  - Schemeless URLs was accepted as-is, which isn't supported in a lot of email clients. (#104)
 
 ### 3.0.3
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.2...v3.0.3)
 
-* Bug fixes:
-  * CSS was mutated when parsed, breaking caches and memoized sources - [Brendan Mulholland (bmulholland)](https://github.com/bmulholland) (Mange/roadie-rails#32)
+- Bug fixes:
+  - CSS was mutated when parsed, breaking caches and memoized sources - [Brendan Mulholland (bmulholland)](https://github.com/bmulholland) (Mange/roadie-rails#32)
 
 ### 3.0.2
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.1...v3.0.2)
 
-* Bug fixes:
-  * Some `data:` URLs could cause exceptions. (#97)
-  * Correctly parse properties with semicolons in their values - [Aidan Feldman (afeld)](https://github.com/afeld) (#100)
+- Bug fixes:
+  - Some `data:` URLs could cause exceptions. (#97)
+  - Correctly parse properties with semicolons in their values - [Aidan Feldman (afeld)](https://github.com/afeld) (#100)
 
 ### 3.0.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.0...v3.0.1)
 
-* Enhancements:
-  * `CssNotFound` can take a provider which will be shown in error messages.
-* Bug fixes:
-  * URL rewriter no longer raises on absolute URLs that cannot be parsed by `URI`. Absolute URLs are completely ignored.
-  * URL rewriter supports urls without a scheme (like `//assets.myapp.com/foo`).
-  * URL rewriter no longer crashes on absolute URLs without a path (like `myapp://`).
+- Enhancements:
+  - `CssNotFound` can take a provider which will be shown in error messages.
+- Bug fixes:
+  - URL rewriter no longer raises on absolute URLs that cannot be parsed by `URI`. Absolute URLs are completely ignored.
+  - URL rewriter supports urls without a scheme (like `//assets.myapp.com/foo`).
+  - URL rewriter no longer crashes on absolute URLs without a path (like `myapp://`).
 
 ### 3.0.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.0.pre1...v3.0.0)
 
-* Enhancements:
-  * `Roadie::ProviderList` responds to `#empty?` and `#last`
-  *   `Roadie::FilesystemProvider` ignores query string in filename.
+- Enhancements:
 
-      Older versions of Rails generated `<link>` tags with query strings in their URLs, like such:
-       `/stylesheets/email.css?1380694096`
-  * Blacklist `:enabled`, `:disabled` and `:checked` pseudo functions - [Tyler Hunt (tylerhunt)](https://github.com/tylerhunt).
-  * Add MRI 2.1.2 to Travis build matrix - [Grey Baker (greysteil)](https://github.com/greysteil).
-  * Try to detect an upgrade from Roadie 2 and mention how to make it work with the new version.
-  * Styles emitted in the `style` attribute should now be ordered as they were in the source CSS.
+  - `Roadie::ProviderList` responds to `#empty?` and `#last`
+  - `Roadie::FilesystemProvider` ignores query string in filename.
+
+    Older versions of Rails generated `<link>` tags with query strings in their URLs, like such:
+    `/stylesheets/email.css?1380694096`
+
+  - Blacklist `:enabled`, `:disabled` and `:checked` pseudo functions - [Tyler Hunt (tylerhunt)](https://github.com/tylerhunt).
+  - Add MRI 2.1.2 to Travis build matrix - [Grey Baker (greysteil)](https://github.com/greysteil).
+  - Try to detect an upgrade from Roadie 2 and mention how to make it work with the new version.
+  - Styles emitted in the `style` attribute should now be ordered as they were in the source CSS.
 
 ### 3.0.0.pre1
 
@@ -225,188 +228,188 @@
 
 Complete rewrite of most of the code and a new direction for the gem.
 
-* Breaking changes:
-  * Removed Rails support into a separate Gem (`roadie-rails`).
-  * Removed Sprockets dependency and AssetPipelineProvider.
-  * Changed the entire public API.
-  * Changed the API of custom providers.
-  * Dropped support for Ruby 1.8.7.
-  * Change `data-immutable` to `data-roadie-ignore`.
-* New features:
-  * Rewriting the URLs of `img[src]`.
-  * A way to inject stylesheets without having to adjust template.
-  * A before callback to compliment the after callback.
-* Enhancements:
-  * Better support for stylesheets using CSS fallbacks.
+- Breaking changes:
+  - Removed Rails support into a separate Gem (`roadie-rails`).
+  - Removed Sprockets dependency and AssetPipelineProvider.
+  - Changed the entire public API.
+  - Changed the API of custom providers.
+  - Dropped support for Ruby 1.8.7.
+  - Change `data-immutable` to `data-roadie-ignore`.
+- New features:
+  - Rewriting the URLs of `img[src]`.
+  - A way to inject stylesheets without having to adjust template.
+  - A before callback to compliment the after callback.
+- Enhancements:
+  - Better support for stylesheets using CSS fallbacks.
     This means that styles like this is now inlined: `width: 5em; width: 3rem;`, while Roadie would previously remove the first of the two.
     This sadly means that the HTML file will be much larger than before if you're using a non-optimized stylesheet (for example including your application stylesheet to the email). This was a bad idea even before this change, and this might get you to change.
-  * Using HTML5 doctype instead of XHTML
-  * Full support for JRuby
-  * Experimental support for Rubinius
+  - Using HTML5 doctype instead of XHTML
+  - Full support for JRuby
+  - Experimental support for Rubinius
 
 ### 2.4.2
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.4.1...v2.4.2)
 
-* Bug fixes:
-  * Fix Nokogiri version to allow only 1.5.x on ruby 1.8.7
-  * Blacklist :before, :after, :-ms-input-placeholder, :-moz-placeholder selectors – [Brian Bauer (bbauer)][https://github.com/bbauer].
-  * Build failed on 1.8.7 due to a change in `css_parser`
+- Bug fixes:
+  - Fix Nokogiri version to allow only 1.5.x on ruby 1.8.7
+  - Blacklist :before, :after, :-ms-input-placeholder, :-moz-placeholder selectors – [Brian Bauer (bbauer)][https://github.com/bbauer].
+  - Build failed on 1.8.7 due to a change in `css_parser`
 
 ### 2.4.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.4.0...v2.4.1)
 
-* Bug fixes:
-  * Allow Nokogiri 1.5.x again; 1.6.x is unsupported in Ruby 1.8.7.
+- Bug fixes:
+  - Allow Nokogiri 1.5.x again; 1.6.x is unsupported in Ruby 1.8.7.
 
 ### 2.4.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.4...v2.4.0)
 
-* Enhancements:
-  * Support Rails 4.0, with the help of:
-    * [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes)
-    * [Dylan Markow](https://github.com/dmarkow)
-  * Keep `!important` when outputting styles to help combat web mail styles being `!important`
-  * Support `:nth-child`, `:last-child`, etc.
-    * To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
-  * Support for custom inliner (#58) — [Harish Shetty (kandadaboggu)](https://github.com/kandadaboggu) with friends
-* Bug fixes:
-  * Don't crash when URL options have protocols with "://" in them (#52).
-* Other:
-  * Be more specific on which versions are required; require newer `css_parser`
-  * Officially support MRI 2.0.0
-  * Add experimental support for JRuby
-  * Remove documentation that talks about passing CSS filenames as symbols; unsupported in Rails 4. (Thanks to [PikachuEXE](https://github.com/PikachuEXE))
+- Enhancements:
+  - Support Rails 4.0, with the help of:
+    - [Ryunosuke SATO (tricknotes)](https://github.com/tricknotes)
+    - [Dylan Markow](https://github.com/dmarkow)
+  - Keep `!important` when outputting styles to help combat web mail styles being `!important`
+  - Support `:nth-child`, `:last-child`, etc.
+    - To make this work, Roadie have to catch errors from Nokogiri and ignore them. A warning will be printed when this happens so users can open issues with the project and tests can be expanded.
+  - Support for custom inliner (#58) — [Harish Shetty (kandadaboggu)](https://github.com/kandadaboggu) with friends
+- Bug fixes:
+  - Don't crash when URL options have protocols with "://" in them (#52).
+- Other:
+  - Be more specific on which versions are required; require newer `css_parser`
+  - Officially support MRI 2.0.0
+  - Add experimental support for JRuby
+  - Remove documentation that talks about passing CSS filenames as symbols; unsupported in Rails 4. (Thanks to [PikachuEXE](https://github.com/PikachuEXE))
 
 ### 2.3.4
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.3...v2.3.4)
 
-* Enhancements:
-  * Add `config.roadie.enabled` that can be set to `false` to disable Roadie completely.
-* Bug fixes:
-  * Proc objects to the `:css` option is now run in the context of the mailer instance, mirroring similar options from ActionMailer.
-  * Fix some tests that would always pass
-  * Improve JRuby compatibility
-  * Update Gemfile.lock and fix issues with newer gem versions
+- Enhancements:
+  - Add `config.roadie.enabled` that can be set to `false` to disable Roadie completely.
+- Bug fixes:
+  - Proc objects to the `:css` option is now run in the context of the mailer instance, mirroring similar options from ActionMailer.
+  - Fix some tests that would always pass
+  - Improve JRuby compatibility
+  - Update Gemfile.lock and fix issues with newer gem versions
 
 ### 2.3.3
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.2...v2.3.3)
 
-* Enhancements:
-  * Allow proc objects to the `:css` option
-* Bug fixes:
-  * Ignore HTML comments and CDATA sections in CSS (support TinyMCE)
+- Enhancements:
+  - Allow proc objects to the `:css` option
+- Bug fixes:
+  - Ignore HTML comments and CDATA sections in CSS (support TinyMCE)
 
 ### 2.3.2
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.1...v2.3.2)
 
-* Bug fixes:
-  * Don't fail on selectors which start with @ (#28) — [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
+- Bug fixes:
+  - Don't fail on selectors which start with @ (#28) — [Roman Shterenzon (romanbsd)](https://github.com/romanbsd)
 
 ### 2.3.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.0...v2.3.1)
 
-* Bug fixes:
-  * Does not work with Rails 3.0 unless provider set specifically (#23)
+- Bug fixes:
+  - Does not work with Rails 3.0 unless provider set specifically (#23)
 
 ### 2.3.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.3.0.pre1...v2.3.0)
 
-* Nothing, really
+- Nothing, really
 
 ### 2.3.0.pre1
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.2.0...v2.3.0.pre1)
 
-* Enhancements:
-  * Support Rails 3.2.pre1 - [Morton Jonuschat (yabawock)](https://github.com/yabawock)
-  * Sped up the Travis builds
-  * Official support for Rails 3.0 again
-    * Dependencies allow 3.0
-    * Travis builds 3.0 among the others
+- Enhancements:
+  - Support Rails 3.2.pre1 - [Morton Jonuschat (yabawock)](https://github.com/yabawock)
+  - Sped up the Travis builds
+  - Official support for Rails 3.0 again
+    - Dependencies allow 3.0
+    - Travis builds 3.0 among the others
 
 ### 2.2.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0...v2.2.0)
 
-* Enhancements:
-  * Support for the `url_options` method inside mailer instances
-    * You can now dynamically alter the URL options on a per-email basis
+- Enhancements:
+  - Support for the `url_options` method inside mailer instances
+    - You can now dynamically alter the URL options on a per-email basis
 
 ### 2.1.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre2...v2.1.0)
 
-* Full release!
+- Full release!
 
 ### 2.1.0.pre2
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.1.0.pre1...v2.1.0.pre2)
 
-* Bug: Roadie broke `url_for` inside mailer views
+- Bug: Roadie broke `url_for` inside mailer views
 
 ### 2.1.0.pre1
 
 [full changelog](https://github.com/Mange/roadie/compare/v2.0.0...v2.1.0.pre1)
 
-* Enhancements:
-  * Support normal filesystem instead of only Asset pipeline
-  * Enable users to create their own way of fetching CSS
-  * Improve test coverage a bit
-  * Use a railtie to hook into Rails
-  * Use real Rails for testing integration
+- Enhancements:
+  - Support normal filesystem instead of only Asset pipeline
+  - Enable users to create their own way of fetching CSS
+  - Improve test coverage a bit
+  - Use a railtie to hook into Rails
+  - Use real Rails for testing integration
 
 ### 2.0.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.1.3...v2.0.0)
 
-* Enhancements:
-  * Support the Asset pipeline - [Arttu Tervo (arttu)](https://github.com/arttu)
-* Dependencies:
-  * Requires Rails 3.1 to work. You can keep on using the 1.x series in Rails 3.0
+- Enhancements:
+  - Support the Asset pipeline - [Arttu Tervo (arttu)](https://github.com/arttu)
+- Dependencies:
+  - Requires Rails 3.1 to work. You can keep on using the 1.x series in Rails 3.0
 
 ### 1.1.3
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.1.2...v1.1.3)
 
-* Do not add another ".css" to filenames if already present - [Aliaxandr (saks)](https://github.com/saks)
+- Do not add another ".css" to filenames if already present - [Aliaxandr (saks)](https://github.com/saks)
 
 ### 1.1.2
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.1.1...v1.1.2)
 
-* Support for Rails 3.1.0 and later inside gemspec
+- Support for Rails 3.1.0 and later inside gemspec
 
 ### 1.1.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.1.0...v1.1.1)
 
-* Support for Rails 3.1.x (up to and including RC4)
-  * Rails 3.0.x is still supported
-* Added CI via [Travis CI](http://travis-ci.org)
+- Support for Rails 3.1.x (up to and including RC4)
+  - Rails 3.0.x is still supported
+- Added CI via [Travis CI](http://travis-ci.org)
 
 ### 1.1.0
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.0.1...v1.1.0)
 
-* Enhancements:
-  * Support for inlining `<link>` elements (thanks to [aliix](https://github.com/aliix))
+- Enhancements:
+  - Support for inlining `<link>` elements (thanks to [aliix](https://github.com/aliix))
 
 ### 1.0.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v1.0.0...v1.0.1)
 
-* Enhancements:
-  * Full, official support for Ruby 1.9.2 (in addition to 1.8.7)
-* Dependencies:
-  * Explicilty depend on nokogiri >= 1.4.4
+- Enhancements:
+  - Full, official support for Ruby 1.9.2 (in addition to 1.8.7)
+- Dependencies:
+  - Explicilty depend on nokogiri >= 1.4.4
 
 ### 1.0.0
 
@@ -414,11 +417,11 @@ Complete rewrite of most of the code and a new direction for the gem.
 
 Roadie fork!
 
-* Enhancements:
-  * Support for Rails 3.0
-  * Code cleanup
-  * Support `!important`
-  * Tests
-  * + some other enhancements
-* Deprecations:
-  * Removed support for Rails 2.x
+- Enhancements:
+  - Support for Rails 3.0
+  - Code cleanup
+  - Support `!important`
+  - Tests
+  - - some other enhancements
+- Deprecations:
+  - Removed support for Rails 2.x
