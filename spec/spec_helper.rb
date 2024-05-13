@@ -7,8 +7,8 @@ if ENV["CI"]
   require "simplecov"
   SimpleCov.start
 
-  require "codecov"
-  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+  require "simplecov-cobertura"
+  SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
 end
 
 $: << File.dirname(__FILE__) + "/../lib"
