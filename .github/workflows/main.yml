@@ -11,6 +11,8 @@ on:
     branches:
       - main
       - master
+    paths-ignore:
+      - '**.md'
 
   pull_request:
     types: [opened, synchronize, reopened]
