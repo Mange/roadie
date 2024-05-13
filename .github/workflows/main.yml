@@ -1,5 +1,12 @@
 name: Main
 on:
+  schedule:
+    # Run on the first day of every month
+    # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+    - cron: '0 0 1 * *'
+  # Allow running manually
+  # For more details: https://docs.github.com/en/actions/using-workflows/manually-running-a-workflow?tool=webui
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -20,6 +27,7 @@ jobs:
           - "3.0"
           - "3.1"
           - "3.2"
+          - "3.3"
 
     steps:
       - name: Checkout code
@@ -36,7 +44,7 @@ jobs:
       - name: Rake
         run: bundle exec rake
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
 
   lint:
     runs-on: ubuntu-latest
@@ -49,7 +57,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.2"
+          ruby-version: "3.3"
           bundler-cache: true
 
       - name: standardrb
