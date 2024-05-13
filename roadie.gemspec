@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.authors = ["Magnus Bergmark"]
   s.email = ["magnus.bergmark@gmail.com"]
-  s.homepage = "http://github.com/Mange/roadie"
+  s.homepage = "https://github.com/Mange/roadie"
   s.summary = "Making HTML emails comfortable for the Ruby rockstars"
   s.description = "Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewriting relative URLs for you."
   s.license = "MIT"
