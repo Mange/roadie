@@ -448,12 +448,8 @@ Partial documents does not have a `<!DOCTYPE>`.
 Build Status
 ------------
 
-Tested with Github CI using:
-
-* MRI 2.7
-* MRI 3.0
-* MRI 3.1
-* MRI 3.2
+Tested with Github CI using:  
+See [Workflow Matrix](/.github/workflows/main.yml)
 
 Let me know if you want any other runtime supported officially.
 
