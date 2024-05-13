@@ -31,5 +31,5 @@ Gem::Specification.new do |s|
 
   s.files = `git ls-files`.split("\n")
 
-  spec.post_install_message = "This would be the last version that supports ruby 2.7"
+  s.post_install_message = "This would be the last version that supports ruby 2.7"
 end
