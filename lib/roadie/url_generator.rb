@@ -137,6 +137,7 @@ module Roadie
     end
 
     VALID_OPTIONS = Set[:host, :port, :path, :protocol, :scheme].freeze
+    private_constant :VALID_OPTIONS
 
     def validate_options(options)
       keys = Set.new(options.keys)

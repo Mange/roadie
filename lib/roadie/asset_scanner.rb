@@ -59,6 +59,7 @@ module Roadie
       #       call in #find_css.
       "link[rel=stylesheet][href]:not([data-roadie-ignore])"
     ).freeze
+    private_constant :STYLE_ELEMENT_QUERY
 
     # Cleans out stupid CDATA and/or HTML comments from the style text
     # TinyMCE causes this, allegedly
@@ -71,6 +72,7 @@ module Roadie
         (\]\]>)
       $)
     /x.freeze
+    private_constant :CLEANING_MATCHER
 
     def read_stylesheet(element)
       if element.name == "style"

@@ -73,6 +73,7 @@ module Roadie
       :host
       :root
     ].freeze
+    private_constant :BAD_PSEUDO_FUNCTIONS
 
     def pseudo_element?
       selector.include? "::"

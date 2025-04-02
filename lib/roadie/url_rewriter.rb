@@ -73,6 +73,7 @@ module Roadie
         \k'quote'          # Closing quote
       \)
     }x
+    private_constant :CSS_URL_REGEXP
 
     def transform_element(element)
       case element.name
