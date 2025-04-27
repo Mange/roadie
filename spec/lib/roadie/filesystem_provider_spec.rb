@@ -70,5 +70,14 @@ module Roadie
         expect(error.to_s).to include("/foo.css?query-string")
       end
     end
+
+    describe "ignore link hrefs which are not on filesystem" do
+      # <link rel="stylesheet" href="?__debugger__=yes&amp;cmd=resource&amp;f=style.css" type="text/css">
+      it 'do not raise TypeError' do
+        expect {
+          provider.find_stylesheet!("?__debugger__=yes&amp;cmd=resource&amp;f=style.css")
+        }.to raise_error CssNotFound
+      end
+    end
   end
 end
