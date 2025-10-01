@@ -7,6 +7,7 @@ module Roadie
   # A style block is the combination of a {Selector} and a list of {StyleProperty}.
   class StyleBlock
     extend Forwardable
+
     attr_reader :selector, :properties, :media
 
     # @param [Selector] selector
