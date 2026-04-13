@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+
+eval_gemfile "../Gemfile"
+
+gem "css_parser", "~> 1.4"

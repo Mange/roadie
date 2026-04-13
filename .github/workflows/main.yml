@@ -19,7 +19,7 @@ on:
 
 jobs:
   base:
-    name: Ruby ${{ matrix.ruby }}
+    name: Ruby ${{ matrix.ruby }} / ${{ matrix.css_parser.name }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,6 +28,14 @@ jobs:
           - "3.3"
           - "3.4"
           - "4.0"
+        css_parser:
+          - gemfile: gemfiles/css_parser_1.gemfile
+            name: css_parser 1.x
+          - gemfile: gemfiles/css_parser_2.gemfile
+            name: css_parser 2.x
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.css_parser.gemfile }}
 
     steps:
       - name: Checkout code
