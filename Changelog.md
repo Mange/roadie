@@ -7,7 +7,7 @@
 - Drop support for Ruby versions before 3.3.
 - Add Ruby 4.0 to the CI matrix.
 
-### dev
+### 5.2.1
 
 [full changelog](https://github.com/Mange/roadie/compare/v5.2.0...v5.2.1)
 
