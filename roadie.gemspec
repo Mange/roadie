@@ -30,5 +30,4 @@ Gem::Specification.new do |s|
   s.require_paths = %w[lib]
 
   s.files = `git ls-files`.split("\n")
-
 end

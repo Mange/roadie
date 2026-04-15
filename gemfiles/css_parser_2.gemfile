@@ -2,4 +2,4 @@
 
 gem "css_parser", "~> 2.0"
 
-gemspec :path => "../"
+gemspec path: "../"
