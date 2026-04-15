@@ -1,0 +1,5 @@
+# frozen_string_literal: true
+
+gem "css_parser", "~> 2.0"
+
+gemspec :path => "../"

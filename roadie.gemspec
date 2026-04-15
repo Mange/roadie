@@ -15,10 +15,10 @@ Gem::Specification.new do |s|
   s.description = "Roadie tries to make sending HTML emails a little less painful by inlining stylesheets and rewriting relative URLs for you."
   s.license = "MIT"
 
-  s.required_ruby_version = ">= 2.7"
+  s.required_ruby_version = ">= 3.3"
 
   s.add_dependency "nokogiri", "~> 1.15"
-  s.add_dependency "css_parser", "~> 1.4"
+  s.add_dependency "css_parser", ">= 1.4", "< 3.0"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.0"
@@ -31,5 +31,4 @@ Gem::Specification.new do |s|
 
   s.files = `git ls-files`.split("\n")
 
-  s.post_install_message = "This would be the last version that supports ruby 2.7"
 end

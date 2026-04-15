@@ -5,6 +5,7 @@
 .ruby-version
 
 Gemfile.lock
+gemfiles/*.lock
 doc
 tmp
 pkg
