@@ -2,6 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "css_parser", "~> 2.0"
+eval_gemfile "../Gemfile"
 
-gemspec path: "../"
+gem "css_parser", "~> 2.0"
