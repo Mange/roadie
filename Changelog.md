@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v5.2.1...master)
+[full changelog](https://github.com/Mange/roadie/compare/v5.3.0...master)
+
+### 5.3.0
+
+[full changelog](https://github.com/Mange/roadie/compare/v5.2.1...v5.3.0)
+
+All listed changes by [Andrei Andriichuk (@faraquet)](https://github.com/faraquet).
 
 - Accept `css_parser` 2.x.
 - Add CI coverage for both `css_parser` 1.x and 2.x.
@@ -76,7 +82,6 @@
 [full changelog](https://github.com/Mange/roadie/compare/v3.3.0...v3.4.0)
 
 - Enhancements
-
   - Better support for media queries - [BroiSatse (Stanislaw
     Klajn)](https://github.com/BroiSatse) and [jeznag (Jeremy
     Nagel)](https://github.com/jeznag) (#157).
@@ -219,7 +224,6 @@
 [full changelog](https://github.com/Mange/roadie/compare/v3.0.0.pre1...v3.0.0)
 
 - Enhancements:
-
   - `Roadie::ProviderList` responds to `#empty?` and `#last`
   - `Roadie::FilesystemProvider` ignores query string in filename.
 
