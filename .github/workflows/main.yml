@@ -33,6 +33,8 @@ jobs:
             name: css_parser 1.x
           - gemfile: gemfiles/css_parser_2.gemfile
             name: css_parser 2.x
+          - gemfile: gemfiles/css_parser_3.gemfile
+            name: css_parser 3.x
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.css_parser.gemfile }}

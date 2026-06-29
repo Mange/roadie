@@ -1,0 +1,7 @@
+# frozen_string_literal: true
+
+source "https://rubygems.org"
+
+eval_gemfile "../Gemfile"
+
+gem "css_parser", "~> 3.0"
