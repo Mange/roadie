@@ -52,7 +52,9 @@ module Roadie
 
     def build_file_path(name)
       raise InsecurePathError, name if name.include?("..")
-      File.join(@path, name[/^([^?]+)/])
+      return "" unless (filename = name[/^([^?]+)/])
+
+      File.join(@path, filename)
     end
   end
 end
