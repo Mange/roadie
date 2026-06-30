@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version = ">= 3.3"
 
   s.add_dependency "nokogiri", "~> 1.15"
-  s.add_dependency "css_parser", ">= 1.4", "< 3.0"
+  s.add_dependency "css_parser", ">= 1.4", "< 4.0"
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec", "~> 3.0"
