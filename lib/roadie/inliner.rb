@@ -167,7 +167,7 @@ module Roadie
     # @return {Array<String>}
     def styles_in_shared_media_queries(style_blocks)
       style_blocks.group_by(&:media).map do |media_types, blocks|
-        css_rules = blocks.map(&:to_s).join("\n")
+        css_rules = blocks.join("\n")
 
         if media_types == ["all"]
           css_rules

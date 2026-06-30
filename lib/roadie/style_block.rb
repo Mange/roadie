@@ -40,7 +40,7 @@ module Roadie
     # @return {String}
     def to_s
       # NB - leave off redundant final semicolon - see https://www.w3.org/TR/CSS2/syndata.html#declaration
-      "#{selector}{#{properties.map(&:to_s).join(";")}}"
+      "#{selector}{#{properties.join(";")}}"
     end
 
     private
