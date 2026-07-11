@@ -1,6 +1,12 @@
 ### dev
 
-[full changelog](https://github.com/Mange/roadie/compare/v5.3.0...master)
+[full changelog](https://github.com/Mange/roadie/compare/v5.3.1...master)
+
+### 5.3.1
+
+[full changelog](https://github.com/Mange/roadie/compare/v5.3.0...v5.3.1)
+
+- Add support for `css_parser` 3.x.
 
 ### 5.3.0
 
